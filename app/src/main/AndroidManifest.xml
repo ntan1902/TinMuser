@@ -9,8 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinMuser">
-        <activity android:name=".EditProfileActivity"></activity>
+        <activity android:name=".MessageActivity"></activity>
+        <activity android:name=".EditProfileActivity" />
         <activity android:name=".ChangePasswordActivity" />
+        <activity android:name=".ShowZoomImage" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".SignInActivity">
             <intent-filter>

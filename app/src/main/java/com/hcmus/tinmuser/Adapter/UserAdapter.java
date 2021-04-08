@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hcmus.tinmuser.MessageActivity;
 import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
@@ -71,15 +72,15 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             getLastMessageFromUser(user.getId(), holder);
         }
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent i = new Intent(context, MessageActivity.class);
-//                i.putExtra("userId", user.getId());
-//                i.putExtra("groupId", "");
-//                context.startActivity(i);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, MessageActivity.class);
+                i.putExtra("userId", user.getId());
+                i.putExtra("groupId", "");
+                context.startActivity(i);
+            }
+        });
     }
 
     private void getLastMessageFromUser(String id, ViewHolder holder) {
