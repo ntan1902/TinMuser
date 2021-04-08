@@ -1,16 +1,14 @@
-package com.hcmus.tinmuser.Fragment;
+package com.hcmus.tinmuser;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,15 +22,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.hcmus.tinmuser.ChangePasswordActivity;
-import com.hcmus.tinmuser.EditProfileActivity;
 import com.hcmus.tinmuser.Model.User;
-import com.hcmus.tinmuser.R;
-import com.hcmus.tinmuser.SignInActivity;
 
-public class ProfileFragment extends Fragment {
+public class ProfileActivity extends Activity {
     private TextView tvName, tvFullname, tvEmail, tvPhone;
-    private ImageView ivAvatar;
+    private ImageView ivAvatar, btnGoBack;
     private Button btnEdit, btnChangePassword, btnSignOut;
 
     private DatabaseReference mRef;
@@ -41,34 +35,27 @@ public class ProfileFragment extends Fragment {
     private Button btnArrow;
 
     FirebaseUser mUser;
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profile);
 
         //Initial variables
-        tvName = view.findViewById(R.id.tvName);
-        tvFullname = view.findViewById(R.id.tvFullname);
-        tvEmail = view.findViewById(R.id.tvEmail);
-        tvPhone = view.findViewById(R.id.tvPhone);
-        ivAvatar = view.findViewById(R.id.ivAvatar);
-        btnEdit = view.findViewById(R.id.btnEdit);
-        btnChangePassword = view.findViewById(R.id.btnChangePassword);
-        btnSignOut = view.findViewById(R.id.btnSignOut);
+        tvName = findViewById(R.id.tvName);
+        tvFullname = findViewById(R.id.tvFullname);
+        tvEmail = findViewById(R.id.tvEmail);
+        tvPhone = findViewById(R.id.tvPhone);
+        ivAvatar = findViewById(R.id.ivAvatar);
+        btnEdit = findViewById(R.id.btnEdit);
+        btnChangePassword = findViewById(R.id.btnChangePassword);
+        btnSignOut = findViewById(R.id.btnSignOut);
+        btnGoBack = findViewById(R.id.btnGoBack);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
-        linearLayout = (ExpandableLinearLayout) view.findViewById(R.id.expandedLayout);
-        btnArrow = view.findViewById(R.id.btnArrow);
+        linearLayout = (ExpandableLinearLayout) findViewById(R.id.expandedLayout);
+        btnArrow = findViewById(R.id.btnArrow);
         btnArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +84,7 @@ public class ProfileFragment extends Fragment {
                 if (user.getImageURL().matches("default")) {
                     ivAvatar.setImageResource(R.drawable.profile_image);
                 } else {
-                    Glide.with(getContext())
+                    Glide.with(getApplicationContext())
                             .load(user.getImageURL())
                             .into(ivAvatar);
                 }
@@ -118,16 +105,28 @@ public class ProfileFragment extends Fragment {
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent_edit = new Intent(getActivity(), EditProfileActivity.class);
+                Intent intent_edit = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 startActivity(intent_edit);
             }
         });
+
         //CHANGE PASSWORD
         btnChangePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent_changePassword = new Intent(getActivity(), ChangePasswordActivity.class);
+                Intent intent_changePassword = new Intent(ProfileActivity.this, ChangePasswordActivity.class);
                 startActivity(intent_changePassword);
+            }
+        });
+
+        //GO BACK
+        btnGoBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent_goBack = new Intent(UserProfileActitivy.this, MainActivity.class);
+//                intent_goBack.putExtra("id", id);
+//                startActivity(intent_goBack);
+                ProfileActivity.super.onBackPressed();
             }
         });
 
@@ -135,7 +134,7 @@ public class ProfileFragment extends Fragment {
         btnSignOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
+                new AlertDialog.Builder(ProfileActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setTitle("Sign Out")
                         .setMessage("Are you sure you want to sign out?")
@@ -144,7 +143,7 @@ public class ProfileFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
                                 System.out.println("***********************************************");
-                                Intent intent = new Intent(getActivity(), SignInActivity.class);
+                                Intent intent = new Intent(ProfileActivity.this, SignInActivity.class);
                                 startActivity(intent);
                             }
                         })
@@ -152,6 +151,5 @@ public class ProfileFragment extends Fragment {
                         .show();
             }
         });
-        return view;
     }
 }
