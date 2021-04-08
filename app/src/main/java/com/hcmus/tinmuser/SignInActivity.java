@@ -221,9 +221,9 @@ public class SignInActivity extends Activity {
                                         // Storing account signed in with google into Realtime
                                         // Create User class to put into Database
                                         User user = new User(firebaseUser.getUid(),
-                                                firebaseUser.getDisplayName(),
                                                 firebaseUser.getEmail(),
                                                 firebaseUser.getPhotoUrl().toString(),
+                                                firebaseUser.getDisplayName(),
                                                 firebaseUser.getPhoneNumber());
 
                                         Ref.setValue(user)

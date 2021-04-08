@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -23,6 +24,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,17 +38,16 @@ import com.google.firebase.storage.UploadTask;
 import com.hcmus.tinmuser.Model.User;
 
 
-public class EditProfileActivity extends AppCompatActivity {
+public class EditProfileActivity extends Activity {
 
     private EditText edtFullname, edtEmail, edtPhone;
     private ImageView ivAvatar, btnGoBack;
     private Uri imageUri;
-    private RadioGroup rgGender;
-    private RadioButton rbMale, rbFemale;
     private Button btnEdit;
-    String id, img_link;
+    String img_link;
     private DatabaseReference mRef;
     private FirebaseStorage storage;
+    private FirebaseUser mUser;
     private StorageReference storageReference;
     private AlertDialog alertDialog;
 
@@ -62,14 +64,13 @@ public class EditProfileActivity extends AppCompatActivity {
 
         btnEdit = findViewById(R.id.btnSave);
 
+        btnGoBack = findViewById(R.id.btnGoBack);
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
 
-        Intent intent = getIntent();
-        id = intent.getStringExtra("id");
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        System.out.println("***************************");
         ivAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +78,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        mRef = FirebaseDatabase.getInstance().getReference("Users").child(id);
+        mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -121,9 +122,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 String phone = edtPhone.getText().toString();
                 String gender;
 
-                int gender_index = rgGender.getCheckedRadioButtonId();
-                RadioButton rd_gender = findViewById(gender_index);
-
                 if (TextUtils.isEmpty(username)) {
                     edtFullname.setError("Username can't be empty");
                 } else {
@@ -131,20 +129,12 @@ public class EditProfileActivity extends AppCompatActivity {
 //                    edtPhone.setError("Phone can't be empty");
                         phone = "";
                     }
-                    if (rgGender.getCheckedRadioButtonId() == -1) {
-//                    Toast.makeText(EditProfileActivity.this, "Gender can't be empty", Toast.LENGTH_SHORT).show();
-                        gender = "";
-                    } else {
-                        gender = rd_gender.getText().toString();
-                    }
 
-                    System.out.println("-----------IMG link----------- " + img_link);
-                    User new_user = new User(id, username, email, img_link, phone);
+                    User new_user = new User(mUser.getUid(), username, email, img_link, phone);
                     mRef.setValue(new_user);
                     Toast.makeText(EditProfileActivity.this, "Save successfully !", Toast.LENGTH_SHORT).show();
-                    Intent go_back = new Intent(EditProfileActivity.this, EditProfileActivity.class);
-                    go_back.putExtra("id", id);
-                    startActivity(go_back);
+
+                    EditProfileActivity.super.onBackPressed();
                 }
             }
         });
@@ -154,6 +144,12 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 EditProfileActivity.super.onBackPressed();
+//                if ( getFragmentManager().getBackStackEntryCount() > 0)
+//                {
+//                    getFragmentManager().popBackStack();
+//                    return;
+//                }
+//                EditProfileActivity.super.onBackPressed();
             }
         });
 
