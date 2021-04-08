@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/gradient_profile_down"
-        android:gravity="center"
         android:orientation="vertical"
         tools:context=".Activity.Profile.EditProfileActivity">
 
@@ -147,26 +146,19 @@
                     android:text="0903123456" />
             </LinearLayout>
 
-
-            <LinearLayout
+            <Button
+                android:id="@+id/btnEdit"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="15dp"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/btnSave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_sign_up"
-                    android:drawableLeft="@drawable/ic_check_circle"
-                    android:fontFamily="@font/montserrat_black"
-                    android:paddingRight="50dp"
-                    android:text="Save"
-                    android:textColor="#fff" />
-
-            </LinearLayout>
-
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_sign_up"
+                android:drawableLeft="@drawable/ic_edit"
+                android:fontFamily="@font/montserrat_black"
+                android:paddingHorizontal="20dp"
+                android:text="save"
+                android:textColor="#fff" />
 
         </LinearLayout>
 
