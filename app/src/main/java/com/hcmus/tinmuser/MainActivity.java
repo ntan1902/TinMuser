@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.hcmus.tinmuser.Fragment.ChatFragment;
 import com.hcmus.tinmuser.Fragment.HomeFragment;
 import com.hcmus.tinmuser.Fragment.ProfileFragment;
+import com.hcmus.tinmuser.Fragment.UsersFragment;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ public class MainActivity extends FragmentActivity {
     private final int[] tabIcons = {
             R.drawable.home,
             R.drawable.chat,
+            R.drawable.users,
             R.drawable.profile
     };
     @Override
@@ -53,6 +55,7 @@ public class MainActivity extends FragmentActivity {
 
         viewPageAdapter.addFragment(new HomeFragment(), "");
         viewPageAdapter.addFragment(new ChatFragment(), "");
+        viewPageAdapter.addFragment(new UsersFragment(), "");
         viewPageAdapter.addFragment(new ProfileFragment(), "");
 
         viewPager.setAdapter(viewPageAdapter);
