@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,9 +19,10 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class ChangePasswordActivity extends Activity {
     private EditText edtOldPassword, edtNewPassword, edtReconfirm;
-    private Button btnConfirm, btnGoBack;
+    private Button btnConfirm;
+    private ImageView btnGoBack;
     String id;
     FirebaseUser mUser;
 

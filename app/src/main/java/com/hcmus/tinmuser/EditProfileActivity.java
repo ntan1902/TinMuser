@@ -60,7 +60,7 @@ public class EditProfileActivity extends Activity {
 
         ivAvatar = findViewById(R.id.ivAvatar);
 
-        btnEdit = findViewById(R.id.btnSave);
+        btnEdit = findViewById(R.id.btnEdit);
 
         btnGoBack = findViewById(R.id.btnGoBack);
 
