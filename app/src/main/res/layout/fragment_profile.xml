@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:ael_expanded="true"
+            app:ael_expanded="false"
             app:ael_duration="300"
             app:ael_interpolator="accelerate"
             app:ael_orientation="vertical">
