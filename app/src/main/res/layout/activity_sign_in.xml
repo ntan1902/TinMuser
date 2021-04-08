@@ -46,142 +46,142 @@
         </RelativeLayout>
 
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="20dp"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:orientation="vertical">-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/edtEmail"-->
-<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginBottom="10dp"-->
-<!--                android:hint="@string/email"-->
-<!--                android:textColorHint="@color/white">-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtEmail"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:hint="Email"
+                android:textColorHint="@color/white">
 
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content" />-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
+            </com.google.android.material.textfield.TextInputLayout>
 
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:id="@+id/edtPassword"-->
-<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:hint="@string/password"-->
-<!--                android:textColorHint="@color/white"-->
-<!--                app:passwordToggleEnabled="true">-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edtPassword"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:textColorHint="@color/white"
+                app:passwordToggleEnabled="true">
 
-<!--                <com.google.android.material.textfield.TextInputEditText-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:inputType="textPassword" />-->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword" />
 
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
+            </com.google.android.material.textfield.TextInputLayout>
 
-<!--            <Button-->
-<!--                android:id="@+id/btnForgot"-->
-<!--                android:layout_width="210dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="right"-->
-<!--                android:background="#00000000"-->
-<!--                android:text="@string/forgot_password"-->
-<!--                android:fontFamily="@font/montserrat_black"-->
-<!--                android:textColor="@color/white" />-->
+            <Button
+                android:id="@+id/btnForgot"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="#00000000"
+                android:text="FORGOT PASSWORD?"
+                android:fontFamily="@font/montserrat_black"
+                android:textColor="@color/white" />
 
-<!--            <Button-->
-<!--                android:id="@+id/btnSignIn"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="5dp"-->
-<!--                android:layout_marginBottom="5dp"-->
-<!--                android:background="@drawable/button_sign_in"-->
-<!--                android:text="@string/sign_in"-->
-<!--                android:fontFamily="@font/montserrat_black"-->
-<!--                android:textColor="@color/black" />-->
-
-
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content">-->
-
-<!--                <TextView-->
-<!--                    android:id="@+id/textView2"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="@string/dont_have_account"-->
-<!--                    android:textColor="@color/white"-->
-<!--                    android:fontFamily="@font/montserrat_black"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintHorizontal_bias="0.3"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/btnSignUp"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="#00000000"-->
-<!--                    android:text="@string/sign_up_1"-->
-<!--                    android:fontFamily="@font/montserrat_black"-->
-<!--                    android:textColor="@color/purple_700"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toEndOf="@+id/textView2"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:layout_constraintVertical_bias="0.0" />-->
-
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:layout_marginTop="50dp">-->
-<!--                <ProgressBar-->
-<!--                    android:visibility="invisible"-->
-<!--                    android:id="@+id/progressBar"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"/>-->
-
-<!--            </LinearLayout>-->
+            <Button
+                android:id="@+id/btnSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/button_sign_in"
+                android:text="Sign in"
+                android:fontFamily="@font/montserrat_black"
+                android:textColor="@color/black" />
 
 
-<!--        </LinearLayout>-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-<!--    </LinearLayout>-->
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DON\'T HAVE AN ACCOUNT?"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/montserrat_black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:layout_weight="1"-->
-<!--        android:orientation="vertical">-->
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0.5dp"-->
-<!--            android:background="@color/black"-->
-<!--            android:layout_marginLeft="20dp"-->
-<!--            android:layout_marginRight="20dp"/>-->
+                <Button
+                    android:id="@+id/btnSignUp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="#00000000"
+                    android:text="Sign Up"
+                    android:fontFamily="@font/montserrat_black"
+                    android:textColor="@color/purple_700"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="50dp">
+                <ProgressBar
+                    android:visibility="invisible"
+                    android:id="@+id/progressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
 
 
-<!--        <Button-->
-<!--            android:id="@+id/btnSignInGoogle"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginHorizontal="20dp"-->
-<!--            android:layout_marginTop="20dp"-->
-<!--            android:text="Sign in with Google"-->
-<!--            android:background="@drawable/button_google"-->
-<!--            android:paddingLeft="70dp"-->
-<!--            android:paddingRight="70dp"-->
-<!--            android:fontFamily="@font/montserrat_black"-->
-<!--            android:drawableLeft="@drawable/google">-->
-<!--        </Button>-->
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/black"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+
+        <Button
+            android:id="@+id/btnSignInGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:text="Sign in with Google"
+            android:background="@drawable/button_google"
+            android:paddingLeft="70dp"
+            android:paddingRight="70dp"
+            android:fontFamily="@font/montserrat_black"
+            android:drawableLeft="@drawable/google">
+        </Button>
 
     </LinearLayout>
 
