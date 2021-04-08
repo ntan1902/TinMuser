@@ -38,7 +38,6 @@ public class SignInActivity extends Activity {
     private TextInputLayout mEdtEmail, mEdtPassword;
     private Button mBtnSignIn, mBtnSignUp, mBtnForgot, mBtnSignInGoogle;
     private FirebaseAuth mAuth;
-    private ProgressBar mProgressBar;
     private AlertDialog alertDialog;
 
     private static final int RC_SIGN_IN = 9001;
@@ -102,7 +101,6 @@ public class SignInActivity extends Activity {
     private void initializeID() {
         mEdtEmail = (TextInputLayout) findViewById(R.id.edtEmail);
         mEdtPassword = (TextInputLayout) findViewById(R.id.edtPassword);
-        mProgressBar = findViewById(R.id.progressBar);
         mBtnSignIn = (Button) findViewById(R.id.btnSignIn);
         mBtnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +116,6 @@ public class SignInActivity extends Activity {
                     Toast.makeText(SignInActivity.this, "Please fill in password!", Toast.LENGTH_SHORT).show();
                     //mEdtPassword.setError("Please fill in password!");
                 } else {
-//                    mProgressBar.setVisibility(View.VISIBLE);
                     alertDialog.show();
                     signInWithEmailAndPassword(email, password);
                 }
@@ -129,7 +126,6 @@ public class SignInActivity extends Activity {
         mBtnSignInGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgressBar.setVisibility(View.VISIBLE);
                 alertDialog.show();
                 signInWithGoogle();
             }
@@ -170,7 +166,6 @@ public class SignInActivity extends Activity {
 
                     Toast.makeText(SignInActivity.this, task.getException().getMessage(),
                             Toast.LENGTH_SHORT).show();
-                    mProgressBar.setVisibility(View.INVISIBLE);
                     alertDialog.dismiss();
                 }
             }
@@ -228,7 +223,8 @@ public class SignInActivity extends Activity {
                                         User user = new User(firebaseUser.getUid(),
                                                 firebaseUser.getDisplayName(),
                                                 firebaseUser.getEmail(),
-                                                firebaseUser.getPhotoUrl().toString());
+                                                firebaseUser.getPhotoUrl().toString(),
+                                                firebaseUser.getPhoneNumber());
 
                                         Ref.setValue(user)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -238,7 +234,6 @@ public class SignInActivity extends Activity {
                                                             // If sign in fails, display a message to the user.
                                                             Toast.makeText(SignInActivity.this, "Sign in failed.",
                                                                     Toast.LENGTH_SHORT).show();
-                                                            mProgressBar.setVisibility(View.INVISIBLE);
                                                             alertDialog.dismiss();
                                                         }
                                                     }
@@ -256,7 +251,6 @@ public class SignInActivity extends Activity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(SignInActivity.this, task.getException().toString(),
                                     Toast.LENGTH_SHORT).show();
-                            mProgressBar.setVisibility(View.INVISIBLE);
                             alertDialog.show();
                         }
                     }
