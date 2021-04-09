@@ -14,4 +14,7 @@
     <color name="blue_200">#7AD5E1</color>
     <color name="blue_500">#56CCF2</color>
     <color name="blue_700">#2D9CDB</color>
+
+    <color name="CardView">#93afdb</color>
+    <color name="ArtisName">#704c49</color>
 </resources>

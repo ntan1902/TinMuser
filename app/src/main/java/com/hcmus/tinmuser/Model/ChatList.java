@@ -14,7 +14,6 @@ public class ChatList {
     public ChatList(){
 
     }
-
     public ChatList(String id) {
         this.id = id;
     }
