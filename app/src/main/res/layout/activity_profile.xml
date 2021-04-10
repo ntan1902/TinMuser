@@ -256,6 +256,19 @@
                 android:paddingHorizontal="20dp"
                 android:text="Sign Out"
                 android:textColor="#fff" />
+            <Button
+                android:id="@+id/btnPlayMusic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/button_sign_up"
+                android:fontFamily="@font/montserrat_black"
+                android:layout_marginHorizontal="50dp"
+                android:paddingHorizontal="20dp"
+                android:text="play music"
+                android:textColor="#fff" />
+
         </LinearLayout>
 
     </LinearLayout>

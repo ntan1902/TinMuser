@@ -27,12 +27,11 @@ import com.hcmus.tinmuser.Model.User;
 public class ProfileActivity extends Activity {
     private TextView tvName, tvFullname, tvEmail, tvPhone;
     private ImageView ivAvatar, btnGoBack;
-    private Button btnEdit, btnChangePassword, btnSignOut;
+    private Button btnEdit, btnChangePassword, btnSignOut, btnArrow, btnPlayMusic;
 
     private DatabaseReference mRef;
 
     private ExpandableLinearLayout linearLayout;
-    private Button btnArrow;
 
     FirebaseUser mUser;
     @Override
@@ -50,6 +49,7 @@ public class ProfileActivity extends Activity {
         btnChangePassword = findViewById(R.id.btnChangePassword);
         btnSignOut = findViewById(R.id.btnSignOut);
         btnGoBack = findViewById(R.id.btnGoBack);
+        btnPlayMusic = findViewById(R.id.btnPlayMusic);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -151,5 +151,15 @@ public class ProfileActivity extends Activity {
                         .show();
             }
         });
+        //PLAY MUSIC
+        btnPlayMusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent play_music = new Intent(ProfileActivity.this, PlaySongActivity.class);
+                startActivity(play_music);
+            }
+        });
     }
+
+
 }
