@@ -7,7 +7,7 @@
     android:background="@color/blue_700"
     android:fitsSystemWindows="true">
 
-    <androidx.appcompat.widget.Toolbar
+    <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -21,25 +21,39 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/ic_back"></ImageView>
+            android:src="@drawable/ic_back"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_toRightOf="@+id/btnGoBack"
+            android:layout_marginTop="5dp"
             android:src="@drawable/profile_image" />
 
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:text="TextView"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="15dp"
+            android:text="Name"
             android:textColor="@color/black"
             android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/imageView" />
 
-    </androidx.appcompat.widget.Toolbar>
+        <ImageView
+            android:id="@+id/btnHeadphone"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/headphone"
+
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_alignParentEnd="true"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

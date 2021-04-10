@@ -1,6 +1,5 @@
 package com.hcmus.tinmuser.Adapter;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,20 +12,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hcmus.tinmuser.R;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MusicListAdapter extends RecyclerView.Adapter< MusicListAdapter.MyViewHolder>{
     ArrayList<String> name;
-    ArrayList<String> artis;
+    ArrayList<String> artist;
     ArrayList<String> image;
     Context context;
     public  MusicListAdapter(Context context, ArrayList<String> name, ArrayList<String> artist, ArrayList<String> image){
         this.context = context;
         this.name = name;
-        this.artis = artist;
+        this.artist = artist;
         this.image = image;
     }
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -50,14 +46,14 @@ public class MusicListAdapter extends RecyclerView.Adapter< MusicListAdapter.MyV
     @Override
     public void onBindViewHolder(@NonNull  MusicListAdapter.MyViewHolder holder, int position) {
         holder.name_text.setText(name.get(position));
-        holder.artist_text.setText(artis.get(position));
+        holder.artist_text.setText(artist.get(position));
         Glide.with(context)
                 .load(image.get(position))
                 .into(holder.avatar);
     }
     @Override
     public int getItemCount() {
-        return artis.size();
+        return artist.size();
     }
 
 }

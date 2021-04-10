@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinMuser">
-        <activity android:name=".ShowSongs"     android:exported="true"/>
+        <activity android:name=".ShowSongsActivity"     android:exported="true"/>
         <activity android:name=".ProfileActivity"/>
         <activity android:name=".MessageActivity" />
         <activity android:name=".EditProfileActivity" />

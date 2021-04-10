@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import com.bumptech.glide.Glide;
 
-public class ShowSongs extends Activity {
+public class ShowSongsActivity extends Activity {
     RecyclerView recyclerView;
     ArrayList<String> name=new ArrayList<>(Arrays.asList("Song1","Song2","Song3","Song4"));
     ArrayList<String> artis = new ArrayList<>(Arrays.asList("Tùng núi","Tùng núi","Tùng núi","Tùng núi"));

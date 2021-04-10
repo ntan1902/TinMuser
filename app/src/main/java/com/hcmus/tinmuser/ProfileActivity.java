@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,13 +29,11 @@ public class ProfileActivity extends Activity {
     private TextView tvName, tvFullname, tvEmail, tvPhone;
     private ImageView ivAvatar, btnGoBack;
     private Button btnEdit, btnChangePassword, btnSignOut;
-
-    private DatabaseReference mRef;
-
     private ExpandableLinearLayout linearLayout;
     private Button btnArrow;
 
-    FirebaseUser mUser;
+    private DatabaseReference mRef;
+    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +51,6 @@ public class ProfileActivity extends Activity {
         btnGoBack = findViewById(R.id.btnGoBack);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-
 
         linearLayout = (ExpandableLinearLayout) findViewById(R.id.expandedLayout);
         btnArrow = findViewById(R.id.btnArrow);
@@ -107,6 +105,7 @@ public class ProfileActivity extends Activity {
             public void onClick(View v) {
                 Intent intent_edit = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 startActivity(intent_edit);
+                finish();
             }
         });
 
@@ -127,6 +126,7 @@ public class ProfileActivity extends Activity {
 //                intent_goBack.putExtra("id", id);
 //                startActivity(intent_goBack);
                 ProfileActivity.super.onBackPressed();
+                finish();
             }
         });
 

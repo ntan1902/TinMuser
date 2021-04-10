@@ -12,6 +12,7 @@ import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -46,7 +47,7 @@ import java.util.List;
 public class MessageActivity extends Activity {
 
     private TextView username;
-    private ImageView imageView, btnGoBack, btnSendImage;
+    private ImageView imageView, btnGoBack, btnSendImage, btnHeadphone;
     private RecyclerView recyclerView;
     private EditText txtSend;
     private Button btnSend;
@@ -54,21 +55,21 @@ public class MessageActivity extends Activity {
 
     private FirebaseUser mUser;
     private DatabaseReference mRef;
-
     private FirebaseStorage storage;
     private StorageReference storageReference;
 
     private AlertDialog alertDialog;
 
-    MessageAdapter messageAdapter;
+    private MessageAdapter messageAdapter;
 
-    List<Object> mItems;
-    List<String> imgURLs;
+    private List<Object> mItems;
+    private List<String> imgURLs;
+    private String userId;
+    private String groupId;
+    private String file_link;
 
-    String userId;
-    String groupId;
+    private MediaPlayer musicPlayer;
 
-    String file_link;
 
 
     @Override
@@ -83,6 +84,7 @@ public class MessageActivity extends Activity {
         btnSend = findViewById(R.id.btnSend);
         btnGoBack = findViewById(R.id.btnGoBack);
         btnSendImage = findViewById(R.id.btnSendImage);
+        btnHeadphone = findViewById(R.id.btnHeadphone);
 
         //Firebase Storage
         storage = FirebaseStorage.getInstance();
@@ -158,12 +160,9 @@ public class MessageActivity extends Activity {
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-//                Intent intent = new Intent(MessageActivity.this, MainActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                startActivity(intent);
-//                finish();
+                musicPlayer.stop();
                 MessageActivity.super.onBackPressed();
+                finish();
             }
         });
 
@@ -174,6 +173,12 @@ public class MessageActivity extends Activity {
             }
         });
 
+
+        musicPlayer = MediaPlayer.create(this, R.raw.pho_nho);
+        musicPlayer.setLooping(true);
+        musicPlayer.seekTo(0);
+        musicPlayer.setVolume(1f, 1f);
+        musicPlayer.start();
     }
 
     private void choosePicture() {
