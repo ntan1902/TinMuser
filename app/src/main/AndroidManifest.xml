@@ -15,10 +15,7 @@
             android:name=".SongService"
             android:enabled="true"
             android:exported="true"></service>
-
-        <activity
-            android:name=".ShowSongsActivity"
-            android:exported="true" />
+        
         <activity android:name=".ProfileActivity" />
         <activity android:name=".PlaySongActivity">
             <intent-filter>

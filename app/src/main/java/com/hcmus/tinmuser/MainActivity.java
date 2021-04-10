@@ -64,14 +64,14 @@ public class MainActivity extends FragmentActivity {
                 User user = snapshot.getValue(User.class);
 
                 ImageView imageView = (ImageView) toolbar.getChildAt(0);
-                if (user.getImageURL().equals("default")) {
-                    imageView.setImageResource(R.drawable.profile_image);
-                } else {
-                    Glide.with(MainActivity.this)
-                            .load(user.getImageURL())
-                            .into(imageView);
-
-                }
+//                if (user.getImageURL().equals("default")) {
+//                    imageView.setImageResource(R.drawable.profile_image);
+//                } else {
+//                    Glide.with(MainActivity.this)
+//                            .load(user.getImageURL())
+//                            .into(imageView);
+//
+//                }
 
                 ImageView btnSetting = (ImageView) toolbar.getChildAt(1);
                 btnSetting.setOnClickListener(new View.OnClickListener() {
