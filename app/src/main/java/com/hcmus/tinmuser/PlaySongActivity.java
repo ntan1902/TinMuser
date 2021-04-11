@@ -1,23 +1,23 @@
 package com.hcmus.tinmuser;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class PlaySongActivity extends Activity {
+public class PlaySongActivity extends Activity implements SongServiceCallbacks, ServiceConnection {
 
     private TextView txtSongName, txtArtistName, txtDurationPlayed, txtDurationTotal;
     private ImageView coverArt, btnNext, btnPrev, btnGoBack, btnShuffle, btnRepeat;
@@ -25,12 +25,13 @@ public class PlaySongActivity extends Activity {
     private SeekBar seekBar;
 
     private Intent songServiceIntent;
-    private BroadcastReceiver broadcastReceiver;
+    private SongService songService;
 
     private boolean isPlay = false;
     private boolean isRepeat = false;
     private boolean isDone = false;
     private String uri = "";
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +50,16 @@ public class PlaySongActivity extends Activity {
                 .into(coverArt);
 
 
-        // Initialize intent filter for receive data from SongService
-        IntentFilter songServiceFilter = new IntentFilter("SongService");
-        broadcastReceiver = new MyBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, songServiceFilter);
-
         songServiceIntent = new Intent(this, SongService.class);
-        songServiceIntent.putExtra("code", "start");
+        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
         songServiceIntent.putExtra("uri", uri);
         startService(songServiceIntent);
-
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    songServiceIntent.putExtra("code", "progress");
-                    songServiceIntent.putExtra("progress", progress);
-                    startService(songServiceIntent);
+                    songService.seekTo(progress * 1000);
                 }
             }
 
@@ -77,8 +70,30 @@ public class PlaySongActivity extends Activity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
+        });
+
+        PlaySongActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (songService != null) {
+                    int currentPosition = songService.getCurrentPosition() / 1000;
+
+                    txtDurationPlayed.setText(formatTime(currentPosition));
+                    seekBar.setProgress(currentPosition);
+
+
+                    if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
+                        isPlay = false;
+                        isDone = true;
+                        btnPlay.setImageResource(R.drawable.ic_play);
+                        songService.reset();
+                    }
+
+                }
+                handler.postDelayed(this, 500);
+            }
+
         });
 
         btnPlay.setOnClickListener(new View.OnClickListener() {
@@ -87,20 +102,19 @@ public class PlaySongActivity extends Activity {
                 if (isPlay) {
                     isPlay = false;
                     btnPlay.setImageResource(R.drawable.ic_play);
-                    songServiceIntent.putExtra("code", "pause");
-
+                    songService.pause();
                 } else {
                     isPlay = true;
                     btnPlay.setImageResource(R.drawable.ic_pause);
 
-                    if(isDone) {
+                    if (isDone) {
                         isDone = false;
                         seekBar.setProgress(0);
-                        songServiceIntent.putExtra("code", "reset");
+//                        songService.reset();
+
                     }
-                    songServiceIntent.putExtra("code", "play");
+                    songService.start();
                 }
-                startService(songServiceIntent);
             }
         });
 
@@ -110,13 +124,20 @@ public class PlaySongActivity extends Activity {
                 if (isRepeat) {
                     isRepeat = false;
                     btnRepeat.setImageResource(R.drawable.ic_repeat_off);
-                    songServiceIntent.putExtra("code", "repeat off");
+                    songService.setLooping(false);
                 } else {
                     isRepeat = true;
                     btnRepeat.setImageResource(R.drawable.ic_repeat_on);
-                    songServiceIntent.putExtra("code", "repeat on");
+                    songService.setLooping(true);
+
                 }
-                startService(songServiceIntent);
+            }
+        });
+
+        btnGoBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlaySongActivity.super.onBackPressed();
             }
         });
 
@@ -138,28 +159,6 @@ public class PlaySongActivity extends Activity {
         seekBar = findViewById(R.id.seekBar);
     }
 
-    public class MyBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String code = intent.getStringExtra("code");
-            if (code.equals("duration")) {
-                int duration = intent.getIntExtra("duration", 0);
-                seekBar.setMax(duration);
-                txtDurationTotal.setText(formatTime(duration));
-            } else if (code.equals("currentPosition")) {
-                int currentPosition = intent.getIntExtra("currentPosition", 0);
-                seekBar.setProgress(currentPosition);
-                txtDurationPlayed.setText(formatTime(currentPosition));
-
-                if(currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
-                    isPlay = false;
-                    isDone = true;
-                    btnPlay.setImageResource(R.drawable.ic_play);
-                }
-            }
-        }//onReceive
-    }
-
 
     private String formatTime(int currentPosition) {
         String res = "";
@@ -176,10 +175,23 @@ public class PlaySongActivity extends Activity {
         return res;
     }
 
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        stopService(songServiceIntent);
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        SongService.LocalBinder binder = (SongService.LocalBinder) service;
+        songService = binder.getService();
+        songService.setCallbacks(PlaySongActivity.this); // register
+
+        int duration = songService.getDuration() / 1000;
+        txtDurationTotal.setText(formatTime(duration));
+        seekBar.setMax(duration);
     }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        songService = null;
+        unbindService(this);
+    }
+
+
 }

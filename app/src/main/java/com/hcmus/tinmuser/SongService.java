@@ -21,14 +21,41 @@ import java.io.InputStream;
 
 public class SongService extends Service {
 
-    private String SongServiceFilter = "SongService";
+    //    private String SongServiceFilter = "SongService";
     private MediaPlayer mediaPlayer;
     private int playbackPosition = 0;
     private String uri = "";
 
+    SongServiceCallbacks songServiceCallbacks;
+    private final IBinder mBinder = new LocalBinder();
+
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return mBinder;
+    }
+
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public boolean isPlaying() {
+        return mediaPlayer.isPlaying();
+    }
+
+
+    //returns the instance of the service
+    public class LocalBinder extends Binder {
+        public SongService getService() {
+            return SongService.this;
+        }
+    }
+
+    public void setCallbacks(SongServiceCallbacks callbacks) {
+        songServiceCallbacks = callbacks;
     }
 
     @Override
@@ -50,57 +77,84 @@ public class SongService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String code = intent.getStringExtra("code");
-        if (code.equals("start")) {
-            uri = intent.getStringExtra("uri");
-            playAudio(uri);
-            sendMessage("duration", mediaPlayer.getDuration() / 1000);
+        uri = intent.getStringExtra("uri");
+        playAudio(uri);
+//        if (code.equals("start")) {
+//            uri = intent.getStringExtra("uri");
+//            playAudio(uri);
+////            sendMessage("duration", mediaPlayer.getDuration() / 1000);
+//
+//        } else if (code.equals("play")) {
+//            mediaPlayer.seekTo(playbackPosition);
+//            mediaPlayer.start();
+//
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    while (mediaPlayer.isPlaying()) {
+//                        try {
+//                            Thread.sleep(400);
+////                            sendMessage("currentPosition", mediaPlayer.getCurrentPosition() / 1000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//            }).start();
+//
+//        } else if (code.equals("pause")) {
+//            playbackPosition = mediaPlayer.getCurrentPosition();
+//            mediaPlayer.pause();
+//
+//        } else if (code.equals("progress")) {
+//            int progress = intent.getIntExtra("progress", 0);
+//            mediaPlayer.seekTo(progress * 1000);
+//
+//        } else if (code.equals("repeat on")) {
+//            mediaPlayer.setLooping(true);
+//
+//        } else if(code.equals("repeat off")) {
+//            mediaPlayer.setLooping(false);
+//
+//        } else if(code.equals("reset")) {
+//            playAudio(uri);
+//        }
 
-        } else if (code.equals("play")) {
-            mediaPlayer.seekTo(playbackPosition);
-            mediaPlayer.start();
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (mediaPlayer.isPlaying()) {
-                        try {
-                            Thread.sleep(400);
-                            sendMessage("currentPosition", mediaPlayer.getCurrentPosition() / 1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }).start();
-
-        } else if (code.equals("pause")) {
-            playbackPosition = mediaPlayer.getCurrentPosition();
-            mediaPlayer.pause();
-
-        } else if (code.equals("progress")) {
-            int progress = intent.getIntExtra("progress", 0);
-            mediaPlayer.seekTo(progress * 1000);
-
-        } else if (code.equals("repeat on")) {
-            mediaPlayer.setLooping(true);
-
-        } else if(code.equals("repeat off")) {
-            mediaPlayer.setLooping(false);
-
-        } else if(code.equals("reset")) {
-            mediaPlayer.reset();
-            playAudio(uri);
-        }
-
-        return START_STICKY;
+        return super.onStartCommand(intent,flags,startId);
     }
 
-    private <T> void sendMessage(String name, T value) {
-        Intent myFilteredResponse = new Intent(SongServiceFilter);
-        myFilteredResponse.putExtra("code", name);
-        myFilteredResponse.putExtra(name, (Integer)value);
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(myFilteredResponse);
+//    private <T> void sendMessage(String name, T value) {
+//        Intent myFilteredResponse = new Intent(SongServiceFilter);
+//        myFilteredResponse.putExtra("code", name);
+//        myFilteredResponse.putExtra(name, (Integer)value);
+//        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(myFilteredResponse);
+//    }
+
+    public void seekTo(int progress) {
+        playbackPosition = progress;
+        mediaPlayer.seekTo(progress);
+    }
+
+    public void setLooping(boolean looping) {
+        mediaPlayer.setLooping(looping);
+    }
+
+    public void start() {
+        mediaPlayer.seekTo(playbackPosition);
+        mediaPlayer.start();
+    }
+
+    public void pause() {
+        playbackPosition = mediaPlayer.getCurrentPosition();
+        mediaPlayer.pause();
+    }
+
+    public void reset() {
+        playAudio(uri);
+    }
+
+    public int getDuration() {
+        return mediaPlayer.getDuration();
     }
 
     private void playAudio(String uri) {
