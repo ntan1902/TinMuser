@@ -60,12 +60,7 @@
             android:src="@drawable/group"
             android:scaleType="centerCrop"
             android:id="@+id/coverArt"/>
-        
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:id="@+id/imageViewGradient"
-            android:layout_alignParentBottom="true"/>
+
 
 
     </RelativeLayout>

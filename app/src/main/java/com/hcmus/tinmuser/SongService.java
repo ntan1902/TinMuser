@@ -4,42 +4,30 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class SongService extends Service {
 
     private String SongServiceFilter = "SongService";
     private MediaPlayer mediaPlayer;
     private int playbackPosition = 0;
-    private Thread progressThread;
-
-//    // Binder given to clients
-//    private final IBinder binder = new LocalBinder();
-//    // Registered callbacks
-//    private SongServiceCallbacks serviceCallbacks;
-//    public void setCallbacks(SongServiceCallbacks callbacks) {
-//        serviceCallbacks = callbacks;
-//    }
-//
-//
-//    // Class used for the client Binder.
-//    public class LocalBinder extends Binder {
-//        SongService getService() {
-//            // Return this instance of MyService so clients can call public methods
-//            return SongService.this;
-//        }
-//    }
-
+    private String uri = "";
 
     @Override
     public IBinder onBind(Intent intent) {
-//        return binder;
         return null;
     }
 
@@ -50,7 +38,8 @@ public class SongService extends Service {
 
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         // For example to set the volume of played media to maximum.
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_DTMF), 0);
     }
 
     @Override
@@ -63,44 +52,55 @@ public class SongService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String code = intent.getStringExtra("code");
         if (code.equals("start")) {
-            String uriTemp = intent.getStringExtra("uri");
-            playAudio(uriTemp);
-
+            uri = intent.getStringExtra("uri");
+            playAudio(uri);
+            sendMessage("duration", mediaPlayer.getDuration() / 1000);
 
         } else if (code.equals("play")) {
             mediaPlayer.seekTo(playbackPosition);
             mediaPlayer.start();
-            progressThread = new Thread(new Runnable() {
+
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while(mediaPlayer.isPlaying()) {
+                    while (mediaPlayer.isPlaying()) {
                         try {
                             Thread.sleep(400);
-                            Intent myFilteredResponse = new Intent(SongServiceFilter);
-                            myFilteredResponse.putExtra("duration", mediaPlayer.getDuration());
-                            myFilteredResponse.putExtra("currentPosition", mediaPlayer.getCurrentPosition());
-                            sendBroadcast(myFilteredResponse);
+                            sendMessage("currentPosition", mediaPlayer.getCurrentPosition() / 1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                 }
-            });
-            progressThread.start();
-        } else if(code.equals("pause")) {
+            }).start();
+
+        } else if (code.equals("pause")) {
             playbackPosition = mediaPlayer.getCurrentPosition();
             mediaPlayer.pause();
-            try {
-                progressThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else if(code.equals("progressChanged")) {
+
+        } else if (code.equals("progress")) {
             int progress = intent.getIntExtra("progress", 0);
             mediaPlayer.seekTo(progress * 1000);
+
+        } else if (code.equals("repeat on")) {
+            mediaPlayer.setLooping(true);
+
+        } else if(code.equals("repeat off")) {
+            mediaPlayer.setLooping(false);
+
+        } else if(code.equals("reset")) {
+            mediaPlayer.reset();
+            playAudio(uri);
         }
 
         return START_STICKY;
+    }
+
+    private <T> void sendMessage(String name, T value) {
+        Intent myFilteredResponse = new Intent(SongServiceFilter);
+        myFilteredResponse.putExtra("code", name);
+        myFilteredResponse.putExtra(name, (Integer)value);
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(myFilteredResponse);
     }
 
     private void playAudio(String uri) {
@@ -115,6 +115,7 @@ public class SongService extends Service {
         }
 
     }
+
 
     private void killMediaPlayer() {
         if (mediaPlayer != null) {
