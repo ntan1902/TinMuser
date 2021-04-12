@@ -77,58 +77,14 @@ public class SongService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        uri = intent.getStringExtra("uri");
-        playAudio(uri);
-//        if (code.equals("start")) {
-//            uri = intent.getStringExtra("uri");
-//            playAudio(uri);
-////            sendMessage("duration", mediaPlayer.getDuration() / 1000);
-//
-//        } else if (code.equals("play")) {
-//            mediaPlayer.seekTo(playbackPosition);
-//            mediaPlayer.start();
-//
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    while (mediaPlayer.isPlaying()) {
-//                        try {
-//                            Thread.sleep(400);
-////                            sendMessage("currentPosition", mediaPlayer.getCurrentPosition() / 1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }).start();
-//
-//        } else if (code.equals("pause")) {
-//            playbackPosition = mediaPlayer.getCurrentPosition();
-//            mediaPlayer.pause();
-//
-//        } else if (code.equals("progress")) {
-//            int progress = intent.getIntExtra("progress", 0);
-//            mediaPlayer.seekTo(progress * 1000);
-//
-//        } else if (code.equals("repeat on")) {
-//            mediaPlayer.setLooping(true);
-//
-//        } else if(code.equals("repeat off")) {
-//            mediaPlayer.setLooping(false);
-//
-//        } else if(code.equals("reset")) {
-//            playAudio(uri);
-//        }
+        String uriTemp = intent.getStringExtra("uri");
+        if(!uriTemp.equals(uri)) {
+            uri = uriTemp;
+            playAudio(uri);
+        }
 
         return super.onStartCommand(intent,flags,startId);
     }
-
-//    private <T> void sendMessage(String name, T value) {
-//        Intent myFilteredResponse = new Intent(SongServiceFilter);
-//        myFilteredResponse.putExtra("code", name);
-//        myFilteredResponse.putExtra(name, (Integer)value);
-//        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(myFilteredResponse);
-//    }
 
     public void seekTo(int progress) {
         playbackPosition = progress;
@@ -150,28 +106,36 @@ public class SongService extends Service {
     }
 
     public void reset() {
-        playAudio(uri);
+        playbackPosition = 0;
+        mediaPlayer.seekTo(0);
     }
 
     public int getDuration() {
         return mediaPlayer.getDuration();
     }
 
-    private void playAudio(String uri) {
+    public void playAudio(String uri) {
         killMediaPlayer();
 
         mediaPlayer = new MediaPlayer();
         try {
             mediaPlayer.setDataSource(uri);
-            mediaPlayer.prepare();
+            mediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                mp.start();
+            }
+        });
+
     }
 
 
-    private void killMediaPlayer() {
+    public void killMediaPlayer() {
         if (mediaPlayer != null) {
             try {
                 playbackPosition = 0;

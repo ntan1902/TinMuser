@@ -2,7 +2,6 @@ package com.hcmus.tinmuser.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +68,7 @@ public class MusicAdapter extends RecyclerView.Adapter< MusicAdapter.MyViewHolde
         ImageView avatar;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
-            artist_text = itemView.findViewById(R.id.artis_name);
+            artist_text = itemView.findViewById(R.id.artist_name);
             name_text = itemView.findViewById(R.id.song_name);
             avatar = itemView.findViewById(R.id.song_avatar);
         }

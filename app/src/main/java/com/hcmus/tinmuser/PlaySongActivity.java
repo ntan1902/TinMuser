@@ -27,9 +27,8 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
     private Intent songServiceIntent;
     private SongService songService;
 
-    private boolean isPlay = false;
+    private boolean isPlay = true;
     private boolean isRepeat = false;
-    private boolean isDone = false;
     private String uri = "";
     private Handler handler = new Handler();
 
@@ -76,16 +75,19 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
         PlaySongActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (songService != null) {
+                if (songService != null && songService.getMediaPlayer() != null) {
                     int currentPosition = songService.getCurrentPosition() / 1000;
 
                     txtDurationPlayed.setText(formatTime(currentPosition));
                     seekBar.setProgress(currentPosition);
 
+                    int duration = songService.getDuration() / 1000;
+                    txtDurationTotal.setText(formatTime(duration));
+                    seekBar.setMax(duration);
+
 
                     if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
                         isPlay = false;
-                        isDone = true;
                         btnPlay.setImageResource(R.drawable.ic_play);
                         songService.reset();
                     }
@@ -106,13 +108,6 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
                 } else {
                     isPlay = true;
                     btnPlay.setImageResource(R.drawable.ic_pause);
-
-                    if (isDone) {
-                        isDone = false;
-                        seekBar.setProgress(0);
-//                        songService.reset();
-
-                    }
                     songService.start();
                 }
             }
@@ -161,18 +156,11 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
 
 
     private String formatTime(int currentPosition) {
-        String res = "";
 
         String seconds = String.valueOf(currentPosition % 60);
         String minutes = String.valueOf(currentPosition / 60);
 
-
-        if (seconds.length() == 1) {
-            res = minutes + ":0" + seconds;
-        } else {
-            res = minutes + ":" + seconds;
-        }
-        return res;
+        return seconds.length() == 1 ? minutes + ":0" + seconds : minutes + ":" + seconds;
     }
 
 
@@ -182,9 +170,6 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
         songService = binder.getService();
         songService.setCallbacks(PlaySongActivity.this); // register
 
-        int duration = songService.getDuration() / 1000;
-        txtDurationTotal.setText(formatTime(duration));
-        seekBar.setMax(duration);
     }
 
     @Override

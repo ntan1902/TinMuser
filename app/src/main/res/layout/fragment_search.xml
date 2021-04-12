@@ -3,24 +3,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_700"
     android:orientation="vertical"
-    android:background="@drawable/gradient_sign_in"
     tools:context=".Fragment.SearchFragment">
-    <EditText
-        android:textColor="@color/black"
-        android:id="@+id/searchText"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/border_search"
-        android:drawableStart="@drawable/ic_search"
-        android:hint="Tìm kiếm"
-        android:paddingLeft="10dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_margin="15sp"
-        android:id="@+id/recyclerViewSearch"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@drawable/rect"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/searchText"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/border_search"
+            android:drawableStart="@drawable/ic_search"
+            android:hint="Tìm kiếm"
+            android:paddingLeft="10dp"
+            android:textColor="@color/black" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="15sp" />
+    </LinearLayout>
 </LinearLayout>
