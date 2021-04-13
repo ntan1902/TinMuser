@@ -173,12 +173,20 @@ public class MessageActivity extends Activity {
             }
         });
 
+        btnHeadphone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent show_list_songs = new Intent(MessageActivity.this, ShowListSongsActivity.class);
+                startActivity(show_list_songs);
+                finish();
+            }
+        });
 
-        musicPlayer = MediaPlayer.create(this, R.raw.pho_nho);
-        musicPlayer.setLooping(true);
-        musicPlayer.seekTo(0);
-        musicPlayer.setVolume(1f, 1f);
-        musicPlayer.start();
+//        musicPlayer = MediaPlayer.create(this, R.raw.pho_nho);
+//        musicPlayer.setLooping(true);
+//        musicPlayer.seekTo(0);
+//        musicPlayer.setVolume(1f, 1f);
+//        musicPlayer.start();
     }
 
     private void choosePicture() {
