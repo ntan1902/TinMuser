@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:id="@+id/fragmentChat"
-    android:background="@color/blue_700"
+    android:background="@color/grey"
     tools:context=".Fragment.ChatFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/rect">
+        android:background="@color/darkest_grey">
 
         <EditText
             android:layout_width="match_parent"
@@ -27,7 +27,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp" />
+            android:layout_marginHorizontal="20dp"/>
     </LinearLayout>
 
 

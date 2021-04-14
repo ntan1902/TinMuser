@@ -27,7 +27,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewPager"
-        app:layout_constraintBottom_toTopOf="@+id/tabLayout">
+        app:layout_constraintBottom_toTopOf="@+id/tabLayout"
+        android:background="@drawable/border_play">
 
         <SeekBar
             android:id="@+id/seekBar"
@@ -42,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/seekBar"
-            android:background="@color/white">
+            android:background="@drawable/border_play">
 
             <ImageView
                 android:id="@+id/songAvatar"
@@ -50,6 +51,7 @@
                 android:layout_height="40dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="5dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/group" />
 
@@ -61,7 +63,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/songAvatar"
                 android:text="Cơn mưa ngang qua"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -74,7 +76,7 @@
                 android:layout_marginBottom="8dp"
                 android:layout_toEndOf="@+id/songAvatar"
                 android:text="Sơn tùng mtp"
-                android:textColor="@color/ArtistName"
+                android:textColor="@color/light_grey"
                 android:textSize="12sp" />
 
 

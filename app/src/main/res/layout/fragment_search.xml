@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_700"
+    android:background="@color/darkest_grey"
     android:orientation="vertical"
     tools:context=".Fragment.SearchFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rect"
+        android:background="@color/darkest_grey"
         android:orientation="vertical">
 
         <EditText

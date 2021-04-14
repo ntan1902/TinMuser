@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     android:id="@+id/fragmentChat"
-    android:background="@color/blue_700"
+    android:background="@color/darkest_grey"
     tools:context=".Fragment.UsersFragment">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@drawable/rect">
+        android:background="@color/darkest_grey">
 
         <EditText
             android:layout_width="match_parent"
