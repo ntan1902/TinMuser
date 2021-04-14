@@ -9,14 +9,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#2D9CDB"
+        android:background="@color/darker_grey"
         android:orientation="vertical"
         tools:context=".Activity.Profile.UserProfileActitivy">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:background="#7AD5E1"
+            android:background="@color/grey"
             android:orientation="horizontal">
 
             <ImageView
@@ -32,7 +32,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_user_profile"
+            android:background="@drawable/bg_profile"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -42,7 +42,7 @@
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:src="@drawable/profile_image"
-                app:civ_border_color="#7AD5E1"
+                app:civ_border_color="@color/grey"
                 app:civ_border_width="10dp" />
         </LinearLayout>
 
@@ -58,9 +58,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
+                android:layout_marginLeft="30dp"
                 android:fontFamily="@font/montserrat_black"
                 android:text="On Hao Nguyen"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="24dp"
                 android:textStyle="bold" />
 
@@ -108,7 +109,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_black"
                         android:text="Full name"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="18dp"
 
                         android:textStyle="bold" />
@@ -118,7 +119,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="On Hao Nguyen"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16dp" />
                 </LinearLayout>
 
@@ -151,7 +152,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_black"
                         android:text="Email"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="18dp"
                         android:textStyle="bold" />
 
@@ -160,7 +161,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ohn240420001@gmail.com"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -192,7 +193,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/montserrat_black"
                         android:text="Phone"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="18dp"
                         android:textStyle="bold" />
 
@@ -201,7 +202,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0903028901"
-                        android:textColor="@color/black"
+                        android:textColor="@color/white"
                         android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
@@ -221,13 +222,13 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/button_sign_up"
+                android:background="@drawable/button_sign_in"
                 android:drawableLeft="@drawable/ic_edit"
                 android:fontFamily="@font/montserrat_black"
                 android:layout_marginHorizontal="50dp"
                 android:paddingHorizontal="20dp"
                 android:text="Edit Profile"
-                android:textColor="#fff" />
+                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/btnChangePassword"
@@ -235,13 +236,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/button_sign_up"
+                android:background="@drawable/button_sign_in"
                 android:drawableLeft="@drawable/ic_lock"
                 android:fontFamily="@font/montserrat_black"
                 android:layout_marginHorizontal="50dp"
                 android:paddingHorizontal="20dp"
                 android:text="Change Password"
-                android:textColor="#fff" />
+                android:textColor="@color/black" />
 
             <Button
                 android:id="@+id/btnSignOut"
@@ -249,25 +250,13 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="5dp"
-                android:background="@drawable/button_sign_up"
+                android:background="@drawable/button_sign_in"
                 android:drawableLeft="@drawable/ic_signout"
                 android:fontFamily="@font/montserrat_black"
                 android:layout_marginHorizontal="50dp"
                 android:paddingHorizontal="20dp"
                 android:text="Sign Out"
-                android:textColor="#fff" />
-            <Button
-                android:id="@+id/btnPlayMusic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/button_sign_up"
-                android:fontFamily="@font/montserrat_black"
-                android:layout_marginHorizontal="50dp"
-                android:paddingHorizontal="20dp"
-                android:text="play music"
-                android:textColor="#fff" />
+                android:textColor="@color/black" />
 
         </LinearLayout>
 

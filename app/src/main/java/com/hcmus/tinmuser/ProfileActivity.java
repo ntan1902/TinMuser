@@ -50,7 +50,6 @@ public class ProfileActivity extends Activity {
         btnChangePassword = findViewById(R.id.btnChangePassword);
         btnSignOut = findViewById(R.id.btnSignOut);
         btnGoBack = findViewById(R.id.btnGoBack);
-        btnPlayMusic = findViewById(R.id.btnPlayMusic);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -151,14 +150,6 @@ public class ProfileActivity extends Activity {
                         })
                         .setNegativeButton("No", null)
                         .show();
-            }
-        });
-        //PLAY MUSIC
-        btnPlayMusic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent play_music = new Intent(ProfileActivity.this, PlaySongActivity.class);
-                startActivity(play_music);
             }
         });
     }

@@ -36,7 +36,7 @@
                 android:fontFamily="@font/montserrat_black"
                 android:text="Edit Profile"
                 android:textAlignment="center"
-                android:textColor="#A135FF"
+                android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
@@ -57,8 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/ivAvatar"
-                android:layout_marginLeft="-25dp"
-                android:layout_marginTop="-25dp"
+                android:layout_marginLeft="-35dp"
+                android:layout_marginTop="-30dp"
                 android:layout_toRightOf="@id/ivAvatar"
                 android:src="@drawable/ic_plus" />
 
@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_black"
                     android:text="Full Name"
-                    android:textColor="#A135FF"
+                    android:textColor="@color/white"
                     android:textSize="18dp" />
 
                 <EditText
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_black"
                     android:text="Email"
-                    android:textColor="#A135FF"
+                    android:textColor="@color/white"
                     android:textSize="18dp" />
 
                 <EditText
@@ -132,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/montserrat_black"
                     android:text="Phone"
-                    android:textColor="#A135FF"
+                    android:textColor="@color/white"
                     android:textSize="18dp" />
 
                 <EditText
@@ -153,12 +153,12 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/button_sign_up"
+                android:background="@drawable/button_sign_in"
                 android:drawableLeft="@drawable/ic_edit"
                 android:fontFamily="@font/montserrat_black"
                 android:paddingHorizontal="20dp"
                 android:text="save"
-                android:textColor="#fff" />
+                android:textColor="@color/black" />
 
         </LinearLayout>
 

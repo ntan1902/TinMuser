@@ -18,7 +18,7 @@
 
     <color name="light_grey">#C0C0C0</color>
     <color name="grey">#808080</color>
-    <color name="darker_grey">#383838</color>
+    <color name="darker_grey">#505050</color>
     <color name="darkest_grey">#303030</color>
 
     <color name="emerald_green">#66ff66</color>

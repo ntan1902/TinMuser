@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_700"
+    android:background="@color/darker_grey"
     android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/blue_700"
+        android:background="@color/darker_grey"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
@@ -38,7 +38,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="15dp"
             android:text="Name"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="16dp"
             android:textStyle="bold"
             android:layout_toRightOf="@+id/imageView" />
@@ -74,7 +74,7 @@
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/blue_500"
+            android:background="@color/darker_grey"
             android:layout_alignParentBottom="true"
             android:padding="5dp">
 
