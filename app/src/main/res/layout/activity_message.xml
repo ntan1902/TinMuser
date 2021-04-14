@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/darker_grey"
+    android:background="@color/grey_900"
     android:fitsSystemWindows="true">
 
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@color/darker_grey"
+        android:background="@color/grey_900"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
@@ -58,7 +58,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/rect"
+        android:background="@color/grey_900"
         android:layout_below="@id/toolbar"
         android:orientation="vertical">
 
@@ -74,7 +74,7 @@
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/darker_grey"
+            android:background="@color/grey_900"
             android:layout_alignParentBottom="true"
             android:padding="5dp">
 

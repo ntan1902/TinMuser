@@ -17,9 +17,9 @@
     <color name="blue_700">#2D9CDB</color>
 
     <color name="light_grey">#C0C0C0</color>
-    <color name="grey">#808080</color>
-    <color name="darker_grey">#505050</color>
-    <color name="darkest_grey">#303030</color>
+    <color name="grey_700">#424242</color>
+    <color name="grey_800">#303030</color>
+    <color name="grey_900">#212121</color>
 
     <color name="emerald_green">#66ff66</color>
 

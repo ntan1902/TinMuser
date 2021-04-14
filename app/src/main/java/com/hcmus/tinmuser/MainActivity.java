@@ -52,10 +52,10 @@ public class MainActivity extends FragmentActivity {
 
 
     private final int[] tabIcons = {
-            R.drawable.home,
+            R.drawable.ic_baseline_home_24,
             R.drawable.ic_search,
-            R.drawable.chat,
-            R.drawable.users
+            R.drawable.ic_baseline_chat_24,
+            R.drawable.ic_baseline_users_24
     };
 
     Handler handler = new Handler();
