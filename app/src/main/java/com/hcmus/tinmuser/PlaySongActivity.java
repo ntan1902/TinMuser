@@ -90,6 +90,7 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
                         isPlay = false;
                         btnPlay.setImageResource(R.drawable.ic_play);
                         songService.reset();
+                        songService.pause();
                     }
 
                 }
@@ -178,5 +179,11 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
         unbindService(this);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (this != null) {
+            unbindService(this);
+        }
+    }
 }
