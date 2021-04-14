@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -16,8 +15,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.hcmus.tinmuser.Model.Song;
 
-public class PlaySongActivity extends Activity implements SongServiceCallbacks, ServiceConnection {
+public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private TextView txtSongName, txtArtistName, txtDurationPlayed, txtDurationTotal;
     private ImageView coverArt, btnNext, btnPrev, btnGoBack, btnShuffle, btnRepeat;
@@ -29,8 +29,8 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
 
     private boolean isPlay = true;
     private boolean isRepeat = false;
-    private String uri = "";
     private Handler handler = new Handler();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +41,24 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
 
         // Receive data from MusicAdapter
         Intent intent = getIntent();
-        uri = intent.getStringExtra("uri");
-        txtSongName.setText(intent.getStringExtra("songName"));
-        txtArtistName.setText(intent.getStringExtra("artistName"));
+        String uri = intent.getStringExtra("uri");
+        String songName = intent.getStringExtra("songName");
+        String artistName = intent.getStringExtra("artistName");
+        String imageURL = intent.getStringExtra("imageURL");
+
+        txtSongName.setText(songName);
+        txtArtistName.setText(artistName);
         Glide.with(getApplicationContext())
-                .load(intent.getStringExtra("imageURL"))
+                .load(imageURL)
                 .into(coverArt);
 
 
         songServiceIntent = new Intent(this, SongService.class);
-        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
         songServiceIntent.putExtra("uri", uri);
+        songServiceIntent.putExtra("songName", songName);
+        songServiceIntent.putExtra("artistName", artistName);
+        songServiceIntent.putExtra("imageURL", imageURL);
+        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
         startService(songServiceIntent);
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -76,24 +83,10 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
             @Override
             public void run() {
                 if (songService != null && songService.getMediaPlayer() != null) {
-                    int currentPosition = songService.getCurrentPosition() / 1000;
-
-                    txtDurationPlayed.setText(formatTime(currentPosition));
-                    seekBar.setProgress(currentPosition);
-
-                    int duration = songService.getDuration() / 1000;
-                    txtDurationTotal.setText(formatTime(duration));
-                    seekBar.setMax(duration);
-
-
-                    if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
-                        isPlay = false;
-                        btnPlay.setImageResource(R.drawable.ic_play);
-                        songService.reset();
-                    }
+                    updateProgressBar();
 
                 }
-                handler.postDelayed(this, 500);
+                handler.postDelayed(this, 100);
             }
 
         });
@@ -138,6 +131,24 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
 
     }
 
+    private void updateProgressBar() {
+        int currentPosition = songService.getCurrentPosition() / 1000;
+        txtDurationPlayed.setText(formatTime(currentPosition));
+        seekBar.setProgress(currentPosition);
+
+        int duration = songService.getDuration() / 1000;
+        txtDurationTotal.setText(formatTime(duration));
+        seekBar.setMax(duration);
+
+
+        if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
+            isPlay = false;
+            btnPlay.setImageResource(R.drawable.ic_play);
+            songService.reset();
+            songService.pause();
+        }
+    }
+
     private void initializeId() {
         txtSongName = findViewById(R.id.songName);
         txtArtistName = findViewById(R.id.artistName);
@@ -168,8 +179,6 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
     public void onServiceConnected(ComponentName name, IBinder service) {
         SongService.LocalBinder binder = (SongService.LocalBinder) service;
         songService = binder.getService();
-        songService.setCallbacks(PlaySongActivity.this); // register
-
     }
 
     @Override
@@ -178,5 +187,11 @@ public class PlaySongActivity extends Activity implements SongServiceCallbacks, 
         unbindService(this);
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (this != null) {
+            unbindService(this);
+        }
+    }
 }

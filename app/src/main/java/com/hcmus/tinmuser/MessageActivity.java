@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.ContentResolver;
@@ -76,6 +77,16 @@ public class MessageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+
+//
+        if(isMyServiceRunning(SongService.class)) {
+            Toast.makeText(this, "SongService exists", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "SongService doesn't exist", Toast.LENGTH_LONG).show();
+
+        }
+
+
 
         imageView = findViewById(R.id.imageView);
         username = findViewById(R.id.username);
@@ -160,7 +171,7 @@ public class MessageActivity extends Activity {
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                musicPlayer.stop();
+//                musicPlayer.stop();
                 MessageActivity.super.onBackPressed();
                 finish();
             }
@@ -181,12 +192,6 @@ public class MessageActivity extends Activity {
                 finish();
             }
         });
-
-//        musicPlayer = MediaPlayer.create(this, R.raw.pho_nho);
-//        musicPlayer.setLooping(true);
-//        musicPlayer.seekTo(0);
-//        musicPlayer.setVolume(1f, 1f);
-//        musicPlayer.start();
     }
 
     private void choosePicture() {
@@ -331,5 +336,15 @@ public class MessageActivity extends Activity {
         ContentResolver cr = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cr.getType(mUri));
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

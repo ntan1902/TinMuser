@@ -20,33 +20,22 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SongService extends Service {
-
-    //    private String SongServiceFilter = "SongService";
+    private static SongService instance = null;
+    public static SongService getInstance() {
+        return instance;
+    }
     private MediaPlayer mediaPlayer;
     private int playbackPosition = 0;
     private String uri = "";
+    private String songName = "";
+    private String artistName = "";
+    private String imageURL = "";
 
-    SongServiceCallbacks songServiceCallbacks;
     private final IBinder mBinder = new LocalBinder();
-
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
-
-    public int getCurrentPosition() {
-        return mediaPlayer.getCurrentPosition();
-    }
-
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
-    }
-
-    public boolean isPlaying() {
-        return mediaPlayer.isPlaying();
-    }
-
-
     //returns the instance of the service
     public class LocalBinder extends Binder {
         public SongService getService() {
@@ -54,13 +43,11 @@ public class SongService extends Service {
         }
     }
 
-    public void setCallbacks(SongServiceCallbacks callbacks) {
-        songServiceCallbacks = callbacks;
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         Log.e("SongService", "onCreate");
 
         AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
@@ -72,6 +59,7 @@ public class SongService extends Service {
     @Override
     public void onDestroy() {
         Log.e("SongService", "onDestroy");
+        instance = null;
         killMediaPlayer();
     }
 
@@ -81,9 +69,20 @@ public class SongService extends Service {
         if(!uriTemp.equals(uri)) {
             uri = uriTemp;
             playAudio(uri);
+            songName = intent.getStringExtra("songName");
+            artistName = intent.getStringExtra("artistName");
+            imageURL = intent.getStringExtra("imageURL");
         }
 
         return super.onStartCommand(intent,flags,startId);
+    }
+
+    public int getCurrentPosition() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
     }
 
     public void seekTo(int progress) {
@@ -112,6 +111,30 @@ public class SongService extends Service {
 
     public int getDuration() {
         return mediaPlayer.getDuration();
+    }
+
+    public String getSongName() {
+        return songName;
+    }
+
+    public void setSongName(String songName) {
+        this.songName = songName;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public void playAudio(String uri) {

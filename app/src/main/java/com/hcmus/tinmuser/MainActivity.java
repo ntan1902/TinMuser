@@ -10,9 +10,12 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.tabs.TabLayout;
@@ -35,20 +38,89 @@ public class MainActivity extends FragmentActivity {
     private FirebaseUser mUser;
     private DatabaseReference mRef;
 
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private ViewPageAdapter viewPageAdapter;
 
-    TabLayout tabLayout;
-    ViewPager viewPager;
-    ViewPageAdapter viewPageAdapter;
+    private ImageView btnPlay, songAvatar;
+    private TextView txtSongName, txtArtistName;
+    private SeekBar seekBar;
+    private boolean isPlay = true;
+
+    private RelativeLayout layoutPlay;
+    private SongService songService;
+
+
     private final int[] tabIcons = {
             R.drawable.home,
             R.drawable.ic_search,
             R.drawable.chat,
             R.drawable.users
     };
+
+    Handler handler = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Button Play
+        btnPlay = findViewById(R.id.btnPlay);
+
+        // Layout Play
+        layoutPlay = findViewById(R.id.layoutPlay);
+
+        txtSongName = findViewById(R.id.songName);
+        txtArtistName = findViewById(R.id.artistName);
+        songAvatar = findViewById(R.id.songAvatar);
+        seekBar = findViewById(R.id.seekBar);
+        seekBar.getThumb().mutate().setAlpha(0);
+
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                songService = SongService.getInstance();
+
+                if(songService != null && songService.getMediaPlayer() != null) {
+                    layoutPlay.setVisibility(View.VISIBLE);
+
+                    Glide.with(getApplicationContext())
+                            .load(songService.getImageURL())
+                            .into(songAvatar);
+                    txtSongName.setText(songService.getSongName());
+                    txtArtistName.setText(songService.getArtistName());
+
+                    updateProgressBar();
+
+                    if(songService.getMediaPlayer().isPlaying()) {
+                        isPlay = true;
+                        btnPlay.setImageResource(R.drawable.ic_pause);
+                    } else {
+                        isPlay = false;
+                        btnPlay.setImageResource(R.drawable.ic_play);
+                    }
+                } else {
+//                    Log.e("MAIN>>", "SongService doesn't exist");
+                    layoutPlay.setVisibility(View.GONE);
+                }
+                handler.postDelayed(this, 100);
+
+            }
+        });
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPlay) {
+                    isPlay = false;
+                    btnPlay.setImageResource(R.drawable.ic_play);
+                    songService.pause();
+                } else {
+                    isPlay = true;
+                    btnPlay.setImageResource(R.drawable.ic_pause);
+                    songService.start();
+                }
+            }
+        });
 
         mUser = FirebaseAuth.getInstance()
                 .getCurrentUser();
@@ -64,14 +136,14 @@ public class MainActivity extends FragmentActivity {
                 User user = snapshot.getValue(User.class);
 
                 ImageView imageView = (ImageView) toolbar.getChildAt(0);
-//                if (user.getImageURL().equals("default")) {
-//                    imageView.setImageResource(R.drawable.profile_image);
-//                } else {
-//                    Glide.with(MainActivity.this)
-//                            .load(user.getImageURL())
-//                            .into(imageView);
-//
-//                }
+                if (user.getImageURL().equals("default")) {
+                    imageView.setImageResource(R.drawable.profile_image);
+                } else {
+                    Glide.with(MainActivity.this)
+                            .load(user.getImageURL())
+                            .into(imageView);
+
+                }
 
                 ImageView btnSetting = (ImageView) toolbar.getChildAt(1);
                 btnSetting.setOnClickListener(new View.OnClickListener() {
@@ -89,6 +161,7 @@ public class MainActivity extends FragmentActivity {
 
             }
         });
+
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager =  findViewById(R.id.viewPager);
@@ -108,11 +181,27 @@ public class MainActivity extends FragmentActivity {
         setTabIcons();
     }
 
+    private void updateProgressBar() {
+        int currentPosition = songService.getCurrentPosition() / 1000;
+        seekBar.setProgress(currentPosition);
+
+        int duration = songService.getDuration() / 1000;
+        seekBar.setMax(duration);
+
+
+        if (currentPosition == seekBar.getMax() && isPlay) {
+            isPlay = false;
+            btnPlay.setImageResource(R.drawable.ic_play);
+            songService.reset();
+        }
+    }
+
     private void setTabIcons() {
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             tabLayout.getTabAt(i).setIcon(tabIcons[i]);
         }
     }
+
 
     // ViewPageAdapter
     static class ViewPageAdapter extends FragmentPagerAdapter {
