@@ -11,7 +11,6 @@ public class Song {
     public Song(){
 
     }
-
     public Song(String id, String artistId, String categoryId, String name, String imageURL, String uri) {
         this.id = id;
         this.artistId = artistId;
@@ -20,7 +19,6 @@ public class Song {
         this.imageURL = imageURL;
         this.uri = uri;
     }
-
 
     public Song(String name, String imageURL, String uri) {
         this.name = name;

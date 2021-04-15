@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment {
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         viewPagerAdapter.addFragment(new SongsFragment(), "Songs");
-        viewPagerAdapter.addFragment(new AlbumsFragment(), "Albums");
+        viewPagerAdapter.addFragment(new AlbumsFragment(), "Favorite");
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
