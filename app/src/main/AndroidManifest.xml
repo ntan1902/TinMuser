@@ -11,15 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinMuser">
-        <activity android:name=".ShowListSongsActivity"></activity>
+        <activity android:name=".Activity.ShowListSongsActivity"></activity>
 
         <service
-            android:name=".SongService"
+            android:name=".Service.SongService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".PlaySongActivity">
+        <activity android:name=".Activity.ProfileActivity" />
+        <activity android:name=".Activity.PlaySongActivity">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
@@ -28,19 +28,19 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".MessageActivity" />
-        <activity android:name=".EditProfileActivity" />
-        <activity android:name=".ChangePasswordActivity" />
-        <activity android:name=".ShowZoomImage" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".SignInActivity">
+        <activity android:name=".Activity.MessageActivity" />
+        <activity android:name=".Activity.EditProfileActivity" />
+        <activity android:name=".Activity.ChangePasswordActivity" />
+        <activity android:name=".Activity.ShowZoomImage" />
+        <activity android:name=".Activity.SignUpActivity" />
+        <activity android:name=".Activity.SignInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name=".Activity.MainActivity" />
     </application>
 
 </manifest>

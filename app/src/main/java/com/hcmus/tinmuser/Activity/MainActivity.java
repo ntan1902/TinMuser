@@ -1,4 +1,4 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,8 +31,12 @@ import com.hcmus.tinmuser.Fragment.HomeFragment;
 import com.hcmus.tinmuser.Fragment.SearchFragment;
 import com.hcmus.tinmuser.Fragment.UsersFragment;
 import com.hcmus.tinmuser.Model.User;
+import com.hcmus.tinmuser.R;
+import com.hcmus.tinmuser.Service.SongService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends FragmentActivity {
     private FirebaseUser mUser;
@@ -235,5 +239,26 @@ public class MainActivity extends FragmentActivity {
         public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }
+    }
+
+    private void updateStatus(String status) {
+        mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+
+        mRef.updateChildren(map);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateStatus("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        updateStatus("offline");
     }
 }

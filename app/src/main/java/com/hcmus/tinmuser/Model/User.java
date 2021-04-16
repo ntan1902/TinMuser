@@ -6,6 +6,8 @@ public class User {
     private String imageURL;
     private String userName;
     private String phone;
+    private String status;
+
 
     public User() {
 
@@ -63,5 +65,13 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

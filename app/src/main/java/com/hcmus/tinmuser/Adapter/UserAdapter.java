@@ -19,12 +19,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.hcmus.tinmuser.MessageActivity;
+import com.hcmus.tinmuser.Activity.MessageActivity;
 import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +67,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     .into(holder.imageView);
         }
 
+        if(user.getStatus().equals("online")){
+            holder.imgOn.setVisibility(View.VISIBLE);
+        } else {
+            holder.imgOn.setVisibility(View.GONE);
+        }
 
         if (isChat) {
             getLastMessageFromUser(user.getId(), holder);
@@ -133,6 +137,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         private ImageView imageView;
         private TextView lastMessage;
         private TextView time;
+        private ImageView imgOn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -141,6 +146,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             imageView = itemView.findViewById(R.id.imageView);
             lastMessage = itemView.findViewById(R.id.lastMessage);
             time = itemView.findViewById(R.id.time);
+            imgOn = itemView.findViewById(R.id.imgOn);
         }
 
         public String convertTime(String time) {

@@ -1,23 +1,15 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Service;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class SongService extends Service {
     private static SongService instance = null;

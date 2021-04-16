@@ -1,15 +1,13 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -41,14 +39,18 @@ import com.google.firebase.storage.UploadTask;
 import com.hcmus.tinmuser.Adapter.MessageAdapter;
 import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.Model.User;
+import com.hcmus.tinmuser.R;
+import com.hcmus.tinmuser.Service.SongService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MessageActivity extends Activity {
 
     private TextView username;
-    private ImageView imageView, btnGoBack, btnSendImage, btnHeadphone;
+    private ImageView imageView, btnGoBack, btnSendImage, btnHeadphone, imgOn;
     private RecyclerView recyclerView;
     private EditText txtSend;
     private Button btnSend;
@@ -78,17 +80,8 @@ public class MessageActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
 
-//
-        if(isMyServiceRunning(SongService.class)) {
-            Toast.makeText(this, "SongService exists", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "SongService doesn't exist", Toast.LENGTH_LONG).show();
-
-        }
-
-
-
         imageView = findViewById(R.id.imageView);
+        imgOn = findViewById(R.id.imgOn);
         username = findViewById(R.id.username);
         recyclerView = findViewById(R.id.recyclerView);
         txtSend = findViewById(R.id.txtSend);
@@ -142,6 +135,12 @@ public class MessageActivity extends Activity {
                     Glide.with(getApplicationContext())
                             .load(user.getImageURL())
                             .into(imageView);
+                }
+
+                if(user.getStatus().equals("online")){
+                    imgOn.setVisibility(View.VISIBLE);
+                } else {
+                    imgOn.setVisibility(View.GONE);
                 }
 
                 readMessagesFromUser(user.getImageURL());
@@ -338,13 +337,24 @@ public class MessageActivity extends Activity {
         return mime.getExtensionFromMimeType(cr.getType(mUri));
     }
 
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
+    private void updateStatus(String status) {
+        mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+
+        mRef.updateChildren(map);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateStatus("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        updateStatus("offline");
     }
 }

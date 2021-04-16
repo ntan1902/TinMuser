@@ -1,4 +1,4 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +18,7 @@ import com.hcmus.tinmuser.Adapter.MusicAdapter;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.Song;
+import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
 import java.util.List;

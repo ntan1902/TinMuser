@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.hcmus.tinmuser.ShowZoomImage;
+import com.hcmus.tinmuser.Activity.ShowZoomImage;
 import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.R;
 

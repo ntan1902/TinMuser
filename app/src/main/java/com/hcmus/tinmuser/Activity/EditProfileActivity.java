@@ -1,12 +1,10 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
@@ -34,6 +32,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hcmus.tinmuser.Model.User;
+import com.hcmus.tinmuser.R;
 
 
 public class EditProfileActivity extends Activity {

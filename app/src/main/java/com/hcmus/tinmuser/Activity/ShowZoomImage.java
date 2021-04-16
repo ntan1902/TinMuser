@@ -1,4 +1,4 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,6 +20,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.hcmus.tinmuser.R;
 
 public class ShowZoomImage extends Activity {
 

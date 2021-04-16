@@ -1,4 +1,4 @@
-package com.hcmus.tinmuser;
+package com.hcmus.tinmuser.Activity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -15,7 +15,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.hcmus.tinmuser.Model.Song;
+import com.hcmus.tinmuser.R;
+import com.hcmus.tinmuser.Service.SongService;
 
 public class PlaySongActivity extends Activity implements ServiceConnection {
 

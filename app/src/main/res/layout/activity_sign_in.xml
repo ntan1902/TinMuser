@@ -7,7 +7,7 @@
     android:background="@drawable/gradient_sign_in"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".SignInActivity">
+    tools:context=".Activity.SignInActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

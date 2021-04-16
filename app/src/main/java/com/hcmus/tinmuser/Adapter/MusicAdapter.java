@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.Song;
-import com.hcmus.tinmuser.PlaySongActivity;
+import com.hcmus.tinmuser.Activity.PlaySongActivity;
 import com.hcmus.tinmuser.R;
 
 import java.util.List;

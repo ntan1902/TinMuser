@@ -68,7 +68,6 @@ public class SearchFragment extends Fragment {
                     getMusics();
                 }
                 else{
-                    System.out.println(s.toString());
                     List<Music> searchMusic = new ArrayList<>();
                     for(Music x : mMusics){
                         if (x.getArtistName().toLowerCase().contains(s.toString().toLowerCase()) ||
