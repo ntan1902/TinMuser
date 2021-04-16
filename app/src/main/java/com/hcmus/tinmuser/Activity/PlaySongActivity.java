@@ -15,8 +15,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PlaySongActivity extends Activity implements ServiceConnection {
 
@@ -39,6 +46,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         setContentView(R.layout.activity_play_song);
 
         initializeId();
+
+        updateStatus("online");
 
         // Receive data from MusicAdapter
         Intent intent = getIntent();
@@ -191,8 +200,16 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (this != null) {
-            unbindService(this);
-        }
+        unbindService(this);
+    }
+
+    private void updateStatus(String status) {
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+
+        mRef.updateChildren(map);
     }
 }

@@ -24,6 +24,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProfileActivity extends Activity {
     private TextView tvName, tvFullname, tvEmail, tvPhone;
     private ImageView ivAvatar, btnGoBack;
@@ -51,6 +54,7 @@ public class ProfileActivity extends Activity {
         btnGoBack = findViewById(R.id.btnGoBack);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
+        updateStatus("online");
 
         linearLayout = (ExpandableLinearLayout) findViewById(R.id.expandedLayout);
         btnArrow = findViewById(R.id.btnArrow);
@@ -142,8 +146,10 @@ public class ProfileActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseAuth.getInstance().signOut();
+                                updateStatus("offline");
                                 System.out.println("***********************************************");
-                                Intent intent = new Intent(ProfileActivity.this, SignInActivity.class);
+                                Intent intent = new Intent(ProfileActivity.this, SignInActivity.class)
+                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
                             }
                         })
@@ -153,5 +159,13 @@ public class ProfileActivity extends Activity {
         });
     }
 
+    private void updateStatus(String status) {
+        mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", status);
+
+        mRef.updateChildren(map);
+    }
 
 }

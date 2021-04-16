@@ -175,16 +175,9 @@ public class SignUpActivity extends Activity {
                             });
                         } else {
                             // If sign up fails, display a message to the user.
-//                            Toast.makeText(SignUpActivity.this, "Sign up failed.",
-//                                    Toast.LENGTH_SHORT).show();
-//                            mProgressBar.setVisibility(View.INVISIBLE);
                             alertDialog.dismiss();
                             Toast.makeText(SignUpActivity.this, onCompleteTaskAuth.getException().getMessage(), Toast.LENGTH_SHORT).show();
 
-//                            if (onCompleteTaskAuth.getException() instanceof FirebaseAuthWeakPasswordException)
-//                                mEdtPassword.setError(onCompleteTaskAuth.getException().getMessage());
-//                            else if (onCompleteTaskAuth.getException() instanceof FirebaseAuthUserCollisionException)
-//                                mEdtEmail.setError(onCompleteTaskAuth.getException().getMessage());
 
                         }
                     }
