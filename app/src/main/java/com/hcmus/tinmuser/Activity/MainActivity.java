@@ -128,6 +128,9 @@ public class MainActivity extends FragmentActivity {
 
         mUser = FirebaseAuth.getInstance()
                 .getCurrentUser();
+        updateStatus("online");
+
+
         mRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(mUser.getUid());
@@ -261,4 +264,5 @@ public class MainActivity extends FragmentActivity {
         super.onPause();
         updateStatus("offline");
     }
+    
 }

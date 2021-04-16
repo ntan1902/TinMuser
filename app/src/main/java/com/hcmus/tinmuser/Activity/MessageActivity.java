@@ -117,6 +117,7 @@ public class MessageActivity extends Activity {
         mUser = FirebaseAuth
                 .getInstance()
                 .getCurrentUser();
+        updateStatus("online");
 
         mRef = FirebaseDatabase
                 .getInstance()
@@ -344,17 +345,5 @@ public class MessageActivity extends Activity {
         map.put("status", status);
 
         mRef.updateChildren(map);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateStatus("online");
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        updateStatus("offline");
     }
 }
