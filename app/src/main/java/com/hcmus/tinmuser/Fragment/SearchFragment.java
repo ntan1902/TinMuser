@@ -21,7 +21,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Adapter.MusicAdapter;
 import com.hcmus.tinmuser.Model.Artist;
-import com.hcmus.tinmuser.Model.MusicList;
 import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.R;
@@ -33,13 +32,12 @@ public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     MusicAdapter musicAdapter;
     EditText searchText;
-    ArrayList<Music> mMusics;
-    MusicList ListSearch;
+    List<Music> mMusics;
 
     public SearchFragment() {
         // Required empty public constructor
     }
-    public void setListSong(ArrayList<Song> data){
+    public void setListSong(List<Song> data){
 
     }
     @Override
@@ -52,10 +50,9 @@ public class SearchFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchText = view.findViewById(R.id.searchText);
-        mMusics = new ArrayList<>();
-        ListSearch= new MusicList();
+//        ListSearch= new MusicList();
         getMusics();
-        System.out.println(mMusics.size());
+
 
 
         searchText.addTextChangedListener(new TextWatcher() {
@@ -72,20 +69,26 @@ public class SearchFragment extends Fragment {
                 }
                 else{
                     System.out.println(s.toString());
-                    ArrayList<Music> temp = ListSearch.onSearch(s.toString());
-                    setListView(temp);
+                    List<Music> searchMusic = new ArrayList<>();
+                    for(Music x : mMusics){
+                        if (x.getArtistName().toLowerCase().contains(s.toString().toLowerCase()) ||
+                                x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())){
+                            searchMusic.add(x);
+                        }
+                    }
+                    setListView(searchMusic);
                 }
             }
         });
         return view;
     }
-    void setListView(ArrayList<Music> list) {
+    void setListView(List<Music> list) {
         musicAdapter = new MusicAdapter(getContext(),list);
         recyclerView.setAdapter(musicAdapter);
     }
     private void getMusics() {
         // Lấy list song
-        ArrayList<Music> mMusics = new ArrayList<>();
+        mMusics = new ArrayList<>();
         List<Song> songs = new ArrayList<>();
         DatabaseReference songRef = FirebaseDatabase.getInstance().getReference("Songs");
         songRef.addValueEventListener(new ValueEventListener() {
@@ -120,7 +123,6 @@ public class SearchFragment extends Fragment {
                     }
                 }
                 setListView(mMusics);
-                ListSearch.setList(mMusics);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
