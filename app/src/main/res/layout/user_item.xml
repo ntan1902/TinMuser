@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,39 +10,35 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:src="@drawable/profile_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:civ_border_width="1dp" />
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginTop="20dp"
         android:text="TextView"
         android:textColor="@color/white"
         android:textSize="16dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/lastMessage"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_toEndOf="@+id/imageView"/>
 
     <TextView
         android:id="@+id/lastMessage"
-        android:layout_width="140dp"
-        android:layout_height="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:maxLines="1"
+        android:maxWidth="140dp"
         android:ellipsize="end"
         android:textColor="@color/light_grey"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/imageView"
-        app:layout_constraintTop_toBottomOf="@id/username"
+        android:layout_below="@+id/userName"
+        android:layout_toEndOf="@+id/imageView"
         />
 
     <TextView
@@ -52,19 +48,19 @@
         android:layout_marginStart="10dp"
         android:maxLines="1"
         android:textColor="@color/light_grey"
-        app:layout_constraintStart_toEndOf="@id/lastMessage"
-        app:layout_constraintTop_toBottomOf="@id/username" />
+        android:layout_toEndOf="@+id/lastMessage"
+        android:layout_below="@id/userName"
+        />
 
 
     <ImageView
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginEnd="20dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:src="@drawable/ic__arrow_forward" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

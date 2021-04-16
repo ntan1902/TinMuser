@@ -25,6 +25,7 @@ import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -136,7 +137,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            username = itemView.findViewById(R.id.username);
+            username = itemView.findViewById(R.id.userName);
             imageView = itemView.findViewById(R.id.imageView);
             lastMessage = itemView.findViewById(R.id.lastMessage);
             time = itemView.findViewById(R.id.time);
@@ -144,15 +145,47 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public String convertTime(String time) {
 
-            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy h:mm a");
-            String dateString = formatter.format(new Date(Long.parseLong(time)));
+            long lastMillis = Long.parseLong(time);
+            long currentMillis = Long.parseLong(String.valueOf(System.currentTimeMillis()));
+            long gapMillis = currentMillis - lastMillis;
 
-            // Nếu ngày hiện tại -> h:mm a
-            // Nếu khác ngày hiện tại nhưng là ngày trong tuần thì hiện thứ mấy trong tuần
-            // Nếu khác tháng thì hiện thêm tháng
-            // Nếu khác năm thì hiện Ngày/Tháng/Năm
+            int gapHour = (int) ((gapMillis / (1000 * 60 * 60)));
 
-            return dateString;
+            Calendar calendar = Calendar.getInstance();
+            int currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK); //CN -> T7 = 1 -> 7
+            int currentYear = calendar.get(Calendar.YEAR);
+
+            calendar.setTime(new Date(lastMillis));
+            int lastTimeDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+            int lastTimeDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+            int lastTimeMonth = calendar.get(Calendar.MONTH) + 1;
+            int lastTimeYear = calendar.get(Calendar.YEAR);
+            int lastTimeHour = calendar.get(Calendar.HOUR);
+            if (calendar.get(Calendar.AM_PM) == 1) //Sau 12h trua
+                lastTimeHour += 12;
+            int lastTimeMin = calendar.get(Calendar.MINUTE);
+            //---------------------------------------------------------------------------------
+            String result = "";
+
+            if (gapHour < 24) {
+                String strHour = String.valueOf(lastTimeHour);
+                String strMin = String.valueOf(lastTimeMin);
+                if (lastTimeHour < 10)
+                    strHour = "0" + strHour;
+                if (lastTimeMin < 10)
+                    strMin = "0" + strMin;
+
+                result = strHour + ":" + strMin;
+            } else if (gapHour < 168 && lastTimeDayOfWeek < currentDayOfWeek) { //1 tuan co 168 tieng
+                result = "Th" + lastTimeDayOfWeek;
+            } else {
+                result = lastTimeDayOfMonth + " th " + lastTimeMonth;
+                if (lastTimeYear < currentYear) {
+                    result += ", " + lastTimeYear;
+                }
+            }
+
+            return result;
         }
     }
 }
