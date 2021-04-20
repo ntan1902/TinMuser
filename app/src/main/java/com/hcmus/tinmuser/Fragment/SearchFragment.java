@@ -37,26 +37,30 @@ public class SearchFragment extends Fragment {
     public SearchFragment() {
         // Required empty public constructor
     }
-    public void setListSong(List<Song> data){
+
+    public void setListSong(List<Song> data) {
 
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerViewSearch);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchText = view.findViewById(R.id.searchText);
 //        ListSearch= new MusicList();
+
+        mMusics = new ArrayList<>();
         getMusics();
 
 
-
         searchText.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
 
             public void beforeTextChanged(CharSequence s, int start,
                                           int count, int after) {
@@ -64,70 +68,80 @@ public class SearchFragment extends Fragment {
 
             public void onTextChanged(CharSequence s, int start,
                                       int before, int count) {
-                if(s.toString().isEmpty()){
-                    getMusics();
-                }
-                else{
-                    List<Music> searchMusic = new ArrayList<>();
-                    for(Music x : mMusics){
-                        if (x.getArtistName().toLowerCase().contains(s.toString().toLowerCase()) ||
-                                x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())){
-                            searchMusic.add(x);
+                if (searchText.hasFocus()) {
+                    if (s.toString().isEmpty()) {
+                        getMusics();
+                    } else {
+                        List<Music> searchMusic = new ArrayList<>();
+                        for (Music x : mMusics) {
+                            if (x.getArtistName().toLowerCase().contains(s.toString().toLowerCase()) ||
+                                    x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())) {
+                                searchMusic.add(x);
+                            }
                         }
+                        setListView(searchMusic);
                     }
-                    setListView(searchMusic);
                 }
             }
         });
         return view;
     }
+
     void setListView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(),list);
+        musicAdapter = new MusicAdapter(getContext(), list);
         recyclerView.setAdapter(musicAdapter);
     }
+
     private void getMusics() {
         // Lấy list song
-        mMusics = new ArrayList<>();
         List<Song> songs = new ArrayList<>();
         DatabaseReference songRef = FirebaseDatabase.getInstance().getReference("Songs");
         songRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot songSnapshot : snapshot.getChildren()) {
+                mMusics.clear();
+
+                for (DataSnapshot songSnapshot : snapshot.getChildren()) {
                     Song song = songSnapshot.getValue(Song.class);
                     songs.add(song);
                 }
+
+                getArtistName(songs);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+
+    }
+
+    private void getArtistName(List<Song> songs) {
         // Lấy list ca sĩ
         DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists");
-        artistRef.addValueEventListener(new ValueEventListener() {
+        artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
                     Artist artist = artistSnapshot.getValue(Artist.class);
 
-                    for(Song song : songs) {
+                    for (Song song : songs) {
                         String artistIdSong = song.getArtistId();
                         String artistId = artist.getId();
 
-                        if(artistId.equals(artistIdSong)){
+                        if (artistId.equals(artistIdSong)) {
                             Music music = new Music(song, artist.getName());
                             mMusics.add(music);
-                            System.out.println(artist.getName());
                         }
                     }
                 }
                 setListView(mMusics);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
     }
 }

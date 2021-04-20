@@ -189,7 +189,7 @@ public class MessageActivity extends Activity {
             public void onClick(View v) {
                 Intent show_list_songs = new Intent(MessageActivity.this, ShowListSongsActivity.class);
                 startActivity(show_list_songs);
-                finish();
+//                finish();
             }
         });
     }

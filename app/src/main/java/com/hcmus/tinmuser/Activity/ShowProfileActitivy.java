@@ -84,7 +84,7 @@ public class ShowProfileActitivy extends Activity {
                 if (user.getImageURL().matches("default")) {
                     ivAvatar.setImageResource(R.drawable.profile_image);
                 } else {
-                    Glide.with(com.hcmus.tinmuser.Activity.ShowProfileActitivy.this)
+                    Glide.with(ShowProfileActitivy.this)
                             .load(user.getImageURL())
                             .into(ivAvatar);
                 }
