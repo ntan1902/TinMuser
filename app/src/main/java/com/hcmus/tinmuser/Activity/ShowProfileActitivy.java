@@ -52,7 +52,6 @@ public class ShowProfileActitivy extends Activity {
 
         linearLayout = (ExpandableLinearLayout) findViewById(R.id.expandedLayout);
         btnArrow = findViewById(R.id.btnArrow);
-
         btnArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
