@@ -8,7 +8,9 @@
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/bar" />
+        layout="@layout/bar"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <androidx.viewpager.widget.ViewPager
 
@@ -99,6 +101,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/light_grey"/>
+        app:tabTextColor="@color/white"
+        app:tabSelectedTextColor="@color/white"
+        app:tabIndicatorColor="@color/white"
+
+        app:tabIconTint="@color/white"
+        android:background="@color/grey_900" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
