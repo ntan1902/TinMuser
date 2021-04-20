@@ -142,6 +142,7 @@ public class MainActivity extends FragmentActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
 
+                //Toolbar
                 ImageView imageView = (ImageView) toolbar.getChildAt(0);
                 if (user.getImageURL().equals("default")) {
                     imageView.setImageResource(R.drawable.profile_image);
@@ -151,12 +152,19 @@ public class MainActivity extends FragmentActivity {
                             .into(imageView);
 
                 }
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                        startActivity(intent);
+                    }
+                });
 
                 ImageView btnSetting = (ImageView) toolbar.getChildAt(1);
                 btnSetting.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                        Intent intent = new Intent(MainActivity.this, AddFriendActivity.class);
                         startActivity(intent);
                     }
                 });

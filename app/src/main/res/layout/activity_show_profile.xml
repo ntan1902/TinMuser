@@ -8,10 +8,11 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/grey_800"
         android:orientation="vertical"
         tools:context=".Activity.Profile.UserProfileActitivy">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="30dp"
                 android:fontFamily="@font/montserrat_black"
                 android:text="On Hao Nguyen"
                 android:textColor="@color/white"
@@ -78,7 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:ael_expanded="false"
+            app:ael_expanded="true"
             app:ael_duration="300"
             app:ael_interpolator="accelerate"
             app:ael_orientation="vertical">
@@ -111,7 +111,6 @@
                         android:text="Full name"
                         android:textColor="@color/white"
                         android:textSize="18dp"
-
                         android:textStyle="bold" />
 
                     <TextView
@@ -206,58 +205,26 @@
                         android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
-
-
         </com.github.aakira.expandablelayout.ExpandableLinearLayout>
         <!--BUTTON AREA-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <Button
-                android:id="@+id/btnEdit"
+                android:id="@+id/btnAddFriend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/button_sign_in"
-                android:drawableLeft="@drawable/ic_edit"
-                android:fontFamily="@font/montserrat_black"
                 android:layout_marginHorizontal="50dp"
-                android:paddingHorizontal="20dp"
-                android:text="Edit Profile"
-                android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/btnChangePassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/button_sign_in"
-                android:drawableLeft="@drawable/ic_lock"
+                android:drawableLeft="@drawable/ic_add_friend"
                 android:fontFamily="@font/montserrat_black"
-                android:layout_marginHorizontal="50dp"
                 android:paddingHorizontal="20dp"
-                android:text="Change Password"
+                android:text="Add friend"
                 android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/btnSignOut"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/button_sign_in"
-                android:drawableLeft="@drawable/ic_signout"
-                android:fontFamily="@font/montserrat_black"
-                android:layout_marginHorizontal="50dp"
-                android:paddingHorizontal="20dp"
-                android:text="Sign Out"
-                android:textColor="@color/black" />
-
         </LinearLayout>
 
     </LinearLayout>
