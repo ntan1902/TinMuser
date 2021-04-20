@@ -8,12 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -38,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hcmus.tinmuser.Adapter.MessageAdapter;
 import com.hcmus.tinmuser.Model.Chat;
+import com.hcmus.tinmuser.Model.PlayDouble;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
@@ -47,7 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MessageActivity extends Activity {
+public class MessageActivity extends Activity implements ServiceConnection {
 
     private TextView username;
     private ImageView imageView, btnGoBack, btnSendImage, btnHeadphone, imgOn;
@@ -71,9 +75,8 @@ public class MessageActivity extends Activity {
     private String groupId;
     private String file_link;
 
-    private MediaPlayer musicPlayer;
-
-
+    private SongService songService;
+    private Intent songServiceIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +141,7 @@ public class MessageActivity extends Activity {
                             .into(imageView);
                 }
 
-                if(user.getStatus().equals("online")){
+                if (user.getStatus().equals("online")) {
                     imgOn.setVisibility(View.VISIBLE);
                 } else {
                     imgOn.setVisibility(View.GONE);
@@ -153,6 +156,47 @@ public class MessageActivity extends Activity {
             }
         };
         mRef.addValueEventListener(valueEventListener);
+
+        // Listen song
+        DatabaseReference playDoubleReference = FirebaseDatabase.getInstance().getReference("PlayDouble").child(userId + mUser.getUid());
+        playDoubleReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                PlayDouble playDouble = snapshot.getValue(PlayDouble.class);
+                songService = SongService.getInstance();
+
+                if(songService == null) {
+                    if( playDouble != null && playDouble.getIsPlay()) {
+                        songServiceIntent = new Intent(MessageActivity.this, SongService.class);
+                        songServiceIntent.putExtra("uri", playDouble.getUri());
+                        songServiceIntent.putExtra("songName", playDouble.getSongName());
+                        songServiceIntent.putExtra("artistName", playDouble.getArtistName());
+                        songServiceIntent.putExtra("imageURL", playDouble.getImageURL());
+                        bindService(songServiceIntent, MessageActivity.this, Context.BIND_AUTO_CREATE);
+                        startService(songServiceIntent);
+                    }
+                } else {
+                    if(playDouble.getIsPlay()) {
+                        if(playDouble.getProgressChanged() != 0) {
+                            songService.seekTo(playDouble.getProgressChanged());
+
+                            playDouble.setProgressChanged(0);
+                            playDoubleReference.setValue(playDouble);
+                        } else {
+                            songService.getMediaPlayer().start();
+                        }
+                    } else {
+                        songService.getMediaPlayer().pause();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
         btnSend.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +232,7 @@ public class MessageActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent show_list_songs = new Intent(MessageActivity.this, ShowListSongsActivity.class);
+                show_list_songs.putExtra("userId", userId);
                 startActivity(show_list_songs);
 //                finish();
             }
@@ -299,6 +344,7 @@ public class MessageActivity extends Activity {
             }
         });
     }
+
     private void readMessagesFromUser(String imgURL) {
         mItems = new ArrayList<>();
 
@@ -345,5 +391,17 @@ public class MessageActivity extends Activity {
         map.put("status", status);
 
         mRef.updateChildren(map);
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        SongService.LocalBinder binder = (SongService.LocalBinder) service;
+        songService = binder.getService();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        songService = null;
+        unbindService(this);
     }
 }

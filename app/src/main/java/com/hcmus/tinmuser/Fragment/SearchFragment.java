@@ -88,7 +88,7 @@ public class SearchFragment extends Fragment {
     }
 
     void setListView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(), list);
+        musicAdapter = new MusicAdapter(getContext(), list, "Single", "");
         recyclerView.setAdapter(musicAdapter);
     }
 

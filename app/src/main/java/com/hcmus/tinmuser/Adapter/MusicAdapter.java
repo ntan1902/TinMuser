@@ -22,9 +22,14 @@ import java.util.List;
 public class MusicAdapter extends RecyclerView.Adapter< MusicAdapter.MyViewHolder>{
     Context context;
     List<Music> mMusics;
-    public MusicAdapter(Context context, List<Music> mMusics){
+    String playType;
+    String userId;
+
+    public MusicAdapter(Context context, List<Music> mMusics, String playType, String userId){
         this.context = context;
         this.mMusics = mMusics;
+        this.playType = playType;
+        this.userId = userId;
     }
     @NonNull
     @Override
@@ -50,10 +55,14 @@ public class MusicAdapter extends RecyclerView.Adapter< MusicAdapter.MyViewHolde
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlaySongActivity.class);
+
                 intent.putExtra("uri", song.getUri());
                 intent.putExtra("songName", song.getName());
                 intent.putExtra("imageURL", song.getImageURL());
                 intent.putExtra("artistName", artistName);
+                intent.putExtra("playType", playType);
+                intent.putExtra("userId", userId);
+
                 context.startActivity(intent);
             }
         });

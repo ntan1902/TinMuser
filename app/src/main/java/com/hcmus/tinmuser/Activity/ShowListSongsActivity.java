@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ public class ShowListSongsActivity extends Activity {
     MusicAdapter musicAdapter;
     RecyclerView recyclerView;
     ImageView btnGoBack;
+    String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,9 @@ public class ShowListSongsActivity extends Activity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ShowListSongsActivity.this));
+
+        Intent i = getIntent();
+        userId = i.getStringExtra("userId");
 
         mMusics = new ArrayList<>();
         getMusics();
@@ -90,7 +95,7 @@ public class ShowListSongsActivity extends Activity {
                     }
                 }
 
-                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics);
+                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId);
                 recyclerView.setAdapter(musicAdapter);
             }
 

@@ -13,12 +13,18 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.hcmus.tinmuser.Model.PlayDouble;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
 
@@ -39,6 +45,11 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private boolean isRepeat = false;
     private Handler handler = new Handler();
 
+    private String playType;
+    private FirebaseUser mUser;
+    private DatabaseReference mRef;
+    private String userId;
+    boolean isExist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +58,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
         initializeId();
 
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         updateStatus("online");
 
         // Receive data from MusicAdapter
@@ -55,6 +67,46 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         String songName = intent.getStringExtra("songName");
         String artistName = intent.getStringExtra("artistName");
         String imageURL = intent.getStringExtra("imageURL");
+        userId = intent.getStringExtra("userId");
+        playType = intent.getStringExtra("playType");
+
+        if (playType.equals("Double")) {
+            mRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
+
+            mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
+                        if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
+                                (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
+                            isExist = true;
+
+                            playDouble.setUri(uri);
+                            playDouble.setArtistName(artistName);
+                            playDouble.setSongName(songName);
+                            playDouble.setIsPlay(true);
+                            playDouble.setIsRepeat(false);
+
+                            mRef.child(dataSnapshot.getKey()).setValue(playDouble);
+                        }
+                    }
+                    if (!isExist) {
+                        PlayDouble playDouble = new PlayDouble(userId, mUser.getUid(), uri, songName, artistName, imageURL, 0, true, false);
+                        mRef.child(userId+mUser.getUid()).setValue(playDouble);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        } else {
+            // Do nothing
+        }
 
         txtSongName.setText(songName);
         txtArtistName.setText(artistName);
@@ -76,6 +128,27 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     songService.seekTo(progress * 1000);
+                    if (playType.equals("Double")) {
+
+                        mRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
+                        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
+                                    if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
+                                            (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
+                                        playDouble.setProgressChanged(progress * 1000);
+                                        mRef.child(dataSnapshot.getKey()).setValue(playDouble);
+                                    }
+                                }
+                            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
                 }
             }
 
@@ -204,8 +277,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     }
 
     private void updateStatus(String status) {
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
+        mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());
 
         Map<String, Object> map = new HashMap<>();
         map.put("status", status);

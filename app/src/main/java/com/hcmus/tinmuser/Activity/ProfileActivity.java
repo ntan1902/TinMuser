@@ -109,7 +109,6 @@ public class ProfileActivity extends Activity {
             public void onClick(View v) {
                 Intent intent_edit = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 startActivity(intent_edit);
-                finish();
             }
         });
 
@@ -148,8 +147,7 @@ public class ProfileActivity extends Activity {
                                 FirebaseAuth.getInstance().signOut();
                                 updateStatus("offline");
                                 System.out.println("***********************************************");
-                                Intent intent = new Intent(ProfileActivity.this, SignInActivity.class)
-                                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                Intent intent = new Intent(ProfileActivity.this, SignInActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         })
