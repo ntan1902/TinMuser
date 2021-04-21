@@ -77,6 +77,8 @@ public class MessageActivity extends Activity implements ServiceConnection {
 
     private SongService songService;
     private Intent songServiceIntent;
+    private String playDoubleId = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,17 +159,15 @@ public class MessageActivity extends Activity implements ServiceConnection {
         };
         mRef.addValueEventListener(valueEventListener);
 
-        // Listen song
-        DatabaseReference playDoubleReference = FirebaseDatabase.getInstance().getReference("PlayDouble").child(userId + mUser.getUid());
-        playDoubleReference.addValueEventListener(new ValueEventListener() {
+        // Create SongService
+        ValueEventListener playDoubleListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    PlayDouble playDouble = snapshot.getValue(PlayDouble.class);
+                    songService = SongService.getInstance();
 
-                PlayDouble playDouble = snapshot.getValue(PlayDouble.class);
-                songService = SongService.getInstance();
-
-                if(songService == null) {
-                    if( playDouble != null && playDouble.getIsPlay()) {
+                    if (playDouble.getIsPlay() && songService == null) {
                         songServiceIntent = new Intent(MessageActivity.this, SongService.class);
                         songServiceIntent.putExtra("uri", playDouble.getUri());
                         songServiceIntent.putExtra("songName", playDouble.getSongName());
@@ -176,18 +176,104 @@ public class MessageActivity extends Activity implements ServiceConnection {
                         bindService(songServiceIntent, MessageActivity.this, Context.BIND_AUTO_CREATE);
                         startService(songServiceIntent);
                     }
-                } else {
-                    if(playDouble.getIsPlay()) {
-                        if(playDouble.getProgressChanged() != 0) {
-                            songService.seekTo(playDouble.getProgressChanged());
+                }
 
-                            playDouble.setProgressChanged(0);
-                            playDoubleReference.setValue(playDouble);
-                        } else {
-                            songService.getMediaPlayer().start();
-                        }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        // Find playDoubleId
+        DatabaseReference playDoubleRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
+        playDoubleRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
+
+                    if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
+                            (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
+                        playDoubleId = dataSnapshot.getKey();
+
+                        playDoubleRef.removeEventListener(this);
+
+                        DatabaseReference playDoubleIdRef = FirebaseDatabase.getInstance().getReference("PlayDouble").child(playDoubleId);
+                        playDoubleIdRef.addValueEventListener(playDoubleListener);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Listen song
+        final DatabaseReference isPlayRef = FirebaseDatabase
+                .getInstance()
+                .getReference("PlayDouble")
+                .child(playDoubleId)
+                .child("isPlay");
+        isPlayRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && songService != null) {
+                    Boolean isPlay = snapshot.getValue(Boolean.class);
+                    if (isPlay) {
+                        songService.start();
                     } else {
-                        songService.getMediaPlayer().pause();
+                        songService.pause();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Set progress change
+        final DatabaseReference progressChangedRef = FirebaseDatabase
+                .getInstance()
+                .getReference("PlayDouble")
+                .child(playDoubleId)
+                .child("progressChanged");
+        progressChangedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && songService != null) {
+                    Integer progress = snapshot.getValue(Integer.class);
+                    songService.seekTo(progress * 1000);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        // Set repeat
+        final DatabaseReference isRepeateRef = FirebaseDatabase
+                .getInstance()
+                .getReference("PlayDouble")
+                .child(playDoubleId)
+                .child("isRepeat");
+        isRepeateRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists() && songService != null) {
+                    Boolean isRepeat = snapshot.getValue(Boolean.class);
+                    if (isRepeat) {
+                        songService.setLooping(true);
+                    } else {
+                        songService.setLooping(false);
                     }
                 }
             }

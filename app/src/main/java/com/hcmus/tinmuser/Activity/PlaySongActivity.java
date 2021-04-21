@@ -49,7 +49,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private FirebaseUser mUser;
     private DatabaseReference mRef;
     private String userId;
-    boolean isExist = false;
+    private boolean isExist = false;
+    private String playDoubleId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +71,17 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
 
-        if (playType.equals("Double")) {
-            mRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
 
-            mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        // Nghe nhạc với nhau trong khi nhắn tin
+        if (playType.equals("Double")) {
+            final DatabaseReference playDoubleIdRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
+
+            playDoubleIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                         PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
+
                         if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
                                 (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
                             isExist = true;
@@ -88,12 +92,14 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                             playDouble.setIsPlay(true);
                             playDouble.setIsRepeat(false);
 
-                            mRef.child(dataSnapshot.getKey()).setValue(playDouble);
+                            playDoubleId = dataSnapshot.getKey();
+                            playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                         }
                     }
                     if (!isExist) {
                         PlayDouble playDouble = new PlayDouble(userId, mUser.getUid(), uri, songName, artistName, imageURL, 0, true, false);
-                        mRef.child(userId+mUser.getUid()).setValue(playDouble);
+                        playDoubleId = userId + mUser.getUid();
+                        playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                     }
                 }
 
@@ -127,27 +133,31 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    songService.seekTo(progress * 1000);
                     if (playType.equals("Double")) {
 
-                        mRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
-                        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        final DatabaseReference progressChangedRef = FirebaseDatabase
+                                .getInstance()
+                                .getReference("PlayDouble")
+                                .child(playDoubleId)
+                                .child("progressChanged");
+
+                        progressChangedRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
-                                    if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
-                                            (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
-                                        playDouble.setProgressChanged(progress * 1000);
-                                        mRef.child(dataSnapshot.getKey()).setValue(playDouble);
-                                    }
+                                if (snapshot.exists()) {
+                                    progressChangedRef.setValue(progress);
+
+                                    songService.seekTo(progress * 1000);
                                 }
                             }
+
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
 
                             }
                         });
+                    } else {
+                        songService.seekTo(progress * 1000);
                     }
                 }
             }
