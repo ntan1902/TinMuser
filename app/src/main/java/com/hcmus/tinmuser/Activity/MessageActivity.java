@@ -16,12 +16,15 @@ import android.content.ServiceConnection;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +82,13 @@ public class MessageActivity extends Activity implements ServiceConnection {
     private Intent songServiceIntent;
     private String playDoubleId = "";
 
+    private ImageView btnPlay, songAvatar;
+    private TextView txtSongName, txtArtistName;
+    private SeekBar seekBar;
+    private boolean isPlay = true;
+    private RelativeLayout layoutPlay;
+
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +104,18 @@ public class MessageActivity extends Activity implements ServiceConnection {
         btnGoBack = findViewById(R.id.btnGoBack);
         btnSendImage = findViewById(R.id.btnSendImage);
         btnHeadphone = findViewById(R.id.btnHeadphone);
+
+        // Layout Play
+        layoutPlay = findViewById(R.id.layoutPlay);
+
+        // Button Play
+        btnPlay = findViewById(R.id.btnPlay);
+
+        txtSongName = findViewById(R.id.songName);
+        txtArtistName = findViewById(R.id.artistName);
+        songAvatar = findViewById(R.id.songAvatar);
+        seekBar = findViewById(R.id.seekBar);
+        seekBar.getThumb().mutate().setAlpha(0);
 
         //Firebase Storage
         storage = FirebaseStorage.getInstance();
@@ -284,6 +306,38 @@ public class MessageActivity extends Activity implements ServiceConnection {
             }
         });
 
+        MessageActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                songService = SongService.getInstance();
+
+                if(songService != null && songService.getMediaPlayer() != null) {
+                    layoutPlay.setVisibility(View.VISIBLE);
+
+                    Glide.with(getApplicationContext())
+                            .load(songService.getImageURL())
+                            .into(songAvatar);
+                    txtSongName.setText(songService.getSongName());
+                    txtArtistName.setText(songService.getArtistName());
+
+                    updateProgressBar();
+
+                    if(songService.getMediaPlayer().isPlaying()) {
+                        isPlay = true;
+                        btnPlay.setImageResource(R.drawable.ic_pause);
+                    } else {
+                        isPlay = false;
+                        btnPlay.setImageResource(R.drawable.ic_play);
+                    }
+                } else {
+//                    Log.e("MAIN>>", "SongService doesn't exist");
+                    layoutPlay.setVisibility(View.GONE);
+                }
+                handler.postDelayed(this, 100);
+
+            }
+        });
+
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -321,6 +375,21 @@ public class MessageActivity extends Activity implements ServiceConnection {
                 show_list_songs.putExtra("userId", userId);
                 startActivity(show_list_songs);
 //                finish();
+            }
+        });
+
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPlay) {
+                    isPlay = false;
+                    btnPlay.setImageResource(R.drawable.ic_play);
+                    songService.pause();
+                } else {
+                    isPlay = true;
+                    btnPlay.setImageResource(R.drawable.ic_pause);
+                    songService.start();
+                }
             }
         });
     }
@@ -489,5 +558,20 @@ public class MessageActivity extends Activity implements ServiceConnection {
     public void onServiceDisconnected(ComponentName name) {
         songService = null;
         unbindService(this);
+    }
+
+    private void updateProgressBar() {
+        int currentPosition = songService.getCurrentPosition() / 1000;
+        seekBar.setProgress(currentPosition);
+
+        int duration = songService.getDuration() / 1000;
+        seekBar.setMax(duration);
+
+
+        if (currentPosition == seekBar.getMax() && isPlay) {
+            isPlay = false;
+            btnPlay.setImageResource(R.drawable.ic_play);
+            songService.reset();
+        }
     }
 }
