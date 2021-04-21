@@ -135,30 +135,11 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                 if (fromUser) {
                     if (playType.equals("Double")) {
 
-                        final DatabaseReference progressChangedRef = FirebaseDatabase
-                                .getInstance()
-                                .getReference("PlayDouble")
-                                .child(playDoubleId)
-                                .child("progressChanged");
+                        setValuePlayDouble("progressChanged", true, progress);
 
-                        progressChangedRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    progressChangedRef.setValue(progress);
-
-                                    songService.seekTo(progress * 1000);
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-                    } else {
-                        songService.seekTo(progress * 1000);
                     }
+                    songService.seekTo(progress * 1000);
+
                 }
             }
 
@@ -196,6 +177,10 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     btnPlay.setImageResource(R.drawable.ic_pause);
                     songService.start();
                 }
+
+                if(playType.equals("Double")) {
+                    setValuePlayDouble("isPlay", isPlay, -1);
+                }
             }
         });
 
@@ -210,7 +195,10 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     isRepeat = true;
                     btnRepeat.setImageResource(R.drawable.ic_repeat_on);
                     songService.setLooping(true);
+                }
 
+                if(playType.equals("Double")) {
+                    setValuePlayDouble("isRepeat", isRepeat, -1);
                 }
             }
         });
@@ -222,6 +210,30 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             }
         });
 
+    }
+
+    private void setValuePlayDouble(String child, Boolean value1, Integer value2) {
+        final DatabaseReference setIsPlayRef = FirebaseDatabase
+                .getInstance()
+                .getReference("PlayDouble")
+                .child(playDoubleId)
+                .child(child);
+        setIsPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(child.equals("isPlay") || child.equals("isRepeat")) {
+                    setIsPlayRef.setValue(value1);
+                } else if(child.equals("progressChanged")) {
+                    setIsPlayRef.setValue(value2);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void updateProgressBar() {

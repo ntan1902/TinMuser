@@ -182,7 +182,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
         mRef.addValueEventListener(valueEventListener);
 
         // Create SongService
-        ValueEventListener playDoubleListener = new ValueEventListener() {
+        ValueEventListener playDoubleIdListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -208,39 +208,8 @@ public class MessageActivity extends Activity implements ServiceConnection {
             }
         };
 
-        // Find playDoubleId
-        DatabaseReference playDoubleRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
-        playDoubleRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
-
-                    if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
-                            (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
-                        playDoubleId = dataSnapshot.getKey();
-
-                        playDoubleRef.removeEventListener(this);
-
-                        DatabaseReference playDoubleIdRef = FirebaseDatabase.getInstance().getReference("PlayDouble").child(playDoubleId);
-                        playDoubleIdRef.addValueEventListener(playDoubleListener);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        // Listen song
-        final DatabaseReference isPlayRef = FirebaseDatabase
-                .getInstance()
-                .getReference("PlayDouble")
-                .child(playDoubleId)
-                .child("isPlay");
-        isPlayRef.addValueEventListener(new ValueEventListener() {
+        //Listen song
+        ValueEventListener isPlayListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && songService != null) {
@@ -258,15 +227,10 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
 
         // Set progress change
-        final DatabaseReference progressChangedRef = FirebaseDatabase
-                .getInstance()
-                .getReference("PlayDouble")
-                .child(playDoubleId)
-                .child("progressChanged");
-        progressChangedRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener progressChangedListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && songService != null) {
@@ -279,15 +243,10 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        });
+        };
 
         // Set repeat
-        final DatabaseReference isRepeateRef = FirebaseDatabase
-                .getInstance()
-                .getReference("PlayDouble")
-                .child(playDoubleId)
-                .child("isRepeat");
-        isRepeateRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener isRepeatListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && songService != null) {
@@ -296,6 +255,60 @@ public class MessageActivity extends Activity implements ServiceConnection {
                         songService.setLooping(true);
                     } else {
                         songService.setLooping(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        // Find playDoubleId
+        DatabaseReference playDoubleRef = FirebaseDatabase.getInstance().getReference("PlayDouble");
+        playDoubleRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    PlayDouble playDouble = dataSnapshot.getValue(PlayDouble.class);
+
+                    if ((playDouble.getUser1().equals(userId) && playDouble.getUser2().equals(mUser.getUid())) ||
+                            (playDouble.getUser1().equals(mUser.getUid()) && playDouble.getUser2().equals(userId))) {
+                        playDoubleId = dataSnapshot.getKey();
+
+                        playDoubleRef.removeEventListener(this);
+
+                        // Create SongService
+                        final DatabaseReference playDoubleIdRef = FirebaseDatabase
+                                .getInstance()
+                                .getReference("PlayDouble")
+                                .child(playDoubleId);
+                        playDoubleIdRef.addValueEventListener(playDoubleIdListener);
+
+                        // Listen song
+                        final DatabaseReference isPlayRef = FirebaseDatabase
+                                .getInstance()
+                                .getReference("PlayDouble")
+                                .child(playDoubleId)
+                                .child("isPlay");
+                        isPlayRef.addValueEventListener(isPlayListener);
+
+                        // Set progress change
+                        final DatabaseReference progressChangedRef = FirebaseDatabase
+                                .getInstance()
+                                .getReference("PlayDouble")
+                                .child(playDoubleId)
+                                .child("progressChanged");
+                        progressChangedRef.addValueEventListener(progressChangedListener);
+
+                        // Set repeat
+                        final DatabaseReference isRepeatRef = FirebaseDatabase
+                                .getInstance()
+                                .getReference("PlayDouble")
+                                .child(playDoubleId)
+                                .child("isRepeat");
+                        isRepeatRef.addValueEventListener(isRepeatListener);
                     }
                 }
             }
@@ -390,6 +403,23 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     btnPlay.setImageResource(R.drawable.ic_pause);
                     songService.start();
                 }
+
+                final DatabaseReference setIsPlayRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("isPlay");
+                setIsPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        setIsPlayRef.setValue(isPlay);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
     }
