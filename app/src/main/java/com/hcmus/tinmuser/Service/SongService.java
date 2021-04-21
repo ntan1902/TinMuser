@@ -98,7 +98,6 @@ public class SongService extends Service {
 
     public void reset() {
         playbackPosition = 0;
-        mediaPlayer.seekTo(0);
     }
 
     public int getDuration() {

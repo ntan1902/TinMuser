@@ -189,7 +189,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     PlayDouble playDouble = snapshot.getValue(PlayDouble.class);
                     songService = SongService.getInstance();
 
-                    if (playDouble.getIsPlay() && songService == null) {
+                    if (playDouble.getIsPlay()) {
                         songServiceIntent = new Intent(MessageActivity.this, SongService.class);
                         songServiceIntent.putExtra("uri", playDouble.getUri());
                         songServiceIntent.putExtra("songName", playDouble.getSongName());
@@ -213,10 +213,14 @@ public class MessageActivity extends Activity implements ServiceConnection {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && songService != null) {
-                    Boolean isPlay = snapshot.getValue(Boolean.class);
-                    if (isPlay) {
+                    Boolean _isPlay = snapshot.getValue(Boolean.class);
+                    if (_isPlay) {
+                        isPlay = true;
+                        btnPlay.setImageResource(R.drawable.ic_pause);
                         songService.start();
                     } else {
+                        isPlay = false;
+                        btnPlay.setImageResource(R.drawable.ic_pause);
                         songService.pause();
                     }
                 }
@@ -251,6 +255,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && songService != null) {
                     Boolean isRepeat = snapshot.getValue(Boolean.class);
+                    System.out.println("Repeat: " + isRepeat);
                     if (isRepeat) {
                         songService.setLooping(true);
                     } else {
@@ -324,7 +329,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void run() {
                 songService = SongService.getInstance();
 
-                if(songService != null && songService.getMediaPlayer() != null) {
+                if (songService != null && songService.getMediaPlayer() != null) {
                     layoutPlay.setVisibility(View.VISIBLE);
 
                     Glide.with(getApplicationContext())
@@ -335,7 +340,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
 
                     updateProgressBar();
 
-                    if(songService.getMediaPlayer().isPlaying()) {
+                    if (songService.getMediaPlayer().isPlaying()) {
                         isPlay = true;
                         btnPlay.setImageResource(R.drawable.ic_pause);
                     } else {
@@ -403,23 +408,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     btnPlay.setImageResource(R.drawable.ic_pause);
                     songService.start();
                 }
-
-                final DatabaseReference setIsPlayRef = FirebaseDatabase
-                        .getInstance()
-                        .getReference("PlayDouble")
-                        .child(playDoubleId)
-                        .child("isPlay");
-                setIsPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        setIsPlayRef.setValue(isPlay);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
+                setValuePlayDouble(isPlay);
             }
         });
     }
@@ -602,6 +591,28 @@ public class MessageActivity extends Activity implements ServiceConnection {
             isPlay = false;
             btnPlay.setImageResource(R.drawable.ic_play);
             songService.reset();
+
         }
+    }
+
+    private void setValuePlayDouble(Boolean value) {
+        final DatabaseReference setIsPlayRef = FirebaseDatabase
+                .getInstance()
+                .getReference("PlayDouble")
+                .child(playDoubleId)
+                .child("isPlay");
+        setIsPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                setIsPlayRef.setValue(value);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }
