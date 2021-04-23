@@ -139,14 +139,14 @@ public class SignInActivity extends Activity {
             }
         });
 
-//        mBtnForgot = (Button) findViewById(R.id.btnForgot);
-//        mBtnForgot.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(SignInActivity.this, ResetPasswordActivity.class));
-//                finish();
-//            }
-//        });
+        mBtnForgot = (Button) findViewById(R.id.btnForgot);
+        mBtnForgot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignInActivity.this, ResetPasswordActivity.class));
+                finish();
+            }
+        });
 
     }
 
@@ -187,6 +187,7 @@ public class SignInActivity extends Activity {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
+                alertDialog.show();
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 signInWithGoogle(account.getIdToken());
             } catch (ApiException e) {
@@ -223,7 +224,7 @@ public class SignInActivity extends Activity {
                                                 firebaseUser.getPhotoUrl().toString(),
                                                 firebaseUser.getDisplayName(),
                                                 firebaseUser.getPhoneNumber(),
-                                                "online");
+                                                "online", false);
 
                                         Ref.setValue(user)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {

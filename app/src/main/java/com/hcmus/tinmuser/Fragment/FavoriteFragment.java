@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 
 import com.hcmus.tinmuser.R;
 
-public class AlbumsFragment extends Fragment {
+public class FavoriteFragment extends Fragment {
 
-    public AlbumsFragment() {
+    public FavoriteFragment() {
         // Required empty public constructor
     }
 
@@ -20,7 +20,7 @@ public class AlbumsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_albums, container, false);
+        View view = inflater.inflate(R.layout.fragment_favorite, container, false);
         return view;
     }
 }

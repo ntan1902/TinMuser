@@ -18,9 +18,9 @@ import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class LibraryFragment extends Fragment {
 
-    public HomeFragment() {
+    public LibraryFragment() {
         // Required empty public constructor
     }
 
@@ -34,8 +34,8 @@ public class HomeFragment extends Fragment {
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutHome);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
-        viewPagerAdapter.addFragment(new SongsFragment(), "Songs");
-        viewPagerAdapter.addFragment(new AlbumsFragment(), "Favorite");
+        viewPagerAdapter.addFragment(new ArtistsFragment(), "Artists");
+        viewPagerAdapter.addFragment(new FavoriteFragment(), "Favorite");
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);

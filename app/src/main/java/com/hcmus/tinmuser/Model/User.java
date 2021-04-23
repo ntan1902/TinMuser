@@ -7,19 +7,21 @@ public class User {
     private String userName;
     private String phone;
     private String status;
+    private Boolean isBanned;
 
 
     public User() {
 
     }
 
-    public User(String id, String email, String imageURL, String userName, String phone, String status) {
+    public User(String id, String email, String imageURL, String userName, String phone, String status, Boolean isBanned) {
         this.id = id;
         this.email = email;
         this.imageURL = imageURL;
         this.userName = userName;
         this.phone = phone;
         this.status = status;
+        this.isBanned = isBanned;
     }
 
     public User(String id, String email, String imageURL) {

@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Fragment.ChatFragment;
-import com.hcmus.tinmuser.Fragment.HomeFragment;
+import com.hcmus.tinmuser.Fragment.LibraryFragment;
 import com.hcmus.tinmuser.Fragment.SearchFragment;
 import com.hcmus.tinmuser.Fragment.UsersFragment;
 import com.hcmus.tinmuser.Model.User;
@@ -56,7 +56,7 @@ public class MainActivity extends FragmentActivity {
 
 
     private final int[] tabIcons = {
-            R.drawable.ic_home,
+            R.drawable.ic_library,
             R.drawable.ic_search,
             R.drawable.ic_chat,
             R.drawable.ic_users
@@ -147,7 +147,7 @@ public class MainActivity extends FragmentActivity {
                 if (user.getImageURL().equals("default")) {
                     imageView.setImageResource(R.drawable.profile_image);
                 } else {
-                    Glide.with(MainActivity.this)
+                    Glide.with(getApplicationContext())
                             .load(user.getImageURL())
                             .into(imageView);
 
@@ -183,7 +183,7 @@ public class MainActivity extends FragmentActivity {
 
         viewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
 
-        viewPageAdapter.addFragment(new HomeFragment(), "Home");
+        viewPageAdapter.addFragment(new LibraryFragment(), "Library");
         viewPageAdapter.addFragment(new SearchFragment(), "Search");
         viewPageAdapter.addFragment(new ChatFragment(), "Chat");
         viewPageAdapter.addFragment(new UsersFragment(), "Users");
