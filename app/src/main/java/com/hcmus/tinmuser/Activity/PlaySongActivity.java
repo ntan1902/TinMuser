@@ -34,7 +34,7 @@ import java.util.Map;
 public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private TextView txtSongName, txtArtistName, txtDurationPlayed, txtDurationTotal;
-    private ImageView coverArt, btnNext, btnPrev, btnGoBack, btnShuffle, btnRepeat;
+    private ImageView coverArt, btnNext, btnPrev, btnGoBack, btnFavorite, btnRepeat, btnMenu;
     private FloatingActionButton btnPlay;
     private SeekBar seekBar;
 
@@ -43,6 +43,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private boolean isPlay = true;
     private boolean isRepeat = false;
+    private boolean isFavorite = false;
     private Handler handler = new Handler();
 
     private String playType;
@@ -110,8 +111,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             });
 
 
-        } else {
-            // Do nothing
         }
 
         txtSongName.setText(songName);
@@ -203,6 +202,19 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             }
         });
 
+        btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isFavorite) {
+                    isFavorite = false;
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                } else {
+                    isFavorite = true;
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                }
+            }
+        });
+
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,9 +276,10 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         btnNext = findViewById(R.id.btnSkipNext);
         btnPrev = findViewById(R.id.btnSkipPrevious);
         btnGoBack = findViewById(R.id.btnGoBack);
-        btnShuffle = findViewById(R.id.btnShuffle);
+        btnFavorite = findViewById(R.id.btnFavorite);
         btnRepeat = findViewById(R.id.btnRepeat);
         btnPlay = findViewById(R.id.btnPlay);
+        btnMenu = findViewById(R.id.btnMenu);
         seekBar = findViewById(R.id.seekBar);
     }
 

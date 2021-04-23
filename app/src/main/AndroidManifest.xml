@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinMuser">
-        <activity android:name=".Activity.ShowListSongsActivity"></activity>
+        <activity android:name=".Activity.MenuOfSongActivity"></activity>
+        <activity android:name=".Activity.ShowListSongsActivity" />
 
         <service
             android:name=".Service.SongService"
@@ -30,8 +31,8 @@
         </activity>
         <activity android:name=".Activity.MessageActivity" />
         <activity android:name=".Activity.EditProfileActivity" />
-        <activity android:name=".Activity.AddFriendActivity"/>
-        <activity android:name=".Activity.ShowProfileActitivy"/>
+        <activity android:name=".Activity.AddFriendActivity" />
+        <activity android:name=".Activity.ShowProfileActitivy" />
         <activity android:name=".Activity.ChangePasswordActivity" />
         <activity android:name=".Activity.ShowZoomImage" />
         <activity android:name=".Activity.SignUpActivity" />

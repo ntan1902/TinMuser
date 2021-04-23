@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_700"
+    android:background="@drawable/gradient_bg_play_song"
     android:orientation="vertical"
     tools:context=".Activity.PlaySongActivity">
 
@@ -12,8 +12,7 @@
         android:id="@+id/layoutTopBtn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentTop="true"
-        android:background="@drawable/gradient_bg_play_song">
+        android:layout_alignParentTop="true">
 
         <ImageView
             android:id="@+id/btnGoBack"
@@ -33,7 +32,7 @@
             android:background="@android:color/transparent"
             android:gravity="center_horizontal"
             android:text="Now Playing"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -52,30 +51,36 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:layout_below="@+id/layoutTopBtn">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/coverArt"
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/group"
-            app:civ_border_width="1dp" />
+<!--        <de.hdodenhof.circleimageview.CircleImageView-->
+<!--            android:id="@+id/coverArt"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="300dp"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:src="@drawable/group"-->
+<!--            app:civ_border_width="1dp" />-->
 
+        <ImageView
+            android:id="@+id/coverArt"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
+            android:scaleType="centerCrop"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/chilakhongcungnhau"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
             android:id="@+id/songName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/coverArt"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="This is song name"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -84,13 +89,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/songName"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
             android:ellipsize="end"
             android:gravity="center_horizontal"
             android:singleLine="true"
             android:text="This is song artist"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="18sp" />
 
     </RelativeLayout>
@@ -108,9 +111,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/durationPlayed"
@@ -120,7 +121,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:text="0:00"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/durationTotal"
@@ -130,7 +131,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
             android:text="4:20"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
 
     </RelativeLayout>
@@ -146,13 +147,13 @@
         android:layout_marginBottom="10dp">
 
         <ImageView
-            android:id="@+id/btnShuffle"
+            android:id="@+id/btnFavorite"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:src="@drawable/ic_shuffle_off" />
+            android:src="@drawable/ic_favorite_off" />
 
         <ImageView
             android:id="@+id/btnSkipPrevious"
@@ -160,7 +161,7 @@
             android:layout_height="35dp"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/btnPlay"
-            android:layout_toEndOf="@id/btnShuffle"
+            android:layout_toEndOf="@id/btnFavorite"
             android:src="@drawable/ic_skip_previous" />
 
 
@@ -172,7 +173,10 @@
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_pause"
-            app:backgroundTint="#03A9F4" />
+            android:outlineSpotShadowColor="@color/white"
+            android:outlineAmbientShadowColor="@color/white"
+            app:rippleColor="@color/grey_900"
+            app:backgroundTint="@color/white" />
 
         <ImageView
             android:id="@+id/btnSkipNext"
