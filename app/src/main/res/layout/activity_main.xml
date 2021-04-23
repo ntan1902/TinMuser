@@ -108,8 +108,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:tabIconTint="@color/white"
-        app:tabIndicatorColor="@color/white"
 
+        app:tabIndicatorColor="@color/white"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="@color/white" />
 
