@@ -250,9 +250,14 @@ public class SignUpActivity extends Activity {
                                                                     Toast.LENGTH_SHORT).show();
 //                                                           mProgressBar.setVisibility(View.INVISIBLE);
                                                             alertDialog.dismiss();
+                                                        } else {
+                                                            moveActivity(SignUpActivity.this, MainActivity.class);
+
                                                         }
                                                     }
                                                 });
+                                    } else {
+                                        moveActivity(SignUpActivity.this, MainActivity.class);
                                     }
                                 }
 
@@ -262,7 +267,6 @@ public class SignUpActivity extends Activity {
                             });
 
 
-                            moveActivity(SignUpActivity.this, MainActivity.class);
 //                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
 //                            startActivity(intent);
 //                            finish();
