@@ -252,7 +252,6 @@ public class SignUpActivity extends Activity {
                                                             alertDialog.dismiss();
                                                         } else {
                                                             moveActivity(SignUpActivity.this, MainActivity.class);
-
                                                         }
                                                     }
                                                 });
