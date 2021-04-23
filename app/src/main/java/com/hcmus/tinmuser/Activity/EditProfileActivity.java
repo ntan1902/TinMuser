@@ -127,7 +127,7 @@ public class EditProfileActivity extends Activity {
                         phone = "";
                     }
 
-                    User new_user = new User(mUser.getUid(), email, img_link, username, phone, "online");
+                    User new_user = new User(mUser.getUid(), email, img_link, username, phone, "online", false);
                     mRef.setValue(new_user);
                     Toast.makeText(EditProfileActivity.this, "Save successfully !", Toast.LENGTH_SHORT).show();
 

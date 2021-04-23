@@ -26,16 +26,16 @@
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_back" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="FRIEND"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="25sp"
+                android:layout_centerInParent="true"
                 android:fontFamily="@font/montserrat_black"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"/>
+                android:text="MUSERS"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -49,7 +49,7 @@
                 android:id="@+id/txtInfo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Add friend invitations"
+                android:text="Friend request(s)"
                 android:fontFamily="@font/montserrat_black"
                 android:textColor="@color/white"
                 android:layout_marginStart="10dp"
@@ -76,7 +76,7 @@
                 android:id="@+id/txtUsers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="People you may know"
+                android:text="MUSERS around you"
                 android:fontFamily="@font/montserrat_black"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="5dp"

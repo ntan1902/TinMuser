@@ -33,6 +33,8 @@ public class UsersFragment extends Fragment {
     private FirebaseUser mUser;
     private DatabaseReference mRef;
 
+    private ArrayList<String> listFriendsId;
+
     public UsersFragment() {
         // Required empty public constructor
     }
@@ -47,42 +49,42 @@ public class UsersFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        mUser = FirebaseAuth.getInstance()
-                .getCurrentUser();
-        mRef = FirebaseDatabase.getInstance()
-                .getReference("Users")
-                .child(mUser.getUid());
+        //Get all friends of user
+        DatabaseReference mFriendRef = FirebaseDatabase.getInstance().getReference("Friends").child(mUser.getUid());
 
-        mRef.addValueEventListener(new ValueEventListener() {
+        listFriendsId = new ArrayList<>();
+
+        mFriendRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
-
+                listFriendsId.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String userId = dataSnapshot.getKey();
+                    listFriendsId.add(userId);
+                }
+                getUsers();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-
-        mUsers = new ArrayList<>();
-        getUsers();
         return view;
     }
 
     private void getUsers() {
-        DatabaseReference Ref = FirebaseDatabase.getInstance().getReference("Users");
-        Ref.addValueEventListener(new ValueEventListener() {
+        mUsers = new ArrayList<>();
+        DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("Users");
+        friendRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
-
                 for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
 
-                    if(!user.getId().equals(mUser.getUid())){
+                    if(listFriendsId.contains(user.getId())){
                         mUsers.add(user);
                     }
                 }

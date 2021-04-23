@@ -83,7 +83,7 @@ public class ShowProfileActitivy extends Activity {
                 if (user.getImageURL().matches("default")) {
                     ivAvatar.setImageResource(R.drawable.profile_image);
                 } else {
-                    Glide.with(ShowProfileActitivy.this)
+                    Glide.with(getApplicationContext())
                             .load(user.getImageURL())
                             .into(ivAvatar);
                 }

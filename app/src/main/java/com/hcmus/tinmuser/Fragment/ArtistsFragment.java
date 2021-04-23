@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 
 import com.hcmus.tinmuser.R;
 
-public class SongsFragment extends Fragment {
+public class ArtistsFragment extends Fragment {
 
-    public SongsFragment() {
+    public ArtistsFragment() {
         // Required empty public constructor
     }
 
@@ -20,7 +20,7 @@ public class SongsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_songs, container, false);
+        View view =  inflater.inflate(R.layout.fragment_artists, container, false);
         return view;
     }
 }
