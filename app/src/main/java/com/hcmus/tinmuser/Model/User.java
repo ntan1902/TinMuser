@@ -13,12 +13,13 @@ public class User {
 
     }
 
-    public User(String id, String email, String imageURL, String userName, String phone) {
+    public User(String id, String email, String imageURL, String userName, String phone, String status) {
         this.id = id;
         this.email = email;
         this.imageURL = imageURL;
         this.userName = userName;
         this.phone = phone;
+        this.status = status;
     }
 
     public User(String id, String email, String imageURL) {

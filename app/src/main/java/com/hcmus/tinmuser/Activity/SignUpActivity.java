@@ -238,7 +238,8 @@ public class SignUpActivity extends Activity {
                                                 firebaseUser.getEmail(),
                                                 firebaseUser.getPhotoUrl().toString(),
                                                 firebaseUser.getDisplayName(),
-                                                firebaseUser.getPhoneNumber());
+                                                firebaseUser.getPhoneNumber(),
+                                                "online");
                                         Ref.setValue(user)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
