@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +35,10 @@ public class SearchFragment extends Fragment {
     MusicAdapter musicAdapter;
     EditText searchText;
     List<Music> mMusics;
+
+    FirebaseUser mUser;
+    ArrayList<String> mUserListFavorites;
+
 
     public SearchFragment() {
         // Required empty public constructor
@@ -84,11 +90,31 @@ public class SearchFragment extends Fragment {
                 }
             }
         });
+
+        //Generate all favorite song of user.
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        mUserListFavorites = new ArrayList<>();
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUserListFavorites.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String fav_song = dataSnapshot.getKey();
+                    mUserListFavorites.add(fav_song);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         return view;
     }
 
     void setListView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(), list, "Single", "");
+        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
         recyclerView.setAdapter(musicAdapter);
     }
 

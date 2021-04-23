@@ -95,7 +95,7 @@ public class ShowListSongsActivity extends Activity {
                     }
                 }
 
-                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId);
+                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, null);
                 recyclerView.setAdapter(musicAdapter);
             }
 
