@@ -81,17 +81,17 @@ public class SignInActivity extends Activity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-//    // When initializing Activity, check to see if the user is currently signed in.
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        // Check if user is signed in (non-null) and update UI accordingly.
-//        FirebaseUser currentUser = mAuth.getCurrentUser();
-//        if(currentUser != null){
-//            moveActivity(SignInActivity.this, MainActivity.class);
-//            return;
-//        }
-//    }
+    // When initializing Activity, check to see if the user is currently signed in.
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser != null){
+            moveActivity(SignInActivity.this, MainActivity.class);
+            return;
+        }
+    }
 
     private void initializeFireBaseAuth() {
         mAuth = FirebaseAuth.getInstance();
