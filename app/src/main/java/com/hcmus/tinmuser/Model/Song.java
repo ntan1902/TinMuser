@@ -7,6 +7,7 @@ public class Song {
     String name;
     String imageURL;
     String uri;
+    String createdAt;
 
     public Song(){
 
@@ -72,5 +73,13 @@ public class Song {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

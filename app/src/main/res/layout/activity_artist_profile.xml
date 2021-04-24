@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"
     tools:context=".Activity.ArtistProfileActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:background="@color/black">
 
         <RelativeLayout
             android:id="@+id/layoutTop"
@@ -36,10 +38,9 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:layout_below="@id/layoutTop"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:background="@color/black">
+            android:layout_height="match_parent"
+            android:layout_below="@id/layoutTop">
 
             <TextView
                 android:id="@+id/txtOtherArtists"
@@ -49,7 +50,7 @@
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="25sp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="16dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
