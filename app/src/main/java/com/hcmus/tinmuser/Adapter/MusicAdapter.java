@@ -83,20 +83,20 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         });
 
         if(getIsFavorite(song.getId())) {
-            holder.btnFavorite.setImageResource(R.drawable.filled_heart);
+            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_on);
         } else {
-            holder.btnFavorite.setImageResource(R.drawable.unfilled_heart);
+            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
         }
 
         holder.btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getIsFavorite(song.getId())) {
-                    holder.btnFavorite.setImageResource(R.drawable.unfilled_heart);
+                    holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
                     DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId());
                     favoriteRef.removeValue();
                 } else {
-                    holder.btnFavorite.setImageResource(R.drawable.filled_heart);
+                    holder.btnFavorite.setImageResource(R.drawable.ic_favorite_on);
                     DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId()).child("id");
                     favoriteRef.setValue(song.getId());
                 }

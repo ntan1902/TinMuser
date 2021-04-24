@@ -58,7 +58,11 @@ public class FavoriteFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchText = view.findViewById(R.id.searchText);
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
 //        ListSearch= new MusicList();
+
+        mUserListFavorites = new ArrayList<>();
+        getFavoriteSongs();
 
         mMusics = new ArrayList<>();
         getMusics();
@@ -91,25 +95,6 @@ public class FavoriteFragment extends Fragment {
             }
         });
 
-        //Generate all favorite song of user.
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mUserListFavorites = new ArrayList<>();
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavorites.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavorites.add(fav_song);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
         return view;
     }
 
@@ -126,12 +111,11 @@ public class FavoriteFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mMusics.clear();
-
                 for (DataSnapshot songSnapshot : snapshot.getChildren()) {
                     Song song = songSnapshot.getValue(Song.class);
-//here                    if (mUserListFavorites.contains(song.getId())) {
+                    if (mUserListFavorites.contains(song.getId())) {
                         songs.add(song);
-//                    }
+                    }
                 }
 
                 getArtistName(songs);
@@ -150,6 +134,7 @@ public class FavoriteFragment extends Fragment {
         artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
                 for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
                     Artist artist = artistSnapshot.getValue(Artist.class);
 
@@ -164,6 +149,25 @@ public class FavoriteFragment extends Fragment {
                     }
                 }
                 setListView(mMusics);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getFavoriteSongs(){
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUserListFavorites.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String fav_song = dataSnapshot.getKey();
+                    mUserListFavorites.add(fav_song);
+                }
             }
 
             @Override
