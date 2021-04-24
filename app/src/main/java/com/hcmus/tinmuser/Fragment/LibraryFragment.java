@@ -30,8 +30,8 @@ public class LibraryFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_library, container, false);
 
-        ViewPager viewPager = view.findViewById(R.id.viewPagerHome);
-        TabLayout tabLayout = view.findViewById(R.id.tabLayoutHome);
+        ViewPager viewPager = view.findViewById(R.id.viewPagerLibrary);
+        TabLayout tabLayout = view.findViewById(R.id.tabLayoutLibrary);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
         viewPagerAdapter.addFragment(new ArtistsFragment(), "Artists");
