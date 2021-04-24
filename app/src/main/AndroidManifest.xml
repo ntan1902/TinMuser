@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinMuser">
-        <activity android:name=".Activity.MenuOfSongActivity"></activity>
+        <activity android:name=".Activity.ArtistProfileActivity"></activity>
+        <activity android:name=".Activity.MenuOfSongActivity" />
         <activity android:name=".Activity.ShowListSongsActivity" />
 
         <service
@@ -43,7 +44,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.ResetPasswordActivity"/>
+        <activity android:name=".Activity.ResetPasswordActivity" />
         <activity android:name=".Activity.MainActivity" />
     </application>
 

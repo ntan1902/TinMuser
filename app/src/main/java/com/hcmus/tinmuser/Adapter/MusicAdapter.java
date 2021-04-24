@@ -14,11 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.Activity.PlaySongActivity;
@@ -57,9 +55,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(@NonNull MusicAdapter.MyViewHolder holder, int position) {
         Song song = mMusics.get(position).getSong();
+        Artist artist = mMusics.get(position).getArtist();
+
         holder.name_text.setText(song.getName());
 
-        String artistName = mMusics.get(position).getArtistName();
+        String artistName = artist.getName();
         holder.artist_text.setText(artistName);
         Glide.with(context)
                 .load(song.getImageURL())
@@ -75,6 +75,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                 intent.putExtra("songName", song.getName());
                 intent.putExtra("imageURL", song.getImageURL());
                 intent.putExtra("artistName", artistName);
+                intent.putExtra("artistImageURL", artist.getImageURL());
                 intent.putExtra("playType", playType);
                 intent.putExtra("userId", userId);
 
@@ -91,7 +92,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         holder.btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getIsFavorite(song.getId())) {
+                isFavorite = getIsFavorite(song.getId());
+                if (isFavorite) {
                     holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
                     DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId());
                     favoriteRef.removeValue();

@@ -68,6 +68,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         String uri = intent.getStringExtra("uri");
         String songName = intent.getStringExtra("songName");
         String artistName = intent.getStringExtra("artistName");
+        String artistImageURL = intent.getStringExtra("artistImageURL");
         String imageURL = intent.getStringExtra("imageURL");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
@@ -124,7 +125,11 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         songServiceIntent.putExtra("uri", uri);
         songServiceIntent.putExtra("songName", songName);
         songServiceIntent.putExtra("artistName", artistName);
+        songServiceIntent.putExtra("artistImageURL", artistImageURL);
         songServiceIntent.putExtra("imageURL", imageURL);
+        songServiceIntent.putExtra("playType", playType);
+        songServiceIntent.putExtra("userId", userId);
+
         bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
         startService(songServiceIntent);
 
@@ -215,10 +220,24 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             }
         });
 
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(PlaySongActivity.this, MenuOfSongActivity.class);
+                i.putExtra("songName", songName);
+                i.putExtra("imageURL", imageURL);
+                i.putExtra("artistName", artistName);
+                i.putExtra("artistImageURL", artistImageURL);
+                i.putExtra("userId", userId);
+                startActivity(i);
+            }
+        });
+
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PlaySongActivity.super.onBackPressed();
+                finish();
             }
         });
 

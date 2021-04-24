@@ -89,7 +89,7 @@ public class ShowListSongsActivity extends Activity {
                         String artistId = artist.getId();
 
                         if(artistId.equals(artistIdSong)){
-                            Music music = new Music(song, artist.getName());
+                            Music music = new Music(song, artist);
                             mMusics.add(music);
                         }
                     }

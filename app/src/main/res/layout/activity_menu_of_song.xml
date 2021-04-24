@@ -3,21 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.MenuOfSongActivity"
-    android:background="@color/primaryDark">
+    android:background="@color/black"
+    tools:context=".Activity.MenuOfSongActivity">
 
     <RelativeLayout
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp">
+
         <ImageView
             android:id="@+id/coverArt"
-            android:layout_width="250dp"
-            android:layout_height="300dp"
-            android:scaleType="fitXY"
+            android:layout_width="350dp"
+            android:layout_height="350dp"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/chilakhongcungnhau"/>
+            android:scaleType="centerCrop"
+            android:src="@drawable/chilakhongcungnhau" />
 
         <TextView
             android:id="@+id/songName"
@@ -51,13 +52,82 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/card"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="30dp">
 
+        <RelativeLayout
+            android:id="@+id/layoutFavorite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/ivFavorite"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_favorite_off" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/ivFavorite"
+                android:text="Add to favorite"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutArtist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutFavorite"
+            android:padding="10dp">
+
+            <ImageView
+                android:id="@+id/ivArtist"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_users" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/ivArtist"
+                android:text="View artist"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
 
+    </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/layoutClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp">
 
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Close"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
 </RelativeLayout>

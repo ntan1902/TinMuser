@@ -5,15 +5,15 @@ import java.util.List;
 
 public class Music {
     Song song;
-    String artistName;
+    Artist artist;
 
     public Music() {
 
     }
 
-    public Music(Song song, String artistName) {
+    public Music(Song song, Artist artist) {
         this.song = song;
-        this.artistName = artistName;
+        this.artist = artist;
     }
 
     public Song getSong() {
@@ -24,11 +24,11 @@ public class Music {
         this.song = song;
     }
 
-    public String getArtistName() {
-        return artistName;
+    public Artist getArtist() {
+        return artist;
     }
 
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
+    public void setArtist(Artist artist) {
+        this.artist = artist;
     }
 }

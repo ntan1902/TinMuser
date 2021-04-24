@@ -18,10 +18,14 @@ public class SongService extends Service {
     }
     private MediaPlayer mediaPlayer;
     private int playbackPosition = 0;
+
     private String uri = "";
     private String songName = "";
     private String artistName = "";
+    private String artistImageURL = "";
     private String imageURL = "";
+    private String playType = "";
+    private String userId = "";
 
     private final IBinder mBinder = new LocalBinder();
     @Override
@@ -63,7 +67,10 @@ public class SongService extends Service {
             playAudio(uri);
             songName = intent.getStringExtra("songName");
             artistName = intent.getStringExtra("artistName");
+            artistImageURL = intent.getStringExtra("artistImageURL");
             imageURL = intent.getStringExtra("imageURL");
+            playType = intent.getStringExtra("playType");
+            userId = intent.getStringExtra("userId");
         }
 
         return super.onStartCommand(intent,flags,startId);
@@ -126,6 +133,38 @@ public class SongService extends Service {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public String getArtistImageURL() {
+        return artistImageURL;
+    }
+
+    public void setArtistImageURL(String artistImageURL) {
+        this.artistImageURL = artistImageURL;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getPlayType() {
+        return playType;
+    }
+
+    public void setPlayType(String playType) {
+        this.playType = playType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public void playAudio(String uri) {

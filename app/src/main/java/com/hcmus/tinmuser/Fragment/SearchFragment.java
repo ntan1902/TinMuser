@@ -80,7 +80,7 @@ public class SearchFragment extends Fragment {
                     } else {
                         List<Music> searchMusic = new ArrayList<>();
                         for (Music x : mMusics) {
-                            if (x.getArtistName().toLowerCase().contains(s.toString().toLowerCase()) ||
+                            if (x.getArtist().getName().toLowerCase().contains(s.toString().toLowerCase()) ||
                                     x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())) {
                                 searchMusic.add(x);
                             }
@@ -126,6 +126,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mMusics.clear();
+                songs.clear();
 
                 for (DataSnapshot songSnapshot : snapshot.getChildren()) {
                     Song song = songSnapshot.getValue(Song.class);
@@ -156,7 +157,7 @@ public class SearchFragment extends Fragment {
                         String artistId = artist.getId();
 
                         if (artistId.equals(artistIdSong)) {
-                            Music music = new Music(song, artist.getName());
+                            Music music = new Music(song, artist);
                             mMusics.add(music);
                         }
                     }

@@ -105,6 +105,23 @@ public class MainActivity extends FragmentActivity {
                         isPlay = false;
                         btnPlay.setImageResource(R.drawable.ic_play);
                     }
+
+                    // Set on click on PlaySong
+                    layoutPlay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(MainActivity.this, PlaySongActivity.class);
+
+                            intent.putExtra("uri", songService.getUri());
+                            intent.putExtra("songName", songService.getSongName());
+                            intent.putExtra("imageURL", songService.getImageURL());
+                            intent.putExtra("artistName", songService.getArtistName());
+                            intent.putExtra("artistImageURL", songService.getArtistImageURL());
+                            intent.putExtra("playType", songService.getPlayType());
+                            intent.putExtra("userId", songService.getUserId());
+                            startActivity(intent);
+                        }
+                    });
                 } else {
 //                    Log.e("MAIN>>", "SongService doesn't exist");
                     layoutPlay.setVisibility(View.GONE);
