@@ -73,6 +73,7 @@ public class SongService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         position = intent.getIntExtra("position", -1);
+        System.out.println("************* " + position);
         String uriTemp = mMusics.get(position).getSong().getUri();
         if (!uriTemp.equals(uri)) {
             playAudio(uriTemp);

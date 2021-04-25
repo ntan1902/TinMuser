@@ -8,6 +8,7 @@ public class PlayDouble {
     private String artistName;
     private String imageURL;
     private Integer progressChanged;
+    private Integer position;
 
 
     private Boolean isPlay;
@@ -15,7 +16,7 @@ public class PlayDouble {
 
     public PlayDouble() {}
 
-    public PlayDouble(String user1, String user2, String uri, String songName, String artistName, String imageURL, Integer progressChanged, Boolean isPlay, Boolean isRepeat) {
+    public PlayDouble(String user1, String user2, String uri, String songName, String artistName, String imageURL, Integer progressChanged, Integer position, Boolean isPlay, Boolean isRepeat) {
         this.user1 = user1;
         this.user2 = user2;
         this.uri = uri;
@@ -23,6 +24,8 @@ public class PlayDouble {
         this.artistName = artistName;
         this.imageURL = imageURL;
         this.progressChanged = progressChanged;
+        this.position = position;
+
         this.isPlay = isPlay;
         this.isRepeat = isRepeat;
     }
@@ -97,5 +100,13 @@ public class PlayDouble {
 
     public void setProgressChanged(Integer progressChanged) {
         this.progressChanged = progressChanged;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
     }
 }

@@ -195,13 +195,23 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     PlayDouble playDouble = snapshot.getValue(PlayDouble.class);
                     songService = SongService.getInstance();
 
-                    if (playDouble.getIsPlay()) {
-                        songServiceIntent = new Intent(MessageActivity.this, SongService.class);
-                        songServiceIntent.putExtra("playType", "Double");
-                        songServiceIntent.putExtra("userId", userId);
-                        songServiceIntent.putExtra("position", position);
-                        bindService(songServiceIntent, MessageActivity.this, Context.BIND_AUTO_CREATE);
-                        startService(songServiceIntent);
+                    if(songService == null) {
+                        if (playDouble.getIsPlay()) {
+                            songServiceIntent = new Intent(MessageActivity.this, SongService.class);
+                            songServiceIntent.putExtra("playType", "Double");
+                            songServiceIntent.putExtra("userId", userId);
+                            songServiceIntent.putExtra("position", playDouble.getPosition());
+                            bindService(songServiceIntent, MessageActivity.this, Context.BIND_AUTO_CREATE);
+                            startService(songServiceIntent);
+                        }
+                    } else {
+                        if (playDouble.getIsPlay()) {
+                            songServiceIntent = new Intent(MessageActivity.this, SongService.class);
+                            songServiceIntent.putExtra("playType", "Double");
+                            songServiceIntent.putExtra("userId", userId);
+                            songServiceIntent.putExtra("position", playDouble.getPosition());
+                            startService(songServiceIntent);
+                        }
                     }
                 }
 

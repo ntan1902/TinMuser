@@ -108,13 +108,14 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                             playDouble.setSongName(songName);
                             playDouble.setIsPlay(true);
                             playDouble.setIsRepeat(false);
+                            playDouble.setPosition(position);
 
                             playDoubleId = dataSnapshot.getKey();
                             playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                         }
                     }
                     if (!isExist) {
-                        PlayDouble playDouble = new PlayDouble(userId, mUser.getUid(), uri, songName, artistName, imageURL, 0, true, false);
+                        PlayDouble playDouble = new PlayDouble(userId, mUser.getUid(), uri, songName, artistName, imageURL, 0, position, true, false);
                         playDoubleId = userId + mUser.getUid();
                         playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                     }
@@ -166,6 +167,32 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             public void run() {
                 if (songService != null && songService.getMediaPlayer() != null) {
                     updateProgressBar();
+
+                    // Listen song
+                    final DatabaseReference isPlayRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference("PlayDouble")
+                            .child(playDoubleId)
+                            .child("isPlay");
+                    isPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Boolean _isPlay = snapshot.getValue(Boolean.class);
+
+                            if (_isPlay) {
+                                isPlay = false;
+                                btnPlay.setImageResource(R.drawable.ic_play);
+                            } else {
+                                isPlay = true;
+                                btnPlay.setImageResource(R.drawable.ic_pause);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
 
                 }
                 handler.postDelayed(this, 100);
@@ -262,7 +289,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                             map.put("uri", uri);
                             map.put("artistName", artistName);
-                            map.put("songName",songName);
+                            map.put("songName", songName);
+                            map.put("position", position);
 
                             playDoubleIdRef.updateChildren(map);
                         }
@@ -302,6 +330,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                             map.put("uri",uri);
                             map.put("artistName", artistName);
                             map.put("songName",songName);
+                            map.put("position", position);
 
                             playDoubleIdRef.updateChildren(map);
                         }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,7 @@ public class ShowListSongsActivity extends Activity {
     RecyclerView recyclerView;
     ImageView btnGoBack;
     String userId;
+    ArrayList<String> mUserListFavorites;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +47,10 @@ public class ShowListSongsActivity extends Activity {
         userId = i.getStringExtra("userId");
 
         mMusics = new ArrayList<>();
-        getMusics();
+
+        mUserListFavorites = new ArrayList<>();
+        getFavoriteSongs();
+//        getMusics();
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +100,29 @@ public class ShowListSongsActivity extends Activity {
                     }
                 }
 
-                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, null);
+                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, mUserListFavorites);
                 recyclerView.setAdapter(musicAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+    }
+    private void getFavoriteSongs(){
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(userId);
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUserListFavorites.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String fav_song = dataSnapshot.getKey();
+                    mUserListFavorites.add(fav_song);
+                }
+
+                getMusics();
             }
 
             @Override
