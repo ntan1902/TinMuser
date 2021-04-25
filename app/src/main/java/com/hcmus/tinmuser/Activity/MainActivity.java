@@ -99,18 +99,20 @@ public class MainActivity extends FragmentActivity {
                     // Get current list music
                     mMusics = SearchFragment.mMusics;
 
-                    // Get current music playing
-                    position = songService.getPosition();
-                    Song song = mMusics.get(position).getSong();
-                    Artist artist = mMusics.get(position).getArtist();
+                    if(!mMusics.isEmpty()) {
+                        // Get current music playing
+                        position = songService.getPosition();
+                        Song song = mMusics.get(position).getSong();
+                        Artist artist = mMusics.get(position).getArtist();
 
-                    Glide.with(getApplicationContext())
-                            .load(song.getImageURL())
-                            .into(songAvatar);
-                    txtSongName.setText(song.getName());
-                    txtArtistName.setText(artist.getName());
+                        Glide.with(getApplicationContext())
+                                .load(song.getImageURL())
+                                .into(songAvatar);
+                        txtSongName.setText(song.getName());
+                        txtArtistName.setText(artist.getName());
 
-                    updateProgressBar();
+                        updateProgressBar();
+                    }
 
                     if(songService.getMediaPlayer().isPlaying()) {
                         isPlay = true;

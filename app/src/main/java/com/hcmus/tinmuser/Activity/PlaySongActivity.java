@@ -168,32 +168,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                 if (songService != null && songService.getMediaPlayer() != null) {
                     updateProgressBar();
 
-                    // Listen song
-                    final DatabaseReference isPlayRef = FirebaseDatabase
-                            .getInstance()
-                            .getReference("PlayDouble")
-                            .child(playDoubleId)
-                            .child("isPlay");
-                    isPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Boolean _isPlay = snapshot.getValue(Boolean.class);
-
-                            if (_isPlay) {
-                                isPlay = false;
-                                btnPlay.setImageResource(R.drawable.ic_play);
-                            } else {
-                                isPlay = true;
-                                btnPlay.setImageResource(R.drawable.ic_pause);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-
                 }
                 handler.postDelayed(this, 100);
             }
