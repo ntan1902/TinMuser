@@ -126,14 +126,6 @@ public class MainActivity extends FragmentActivity {
                         public void onClick(View v) {
                             Intent intent = new Intent(MainActivity.this, PlaySongActivity.class);
 
-//                            intent.putExtra("uri", songService.getUri());
-//                            intent.putExtra("songName", songService.getSongName());
-//                            intent.putExtra("imageURL", songService.getImageURL());
-//                            intent.putExtra("artistName", songService.getArtistName());
-//                            intent.putExtra("artistImageURL", songService.getArtistImageURL());
-//                            intent.putExtra("playType", songService.getPlayType());
-//                            intent.putExtra("userId", songService.getUserId());
-
                             intent.putExtra("playType", songService.getPlayType());
                             intent.putExtra("userId", songService.getUserId());
                             intent.putExtra("position", songService.getPosition());

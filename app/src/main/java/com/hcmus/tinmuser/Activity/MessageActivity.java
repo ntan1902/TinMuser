@@ -197,10 +197,9 @@ public class MessageActivity extends Activity implements ServiceConnection {
 
                     if (playDouble.getIsPlay()) {
                         songServiceIntent = new Intent(MessageActivity.this, SongService.class);
-                        songServiceIntent.putExtra("uri", playDouble.getUri());
-                        songServiceIntent.putExtra("songName", playDouble.getSongName());
-                        songServiceIntent.putExtra("artistName", playDouble.getArtistName());
-                        songServiceIntent.putExtra("imageURL", playDouble.getImageURL());
+                        songServiceIntent.putExtra("playType", "Double");
+                        songServiceIntent.putExtra("userId", userId);
+                        songServiceIntent.putExtra("position", position);
                         bindService(songServiceIntent, MessageActivity.this, Context.BIND_AUTO_CREATE);
                         startService(songServiceIntent);
                     }

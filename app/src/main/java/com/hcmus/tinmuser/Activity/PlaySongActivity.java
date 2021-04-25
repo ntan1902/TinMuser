@@ -248,6 +248,31 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                 txtArtistName.setText(artistName);
                 loadBitmapIntoSongImage(imageURL);
                 createService();
+
+                // Nghe nhạc với nhau trong khi nhắn tin
+                if (playType.equals("Double")) {
+                    final DatabaseReference playDoubleIdRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference("PlayDouble")
+                            .child(playDoubleId);
+                    playDoubleIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Map<String, Object> map = new HashMap<>();
+
+                            map.put("uri", uri);
+                            map.put("artistName", artistName);
+                            map.put("songName",songName);
+
+                            playDoubleIdRef.updateChildren(map);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
         });
 
@@ -262,6 +287,31 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                 txtArtistName.setText(artistName);
                 loadBitmapIntoSongImage(imageURL);
                 createService();
+
+                // Nghe nhạc với nhau trong khi nhắn tin
+                if (playType.equals("Double")) {
+                    final DatabaseReference playDoubleIdRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference("PlayDouble")
+                            .child(playDoubleId);
+                    playDoubleIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Map<String, Object> map = new HashMap<>();
+
+                            map.put("uri",uri);
+                            map.put("artistName", artistName);
+                            map.put("songName",songName);
+
+                            playDoubleIdRef.updateChildren(map);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
         });
 
