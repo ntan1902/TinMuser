@@ -65,7 +65,7 @@ public class FavoriteFragment extends Fragment {
         getFavoriteSongs();
 
         mMusics = new ArrayList<>();
-        getMusics();
+//        getMusics();
 
 
         searchText.addTextChangedListener(new TextWatcher() {
@@ -168,6 +168,8 @@ public class FavoriteFragment extends Fragment {
                     String fav_song = dataSnapshot.getKey();
                     mUserListFavorites.add(fav_song);
                 }
+
+                getMusics();
             }
 
             @Override
