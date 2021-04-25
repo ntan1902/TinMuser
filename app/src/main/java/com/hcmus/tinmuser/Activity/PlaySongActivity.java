@@ -5,17 +5,26 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.palette.graphics.Palette;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,7 +43,7 @@ import java.util.Map;
 public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private TextView txtSongName, txtArtistName, txtDurationPlayed, txtDurationTotal;
-    private ImageView coverArt, btnNext, btnPrev, btnGoBack, btnFavorite, btnRepeat, btnMenu;
+    private ImageView songImage, btnNext, btnPrev, btnGoBack, btnFavorite, btnRepeat, btnMenu;
     private FloatingActionButton btnPlay;
     private SeekBar seekBar;
 
@@ -116,10 +125,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
         txtSongName.setText(songName);
         txtArtistName.setText(artistName);
-        Glide.with(getApplicationContext())
-                .load(imageURL)
-                .into(coverArt);
-
+        loadBitmapIntoSongImage(imageURL);
 
         songServiceIntent = new Intent(this, SongService.class);
         songServiceIntent.putExtra("uri", uri);
@@ -182,7 +188,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     songService.start();
                 }
 
-                if(playType.equals("Double")) {
+                if (playType.equals("Double")) {
                     setValuePlayDouble("isPlay", isPlay, -1);
                 }
             }
@@ -201,7 +207,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     songService.setLooping(true);
                 }
 
-                if(playType.equals("Double")) {
+                if (playType.equals("Double")) {
                     setValuePlayDouble("isRepeat", isRepeat, -1);
                 }
             }
@@ -243,6 +249,78 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
     }
 
+    private void loadBitmapIntoSongImage(String imageURL) {
+        // Metadata
+        try {
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(imageURL)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                            Glide.with(getApplicationContext())
+                                    .asBitmap()
+                                    .load(resource)
+                                    .into(songImage);
+
+                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(@Nullable Palette palette) {
+                                    Palette.Swatch swatch = palette.getDominantSwatch();
+                                    if (swatch != null) {
+                                        ImageView gradient = findViewById(R.id.gradient);
+                                        RelativeLayout container = findViewById(R.id.container);
+
+                                        gradient.setBackgroundResource(R.drawable.gradient_bg_play_song);
+                                        container.setBackgroundResource(R.color.primaryDark);
+
+                                        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                                                new int[]{swatch.getRgb(), 0x0000000});
+                                        gradient.setBackground(gradientDrawable);
+
+                                        GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                                                new int[]{swatch.getRgb(), swatch.getRgb()});
+                                        container.setBackground(gradientDrawableBg);
+
+                                        txtSongName.setTextColor(swatch.getTitleTextColor());
+                                        txtArtistName.setTextColor(swatch.getBodyTextColor());
+                                        txtDurationTotal.setTextColor(swatch.getTitleTextColor());
+                                        txtDurationPlayed.setTextColor(swatch.getTitleTextColor());
+                                    } else {
+                                        ImageView gradient = findViewById(R.id.gradient);
+                                        RelativeLayout container = findViewById(R.id.container);
+
+                                        gradient.setBackgroundResource(R.drawable.gradient_bg_play_song);
+                                        container.setBackgroundResource(R.color.primaryDark);
+
+                                        GradientDrawable gradientDrawable = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                                                new int[]{0xff000000, 0x0000000});
+                                        gradient.setBackground(gradientDrawable);
+
+                                        GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                                                new int[]{0xff000000, 0xff000000});
+                                        container.setBackground(gradientDrawableBg);
+
+                                        txtSongName.setTextColor(Color.WHITE);
+                                        txtArtistName.setTextColor(Color.DKGRAY);
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setValuePlayDouble(String child, Boolean value1, Integer value2) {
         final DatabaseReference setIsPlayRef = FirebaseDatabase
                 .getInstance()
@@ -252,9 +330,9 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         setIsPlayRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(child.equals("isPlay") || child.equals("isRepeat")) {
+                if (child.equals("isPlay") || child.equals("isRepeat")) {
                     setIsPlayRef.setValue(value1);
-                } else if(child.equals("progressChanged")) {
+                } else if (child.equals("progressChanged")) {
                     setIsPlayRef.setValue(value2);
 
                 }
@@ -291,7 +369,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         txtDurationPlayed = findViewById(R.id.durationPlayed);
         txtDurationTotal = findViewById(R.id.durationTotal);
 
-        coverArt = findViewById(R.id.coverArt);
+        songImage = findViewById(R.id.songImage);
         btnNext = findViewById(R.id.btnSkipNext);
         btnPrev = findViewById(R.id.btnSkipPrevious);
         btnGoBack = findViewById(R.id.btnGoBack);

@@ -62,7 +62,7 @@ public class MenuOfSongActivity extends Activity {
         layoutFavorite = findViewById(R.id.layoutFavorite);
         layoutArtist = findViewById(R.id.layoutArtist);
         layoutClose = findViewById(R.id.layoutClose);
-        coverArt = findViewById(R.id.coverArt);
+        coverArt = findViewById(R.id.songImage);
         txtSongName = findViewById(R.id.songName);
         txtArtistName = findViewById(R.id.artistName);
     }
