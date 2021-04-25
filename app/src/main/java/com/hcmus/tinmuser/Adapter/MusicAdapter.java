@@ -71,13 +71,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
             public void onClick(View v) {
                 Intent intent = new Intent(context, PlaySongActivity.class);
 
-                intent.putExtra("uri", song.getUri());
-                intent.putExtra("songName", song.getName());
-                intent.putExtra("imageURL", song.getImageURL());
-                intent.putExtra("artistName", artistName);
-                intent.putExtra("artistImageURL", artist.getImageURL());
+//                intent.putExtra("uri", song.getUri());
+//                intent.putExtra("songName", song.getName());
+//                intent.putExtra("imageURL", song.getImageURL());
+//                intent.putExtra("artistName", artistName);
+//                intent.putExtra("artistImageURL", artist.getImageURL());
                 intent.putExtra("playType", playType);
                 intent.putExtra("userId", userId);
+                intent.putExtra("position", position);
 
                 context.startActivity(intent);
             }

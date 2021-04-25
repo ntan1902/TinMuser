@@ -34,7 +34,7 @@ public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     MusicAdapter musicAdapter;
     EditText searchText;
-    List<Music> mMusics;
+    public static List<Music> mMusics;
 
     FirebaseUser mUser;
     ArrayList<String> mUserListFavorites;

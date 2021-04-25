@@ -33,11 +33,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hcmus.tinmuser.Fragment.SearchFragment;
+import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.PlayDouble;
+import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PlaySongActivity extends Activity implements ServiceConnection {
@@ -56,9 +61,17 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private Handler handler = new Handler();
 
     private String playType;
+    private String userId;
+    private String uri;
+    private String songName;
+    private String artistName;
+    private String artistImageURL;
+    private String imageURL;
+    private List<Music> mMusics = SearchFragment.mMusics;
+    private int position = 0;
+
     private FirebaseUser mUser;
     private DatabaseReference mRef;
-    private String userId;
     private boolean isExist = false;
     private String playDoubleId;
 
@@ -73,14 +86,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         updateStatus("online");
 
         // Receive data from MusicAdapter
-        Intent intent = getIntent();
-        String uri = intent.getStringExtra("uri");
-        String songName = intent.getStringExtra("songName");
-        String artistName = intent.getStringExtra("artistName");
-        String artistImageURL = intent.getStringExtra("artistImageURL");
-        String imageURL = intent.getStringExtra("imageURL");
-        userId = intent.getStringExtra("userId");
-        playType = intent.getStringExtra("playType");
+        getDataFromIntent();
 
 
         // Nghe nhạc với nhau trong khi nhắn tin
@@ -127,17 +133,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         txtArtistName.setText(artistName);
         loadBitmapIntoSongImage(imageURL);
 
-        songServiceIntent = new Intent(this, SongService.class);
-        songServiceIntent.putExtra("uri", uri);
-        songServiceIntent.putExtra("songName", songName);
-        songServiceIntent.putExtra("artistName", artistName);
-        songServiceIntent.putExtra("artistImageURL", artistImageURL);
-        songServiceIntent.putExtra("imageURL", imageURL);
-        songServiceIntent.putExtra("playType", playType);
-        songServiceIntent.putExtra("userId", userId);
-
-        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
-        startService(songServiceIntent);
+        // Start SongService
+        createService();
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -246,6 +243,32 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                 finish();
             }
         });
+
+    }
+
+    private void createService() {
+        songServiceIntent = new Intent(this, SongService.class);
+        songServiceIntent.putExtra("playType", playType);
+        songServiceIntent.putExtra("userId", userId);
+        songServiceIntent.putExtra("position", position);
+        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
+        startService(songServiceIntent);
+    }
+
+    private void getDataFromIntent() {
+        Intent intent = getIntent();
+        position = intent.getIntExtra("position", -1);
+
+        Song song = mMusics.get(position).getSong();
+        Artist artist = mMusics.get(position).getArtist();
+
+        uri = song.getUri();
+        songName = song.getName();
+        imageURL = song.getImageURL();
+        artistName = artist.getName();
+        artistImageURL = artist.getImageURL();
+        userId = intent.getStringExtra("userId");
+        playType = intent.getStringExtra("playType");
 
     }
 

@@ -43,8 +43,12 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hcmus.tinmuser.Adapter.MessageAdapter;
+import com.hcmus.tinmuser.Fragment.SearchFragment;
+import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Chat;
+import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.PlayDouble;
+import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
@@ -77,6 +81,8 @@ public class MessageActivity extends Activity implements ServiceConnection {
     private String userId;
     private String groupId;
     private String file_link;
+    private List<Music> mMusics = SearchFragment.mMusics;
+    private int position = 0;
 
     private SongService songService;
     private Intent songServiceIntent;
@@ -332,11 +338,16 @@ public class MessageActivity extends Activity implements ServiceConnection {
                 if (songService != null && songService.getMediaPlayer() != null) {
                     layoutPlay.setVisibility(View.VISIBLE);
 
+                    // Get current music playing
+                    position = songService.getPosition();
+                    Song song = mMusics.get(position).getSong();
+                    Artist artist = mMusics.get(position).getArtist();
+
                     Glide.with(getApplicationContext())
-                            .load(songService.getImageURL())
+                            .load(song.getImageURL())
                             .into(songAvatar);
-                    txtSongName.setText(songService.getSongName());
-                    txtArtistName.setText(songService.getArtistName());
+                    txtSongName.setText(song.getName());
+                    txtArtistName.setText(artist.getName());
 
                     updateProgressBar();
 

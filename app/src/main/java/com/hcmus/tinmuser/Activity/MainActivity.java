@@ -31,12 +31,16 @@ import com.hcmus.tinmuser.Fragment.HomeFragment;
 import com.hcmus.tinmuser.Fragment.LibraryFragment;
 import com.hcmus.tinmuser.Fragment.SearchFragment;
 import com.hcmus.tinmuser.Fragment.UsersFragment;
+import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.Music;
+import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends FragmentActivity {
@@ -55,6 +59,8 @@ public class MainActivity extends FragmentActivity {
     private RelativeLayout layoutPlay;
     private SongService songService;
 
+    private List<Music> mMusics;
+    private int position = 0;
 
     private final int[] tabIcons = {
             R.drawable.ic_home,
@@ -90,11 +96,19 @@ public class MainActivity extends FragmentActivity {
                 if(songService != null && songService.getMediaPlayer() != null) {
                     layoutPlay.setVisibility(View.VISIBLE);
 
+                    // Get current list music
+                    mMusics = SearchFragment.mMusics;
+
+                    // Get current music playing
+                    position = songService.getPosition();
+                    Song song = mMusics.get(position).getSong();
+                    Artist artist = mMusics.get(position).getArtist();
+
                     Glide.with(getApplicationContext())
-                            .load(songService.getImageURL())
+                            .load(song.getImageURL())
                             .into(songAvatar);
-                    txtSongName.setText(songService.getSongName());
-                    txtArtistName.setText(songService.getArtistName());
+                    txtSongName.setText(song.getName());
+                    txtArtistName.setText(artist.getName());
 
                     updateProgressBar();
 
@@ -112,13 +126,17 @@ public class MainActivity extends FragmentActivity {
                         public void onClick(View v) {
                             Intent intent = new Intent(MainActivity.this, PlaySongActivity.class);
 
-                            intent.putExtra("uri", songService.getUri());
-                            intent.putExtra("songName", songService.getSongName());
-                            intent.putExtra("imageURL", songService.getImageURL());
-                            intent.putExtra("artistName", songService.getArtistName());
-                            intent.putExtra("artistImageURL", songService.getArtistImageURL());
+//                            intent.putExtra("uri", songService.getUri());
+//                            intent.putExtra("songName", songService.getSongName());
+//                            intent.putExtra("imageURL", songService.getImageURL());
+//                            intent.putExtra("artistName", songService.getArtistName());
+//                            intent.putExtra("artistImageURL", songService.getArtistImageURL());
+//                            intent.putExtra("playType", songService.getPlayType());
+//                            intent.putExtra("userId", songService.getUserId());
+
                             intent.putExtra("playType", songService.getPlayType());
                             intent.putExtra("userId", songService.getUserId());
+                            intent.putExtra("position", songService.getPosition());
                             startActivity(intent);
                         }
                     });

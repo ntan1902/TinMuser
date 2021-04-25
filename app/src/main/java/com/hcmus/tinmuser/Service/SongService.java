@@ -9,29 +9,40 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.hcmus.tinmuser.Activity.MainActivity;
+import com.hcmus.tinmuser.Fragment.SearchFragment;
+import com.hcmus.tinmuser.Model.Music;
+
 import java.io.IOException;
+import java.util.List;
 
 public class SongService extends Service {
     private static SongService instance = null;
+
     public static SongService getInstance() {
         return instance;
     }
+
     private MediaPlayer mediaPlayer;
     private int playbackPosition = 0;
 
     private String uri = "";
-    private String songName = "";
-    private String artistName = "";
-    private String artistImageURL = "";
-    private String imageURL = "";
+    //    private String songName = "";
+//    private String artistName = "";
+//    private String artistImageURL = "";
+//    private String imageURL = "";
     private String playType = "";
     private String userId = "";
+    private List<Music> mMusics = SearchFragment.mMusics;
+    private int position = 0;
 
     private final IBinder mBinder = new LocalBinder();
+
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
+
     //returns the instance of the service
     public class LocalBinder extends Binder {
         public SongService getService() {
@@ -61,19 +72,17 @@ public class SongService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String uriTemp = intent.getStringExtra("uri");
-        if(!uriTemp.equals(uri)) {
-            uri = uriTemp;
-            playAudio(uri);
-            songName = intent.getStringExtra("songName");
-            artistName = intent.getStringExtra("artistName");
-            artistImageURL = intent.getStringExtra("artistImageURL");
-            imageURL = intent.getStringExtra("imageURL");
+        position = intent.getIntExtra("position", -1);
+        String uriTemp = mMusics.get(position).getSong().getUri();
+        if (!uriTemp.equals(uri)) {
+            playAudio(uriTemp);
             playType = intent.getStringExtra("playType");
             userId = intent.getStringExtra("userId");
+
+            uri = uriTemp;
         }
 
-        return super.onStartCommand(intent,flags,startId);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     public int getCurrentPosition() {
@@ -111,38 +120,6 @@ public class SongService extends Service {
         return mediaPlayer.getDuration();
     }
 
-    public String getSongName() {
-        return songName;
-    }
-
-    public void setSongName(String songName) {
-        this.songName = songName;
-    }
-
-    public String getArtistName() {
-        return artistName;
-    }
-
-    public void setArtistName(String artistName) {
-        this.artistName = artistName;
-    }
-
-    public String getImageURL() {
-        return imageURL;
-    }
-
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
-    }
-
-    public String getArtistImageURL() {
-        return artistImageURL;
-    }
-
-    public void setArtistImageURL(String artistImageURL) {
-        this.artistImageURL = artistImageURL;
-    }
-
     public String getUri() {
         return uri;
     }
@@ -165,6 +142,14 @@ public class SongService extends Service {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public void playAudio(String uri) {
