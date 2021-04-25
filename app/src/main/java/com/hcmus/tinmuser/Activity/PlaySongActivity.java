@@ -129,6 +129,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
         }
 
+        // Create text, image, button skip
         txtSongName.setText(songName);
         txtArtistName.setText(artistName);
         loadBitmapIntoSongImage(imageURL);
@@ -236,6 +237,34 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             }
         });
 
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                position = (position - 1) < 0 ? (mMusics.size() - 1) : (position - 1);
+
+                initializeMusic();
+
+                txtSongName.setText(songName);
+                txtArtistName.setText(artistName);
+                loadBitmapIntoSongImage(imageURL);
+                createService();
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                position = (position + 1) % mMusics.size();
+
+                initializeMusic();
+
+                txtSongName.setText(songName);
+                txtArtistName.setText(artistName);
+                loadBitmapIntoSongImage(imageURL);
+                createService();
+            }
+        });
+
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,6 +288,13 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
 
+        initializeMusic();
+        userId = intent.getStringExtra("userId");
+        playType = intent.getStringExtra("playType");
+
+    }
+
+    private void initializeMusic() {
         Song song = mMusics.get(position).getSong();
         Artist artist = mMusics.get(position).getArtist();
 
@@ -267,9 +303,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         imageURL = song.getImageURL();
         artistName = artist.getName();
         artistImageURL = artist.getImageURL();
-        userId = intent.getStringExtra("userId");
-        playType = intent.getStringExtra("playType");
-
     }
 
     private void loadBitmapIntoSongImage(String imageURL) {

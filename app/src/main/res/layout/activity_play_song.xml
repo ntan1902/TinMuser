@@ -171,7 +171,7 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/btnPlay"
             android:layout_toEndOf="@id/btnFavorite"
-            android:src="@drawable/ic_skip_previous" />
+            android:src="@drawable/ic_skip_previous_on" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -194,7 +194,7 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/btnRepeat"
             android:layout_toEndOf="@id/btnPlay"
-            android:src="@drawable/ic_skip_next" />
+            android:src="@drawable/ic_skip_next_on" />
 
         <ImageView
             android:id="@+id/btnRepeat"
