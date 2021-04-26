@@ -43,14 +43,16 @@ public class ShowListSongsActivity extends Activity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ShowListSongsActivity.this));
 
+        mMusics = new ArrayList<>();
+        mUserListFavorites = new ArrayList<>();
+        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, mUserListFavorites);
+        recyclerView.setAdapter(musicAdapter);
+
         Intent i = getIntent();
         userId = i.getStringExtra("userId");
 
-        mMusics = new ArrayList<>();
 
-        mUserListFavorites = new ArrayList<>();
         getFavoriteSongs();
-//        getMusics();
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,43 +74,29 @@ public class ShowListSongsActivity extends Activity {
 
                     Song song = songSnapshot.getValue(Song.class);
                     songs.add(song);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        // Lấy list ca sĩ
-        DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists");
-        artistRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                    Artist artist = artistSnapshot.getValue(Artist.class);
-
-                    for(Song song : songs) {
-                        String artistIdSong = song.getArtistId();
-                        String artistId = artist.getId();
-
-                        if(artistId.equals(artistIdSong)){
+                    DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists").child(song.getArtistId());
+                    artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot2) {
+                            Artist artist = snapshot2.getValue(Artist.class);
                             Music music = new Music(song, artist);
                             mMusics.add(music);
+                            musicAdapter.notifyDataSetChanged();
                         }
-                    }
-                }
 
-                musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, mUserListFavorites);
-                recyclerView.setAdapter(musicAdapter);
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-
         });
     }
     private void getFavoriteSongs(){
@@ -120,6 +108,7 @@ public class ShowListSongsActivity extends Activity {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
                     mUserListFavorites.add(fav_song);
+                    musicAdapter.notifyDataSetChanged();
                 }
 
                 getMusics();

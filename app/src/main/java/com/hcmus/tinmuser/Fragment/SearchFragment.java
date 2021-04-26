@@ -44,9 +44,6 @@ public class SearchFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void setListSong(List<Song> data) {
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,9 +55,12 @@ public class SearchFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchText = view.findViewById(R.id.searchText);
-//        ListSearch= new MusicList();
 
         mMusics = new ArrayList<>();
+        mUserListFavorites = new ArrayList<>();
+        setListView(mMusics);
+
+
         getMusics();
 
 
@@ -76,6 +76,7 @@ public class SearchFragment extends Fragment {
                                       int before, int count) {
                 if (searchText.hasFocus()) {
                     if (s.toString().isEmpty()) {
+                        setListView(mMusics);
                         getMusics();
                     } else {
                         List<Music> searchMusic = new ArrayList<>();
@@ -93,7 +94,6 @@ public class SearchFragment extends Fragment {
 
         //Generate all favorite song of user.
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mUserListFavorites = new ArrayList<>();
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -131,44 +131,29 @@ public class SearchFragment extends Fragment {
                 for (DataSnapshot songSnapshot : snapshot.getChildren()) {
                     Song song = songSnapshot.getValue(Song.class);
                     songs.add(song);
-                }
 
-                getArtistName(songs);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-    }
-
-    private void getArtistName(List<Song> songs) {
-        // Lấy list ca sĩ
-        DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists");
-        artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                    Artist artist = artistSnapshot.getValue(Artist.class);
-
-                    for (Song song : songs) {
-                        String artistIdSong = song.getArtistId();
-                        String artistId = artist.getId();
-
-                        if (artistId.equals(artistIdSong)) {
+                    DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists").child(song.getArtistId());
+                    artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot2) {
+                            Artist artist = snapshot2.getValue(Artist.class);
                             Music music = new Music(song, artist);
                             mMusics.add(music);
+                            musicAdapter.notifyDataSetChanged();
                         }
-                    }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
                 }
-                setListView(mMusics);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
+
     }
 }

@@ -139,36 +139,6 @@ public class ArtistProfileActivity extends Activity {
         });
     }
 
-    private void getArtistName(List<Song> songs) {
-        // Lấy list ca sĩ
-        DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists");
-        artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                    Artist artist = artistSnapshot.getValue(Artist.class);
-
-                    for (Song song : songs) {
-                        String artistIdSong = song.getArtistId();
-                        String artistId = artist.getId();
-
-                        if (artistId.equals(artistIdSong)) {
-                            Music music = new Music(song, artist);
-                            mMusics.add(music);
-                        }
-                    }
-                }
-                artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId);
-                recycleMusic.setAdapter(artistMusicAdapter);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
     private void getArtists() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
