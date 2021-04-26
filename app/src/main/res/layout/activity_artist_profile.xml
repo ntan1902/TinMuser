@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -38,9 +38,34 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/layoutOtherMusics"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@id/layoutTop">
+
+            <TextView
+                android:id="@+id/txtOtherMusics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Other musics"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="16dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerMusic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/txtOtherMusics"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layoutOtherArtists"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layoutOtherMusics">
 
             <TextView
                 android:id="@+id/txtOtherArtists"
@@ -62,4 +87,4 @@
         </RelativeLayout>
     </RelativeLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

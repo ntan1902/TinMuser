@@ -17,6 +17,7 @@ public class MenuOfSongActivity extends Activity {
     private TextView txtSongName, txtArtistName;
 
     private String userId;
+    private String playType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class MenuOfSongActivity extends Activity {
         String artistImageURL = intent.getStringExtra("artistImageURL");
         String imageURL = intent.getStringExtra("imageURL");
         userId = intent.getStringExtra("userId");
+        playType = intent.getStringExtra("playType");
 
         txtSongName.setText(songName);
         txtArtistName.setText(artistName);
@@ -45,6 +47,9 @@ public class MenuOfSongActivity extends Activity {
                 Intent intentArtist = new Intent(MenuOfSongActivity.this, ArtistProfileActivity.class);
                 intentArtist.putExtra("artistName", artistName);
                 intentArtist.putExtra("artistImageURL", artistImageURL);
+                intentArtist.putExtra("userId", userId);
+                intentArtist.putExtra("playType", playType);
+
                 startActivity(intentArtist);
             }
         });

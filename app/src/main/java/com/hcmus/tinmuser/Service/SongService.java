@@ -27,14 +27,13 @@ public class SongService extends Service {
     private int playbackPosition = 0;
 
     private String uri = "";
-    //    private String songName = "";
-//    private String artistName = "";
-//    private String artistImageURL = "";
-//    private String imageURL = "";
+    private String songName = "";
+    private String songId = "";
+    private String artistName = "";
+    private String artistImageURL = "";
+    private String imageURL = "";
     private String playType = "";
     private String userId = "";
-    private List<Music> mMusics = SearchFragment.mMusics;
-    private int position = 0;
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -72,15 +71,17 @@ public class SongService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        position = intent.getIntExtra("position", -1);
-        System.out.println("************* " + position);
-        String uriTemp = mMusics.get(position).getSong().getUri();
-        if (!uriTemp.equals(uri)) {
-            playAudio(uriTemp);
+        String uriTemp = intent.getStringExtra("uri");
+        if(!uriTemp.equals(uri)) {
+            uri = uriTemp;
+            playAudio(uri);
+            songName = intent.getStringExtra("songName");
+            songId = intent.getStringExtra("songId");
+            artistName = intent.getStringExtra("artistName");
+            artistImageURL = intent.getStringExtra("artistImageURL");
+            imageURL = intent.getStringExtra("imageURL");
             playType = intent.getStringExtra("playType");
             userId = intent.getStringExtra("userId");
-
-            uri = uriTemp;
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -144,13 +145,44 @@ public class SongService extends Service {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-    public int getPosition() {
-        return position;
+    public String getSongName() {
+        return songName;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setSongName(String songName) {
+        this.songName = songName;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String artistName) {
+        this.artistName = artistName;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getArtistImageURL() {
+        return artistImageURL;
+    }
+
+    public void setArtistImageURL(String artistImageURL) {
+        this.artistImageURL = artistImageURL;
+    }
+
+    public String getSongId() {
+        return songId;
+    }
+
+    public void setSongId(String songId) {
+        this.songId = songId;
     }
 
     public void playAudio(String uri) {

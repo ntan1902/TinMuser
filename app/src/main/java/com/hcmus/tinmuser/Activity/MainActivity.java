@@ -59,9 +59,6 @@ public class MainActivity extends FragmentActivity {
     private RelativeLayout layoutPlay;
     private SongService songService;
 
-    private List<Music> mMusics;
-    private int position = 0;
-
     private final int[] tabIcons = {
             R.drawable.ic_home,
             R.drawable.ic_search,
@@ -71,6 +68,7 @@ public class MainActivity extends FragmentActivity {
     };
 
     Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,28 +91,19 @@ public class MainActivity extends FragmentActivity {
             public void run() {
                 songService = SongService.getInstance();
 
-                if(songService != null && songService.getMediaPlayer() != null) {
+                if (songService != null && songService.getMediaPlayer() != null) {
                     layoutPlay.setVisibility(View.VISIBLE);
 
-                    // Get current list music
-                    mMusics = SearchFragment.mMusics;
 
-                    if(!mMusics.isEmpty()) {
-                        // Get current music playing
-                        position = songService.getPosition();
-                        Song song = mMusics.get(position).getSong();
-                        Artist artist = mMusics.get(position).getArtist();
+                    Glide.with(getApplicationContext())
+                            .load(songService.getImageURL())
+                            .into(songAvatar);
+                    txtSongName.setText(songService.getSongName());
+                    txtArtistName.setText(songService.getArtistName());
 
-                        Glide.with(getApplicationContext())
-                                .load(song.getImageURL())
-                                .into(songAvatar);
-                        txtSongName.setText(song.getName());
-                        txtArtistName.setText(artist.getName());
+                    updateProgressBar();
 
-                        updateProgressBar();
-                    }
-
-                    if(songService.getMediaPlayer().isPlaying()) {
+                    if (songService.getMediaPlayer().isPlaying()) {
                         isPlay = true;
                         btnPlay.setImageResource(R.drawable.ic_pause);
                     } else {
@@ -130,7 +119,7 @@ public class MainActivity extends FragmentActivity {
 
                             intent.putExtra("playType", songService.getPlayType());
                             intent.putExtra("userId", songService.getUserId());
-                            intent.putExtra("position", songService.getPosition());
+                            intent.putExtra("songId", songService.getSongId());
                             startActivity(intent);
                         }
                     });
@@ -210,7 +199,7 @@ public class MainActivity extends FragmentActivity {
 
 
         tabLayout = findViewById(R.id.tabLayout);
-        viewPager =  findViewById(R.id.viewPager);
+        viewPager = findViewById(R.id.viewPager);
 
         viewPageAdapter = new ViewPageAdapter(getSupportFragmentManager());
 
@@ -234,7 +223,6 @@ public class MainActivity extends FragmentActivity {
 
         int duration = songService.getDuration() / 1000;
         seekBar.setMax(duration);
-
 
         if (currentPosition == seekBar.getMax() && isPlay) {
             isPlay = false;

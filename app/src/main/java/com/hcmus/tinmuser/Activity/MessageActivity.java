@@ -81,8 +81,6 @@ public class MessageActivity extends Activity implements ServiceConnection {
     private String userId;
     private String groupId;
     private String file_link;
-    private List<Music> mMusics = SearchFragment.mMusics;
-    private int position = 0;
 
     private SongService songService;
     private Intent songServiceIntent;
@@ -193,20 +191,10 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     PlayDouble playDouble = snapshot.getValue(PlayDouble.class);
-                    songService = SongService.getInstance();
-
-                    if (playDouble.getIsPlay()) {
-                        songServiceIntent = new Intent(MessageActivity.this, SongService.class);
-                        songServiceIntent.putExtra("playType", "Double");
-                        songServiceIntent.putExtra("userId", userId);
-                        songServiceIntent.putExtra("position", playDouble.getPosition());
-                        bindService(songServiceIntent, MessageActivity.this, Context.BIND_AUTO_CREATE);
-                        startService(songServiceIntent);
-
+                    if(playDouble.getIsPlay()) {
+                        createService(playDouble);
                     }
-
                 }
-
             }
 
             @Override
@@ -227,7 +215,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
                         songService.start();
                     } else {
                         isPlay = false;
-                        btnPlay.setImageResource(R.drawable.ic_pause);
+                        btnPlay.setImageResource(R.drawable.ic_play);
                         songService.pause();
                     }
                 }
@@ -340,25 +328,22 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     layoutPlay.setVisibility(View.VISIBLE);
 
                     // Get current music playing
-                    position = songService.getPosition();
-                    Song song = mMusics.get(position).getSong();
-                    Artist artist = mMusics.get(position).getArtist();
 
                     Glide.with(getApplicationContext())
-                            .load(song.getImageURL())
+                            .load(songService.getImageURL())
                             .into(songAvatar);
-                    txtSongName.setText(song.getName());
-                    txtArtistName.setText(artist.getName());
+                    txtSongName.setText(songService.getSongName());
+                    txtArtistName.setText(songService.getArtistName());
 
                     updateProgressBar();
 
-                    if (songService.getMediaPlayer().isPlaying()) {
-                        isPlay = true;
-                        btnPlay.setImageResource(R.drawable.ic_pause);
-                    } else {
-                        isPlay = false;
-                        btnPlay.setImageResource(R.drawable.ic_play);
-                    }
+//                    if (songService.getMediaPlayer().isPlaying()) {
+//                        isPlay = true;
+//                        btnPlay.setImageResource(R.drawable.ic_pause);
+//                    } else {
+//                        isPlay = false;
+//                        btnPlay.setImageResource(R.drawable.ic_play);
+//                    }
                 } else {
 //                    Log.e("MAIN>>", "SongService doesn't exist");
                     layoutPlay.setVisibility(View.GONE);
@@ -579,6 +564,18 @@ public class MessageActivity extends Activity implements ServiceConnection {
         mRef.updateChildren(map);
     }
 
+    private void createService(PlayDouble playDouble) {
+        songServiceIntent = new Intent(this, SongService.class);
+        songServiceIntent.putExtra("uri", playDouble.getUri());
+        songServiceIntent.putExtra("songName", playDouble.getSongName());
+        songServiceIntent.putExtra("artistName", playDouble.getArtistName());
+        songServiceIntent.putExtra("imageURL", playDouble.getImageURL());
+        songServiceIntent.putExtra("playType", "Double");
+        songServiceIntent.putExtra("userId", userId);
+        songServiceIntent.putExtra("songId", playDouble.getSongId());
+        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
+        startService(songServiceIntent);
+    }
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         SongService.LocalBinder binder = (SongService.LocalBinder) service;
