@@ -119,7 +119,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             public void run() {
                 if (songService != null && songService.getMediaPlayer() != null) {
                     updateProgressBar();
-
                 }
                 handler.postDelayed(this, 100);
             }
@@ -315,6 +314,97 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     playDoubleId = userId + mUser.getUid();
                     playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                 }
+
+                //Listen song
+                ValueEventListener isPlayListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() && songService != null) {
+                            Boolean _isPlay = snapshot.getValue(Boolean.class);
+                            if (_isPlay) {
+                                isPlay = true;
+                                btnPlay.setImageResource(R.drawable.ic_pause);
+                                songService.start();
+                            } else {
+                                isPlay = false;
+                                btnPlay.setImageResource(R.drawable.ic_play);
+                                songService.pause();
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+
+                // Set progress change
+                ValueEventListener progressChangedListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() && songService != null) {
+                            Integer progress = snapshot.getValue(Integer.class);
+                            songService.seekTo(progress * 1000);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+
+                // Set repeat
+                ValueEventListener isRepeatListener = new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists() && songService != null) {
+                            Boolean _isRepeat = snapshot.getValue(Boolean.class);
+                            System.out.println("Repeat: " + isRepeat);
+                            if (_isRepeat) {
+                                isRepeat = true;
+                                btnRepeat.setImageResource(R.drawable.ic_repeat_on);
+                                songService.setLooping(true);
+
+                            } else {
+                                isRepeat = false;
+                                btnRepeat.setImageResource(R.drawable.ic_repeat_off);
+                                songService.setLooping(false);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                };
+
+                // Listen song
+                final DatabaseReference isPlayRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("isPlay");
+                isPlayRef.addValueEventListener(isPlayListener);
+
+                // Set progress change
+                final DatabaseReference progressChangedRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("progressChanged");
+                progressChangedRef.addValueEventListener(progressChangedListener);
+
+                // Set repeat
+                final DatabaseReference isRepeatRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("isRepeat");
+                isRepeatRef.addValueEventListener(isRepeatListener);
             }
 
             @Override

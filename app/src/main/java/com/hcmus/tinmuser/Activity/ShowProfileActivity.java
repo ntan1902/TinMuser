@@ -24,7 +24,7 @@ import com.hcmus.tinmuser.R;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
-public class ShowProfileActitivy extends Activity {
+public class ShowProfileActivity extends Activity {
 
     private TextView tvName, tvFullname, tvEmail, tvPhone, tvGender, tvSchool, tvMajor, tvBeginYear;
     private ImageView ivAvatar, btnGoBack;
@@ -107,7 +107,7 @@ public class ShowProfileActitivy extends Activity {
                 //Sweet Alert
                 {
                     // 5. Confirm success
-                    new SweetAlertDialog(com.hcmus.tinmuser.Activity.ShowProfileActitivy.this, SweetAlertDialog.WARNING_TYPE)
+                    new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
                             .setTitleText("Are you sure to add?")
                             .setConfirmText("Yes")
                             .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
@@ -175,7 +175,7 @@ public class ShowProfileActitivy extends Activity {
 //                Intent intent_goBack = new Intent(UserProfileActitivy.this, MainActivity.class);
 //                intent_goBack.putExtra("id", id);
 //                startActivity(intent_goBack);
-                com.hcmus.tinmuser.Activity.ShowProfileActitivy.super.onBackPressed();
+                ShowProfileActivity.super.onBackPressed();
                 finish();
             }
         });

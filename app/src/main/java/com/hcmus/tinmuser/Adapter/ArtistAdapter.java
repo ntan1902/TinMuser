@@ -23,10 +23,13 @@ import java.util.List;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private Context context;
     private List<Artist> mArtists;
-
-    public ArtistAdapter(Context context, List<Artist> mArtists) {
+    String playType;
+    String userId;
+    public ArtistAdapter(Context context, List<Artist> mArtists, String playType, String userId) {
         this.context = context;
         this.mArtists = mArtists;
+        this.playType = playType;
+        this.userId = userId;
     }
 
     @NonNull
@@ -61,6 +64,8 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                 Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
                 intentArtist.putExtra("artistName", artist.getName());
                 intentArtist.putExtra("artistImageURL", artist.getImageURL());
+                intentArtist.putExtra("playType", playType);
+                intentArtist.putExtra("userId", userId);
                 context.startActivity(intentArtist);
             }
         });

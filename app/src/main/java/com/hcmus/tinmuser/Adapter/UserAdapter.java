@@ -30,14 +30,14 @@ import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context context;
-    private List<Object> mItems;
+    private List<User> mItems;
     private boolean isChat;
 
     String lastMessage = "";
     String time = "";
 
 
-    public UserAdapter(Context context, List<Object> mUsers, boolean isChat) {
+    public UserAdapter(Context context, List<User> mUsers, boolean isChat) {
         this.context = context;
         this.mItems = mUsers;
         this.isChat = isChat;
@@ -56,7 +56,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull UserAdapter.ViewHolder holder, int position) {
-        User user = (User) mItems.get(position);
+        User user = mItems.get(position);
 
         holder.username.setText(user.getUserName());
         if (user.getImageURL().equals("default")) {
@@ -82,7 +82,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             public void onClick(View v) {
                 Intent i = new Intent(context, MessageActivity.class);
                 i.putExtra("userId", user.getId());
-                i.putExtra("groupId", "");
                 context.startActivity(i);
             }
         });

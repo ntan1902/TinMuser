@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Adapter.Artist2Adapter;
+import com.hcmus.tinmuser.EndlessRecyclerOnScrollListener;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.R;
 
@@ -31,9 +33,10 @@ public class ArtistsFragment extends Fragment {
     private static final int TOTAL_ITEM_EACH_LOAD = 5;
     private RecyclerView recyclerArtist;
     private Artist2Adapter artist2Adapter;
+    private ProgressBar mProgressBar;
 
     private List<Artist> mArtists;
-    private int currentPage = 10;
+    private int currentPage = 1;
 
 
     public ArtistsFragment() {
@@ -45,6 +48,8 @@ public class ArtistsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_artists, container, false);
+
+        mProgressBar = view.findViewById(R.id.progressbar);
 
         recyclerArtist = view.findViewById(R.id.recyclerArtist);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
@@ -60,22 +65,13 @@ public class ArtistsFragment extends Fragment {
         recyclerArtist.setNestedScrollingEnabled(false);
 
         mArtists = new ArrayList<>();
-        artist2Adapter = new Artist2Adapter(getContext(), mArtists);
+        artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "");
         recyclerArtist.setAdapter(artist2Adapter);
 
-        recyclerArtist.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerArtist.addOnScrollListener(new EndlessRecyclerOnScrollListener(gridLayoutManager) {
             @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-//                if(!recyclerArtist.canScrollVertically(1)) {
-//                    loadMoreData();
-//                }
+            public void onLoadMore(int current_page) {
+                loadMoreData();
             }
         });
 
@@ -95,21 +91,23 @@ public class ArtistsFragment extends Fragment {
         // at first load : currentPage = 0 -> we startAt(0 * 10 = 0)
         // at second load (first loadmore) : currentPage = 1 -> we startAt(1 * 10 = 10)
         FirebaseDatabase.getInstance()
-                .getReference()
-                .child("Artists")
-                .getRef()
-                .orderByChild("id")
-                .startAt(currentPage * TOTAL_ITEM_EACH_LOAD)
+                .getReference("Artists")
+                .orderByChild("number")
                 .limitToFirst(TOTAL_ITEM_EACH_LOAD)
+                .startAt(currentPage * TOTAL_ITEM_EACH_LOAD)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChildren()) {
 
-                        for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                            Artist artist = artistSnapshot.getValue(Artist.class);
+                            for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
+                                Artist artist = artistSnapshot.getValue(Artist.class);
 
-                            mArtists.add(artist);
-                            artist2Adapter.notifyDataSetChanged();
+                                mArtists.add(artist);
+                                artist2Adapter.notifyDataSetChanged();
+                            }
+                        } else {
+                            currentPage--;
                         }
 
                     }

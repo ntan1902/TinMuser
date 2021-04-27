@@ -152,7 +152,7 @@ public class ArtistProfileActivity extends Activity {
                     }
                 }
 
-                artistAdapter = new ArtistAdapter(ArtistProfileActivity.this, mArtists);
+                artistAdapter = new ArtistAdapter(ArtistProfileActivity.this, mArtists, playType, userId);
                 recyclerArtist.setAdapter(artistAdapter);
             }
 

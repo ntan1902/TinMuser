@@ -29,7 +29,7 @@ import java.util.List;
 public class ChatFragment extends Fragment {
 
     private UserAdapter userAdapter;
-    private List<Object> mItems;
+    private List<User> mItems;
     private List<ChatList> mChatLists;
 
     private FirebaseUser mUser;
@@ -83,8 +83,6 @@ public class ChatFragment extends Fragment {
     private void getChatList() {
         // Getting all chats
         mItems = new ArrayList<>();
-//        List<Object> mUsers = new ArrayList<>(mItems);
-        List<Object> mGroups = new ArrayList<>(mItems);
 
         mRef = FirebaseDatabase
                 .getInstance()

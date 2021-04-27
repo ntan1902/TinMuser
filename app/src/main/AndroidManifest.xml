@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TinMuser">
-        <activity android:name=".Activity.ArtistProfileActivity"></activity>
+
+        <activity android:name=".Activity.ArtistProfileActivity" />
         <activity android:name=".Activity.MenuOfSongActivity" />
         <activity android:name=".Activity.ShowListSongsActivity" />
 
@@ -21,19 +22,12 @@
             android:exported="true" />
 
         <activity android:name=".Activity.ProfileActivity" />
-        <activity android:name=".Activity.PlaySongActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+        <activity android:name=".Activity.PlaySongActivity" />
+        <activity android:name=".Activity.PlaySongDoubleActivity" />
         <activity android:name=".Activity.MessageActivity" />
         <activity android:name=".Activity.EditProfileActivity" />
         <activity android:name=".Activity.AddFriendActivity" />
-        <activity android:name=".Activity.ShowProfileActitivy" />
+        <activity android:name=".Activity.ShowProfileActivity" />
         <activity android:name=".Activity.ChangePasswordActivity" />
         <activity android:name=".Activity.ShowZoomImage" />
         <activity android:name=".Activity.SignUpActivity" />

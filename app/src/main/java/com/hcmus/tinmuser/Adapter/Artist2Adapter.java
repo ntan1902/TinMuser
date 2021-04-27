@@ -27,46 +27,49 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
     private Context context;
     private List<Artist> mArtists;
 
-    public static final int ARTIST_INFO = 0;
-    public static final int LOAD_MORE = 1;
+    //    public static final int ARTIST_INFO = 0;
+//    public static final int LOAD_MORE = 1;
+    String playType;
+    String userId;
 
-
-    public Artist2Adapter(Context context, List<Artist> mArtists) {
+    public Artist2Adapter(Context context, List<Artist> mArtists, String playType, String userId) {
         this.context = context;
         this.mArtists = mArtists;
+        this.playType = playType;
+        this.userId = userId;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ARTIST_INFO) {
-            View view = LayoutInflater
-                    .from(parent.getContext())
-                    .inflate(R.layout.artist_item_2,
-                            parent,
-                            false);
-            return new Artist2Adapter.ViewHolder(view);
-        } else if (viewType == LOAD_MORE) {
-            View view = LayoutInflater
-                    .from(parent.getContext())
-                    .inflate(R.layout.load_more,
-                            parent,
-                            false);
-            return new Artist2Adapter.ViewHolder(view);
-        } else {
-            return null;
-        }
-//        View view = LayoutInflater
-//                .from(parent.getContext())
-//                .inflate(R.layout.artist_item_2,
-//                        parent,
-//                        false);
-//        return new Artist2Adapter.ViewHolder(view);
+//        if (viewType == ARTIST_INFO) {
+//            View view = LayoutInflater
+//                    .from(parent.getContext())
+//                    .inflate(R.layout.artist_item_2,
+//                            parent,
+//                            false);
+//            return new Artist2Adapter.ViewHolder(view);
+//        } else if (viewType == LOAD_MORE) {
+//            View view = LayoutInflater
+//                    .from(parent.getContext())
+//                    .inflate(R.layout.load_more,
+//                            parent,
+//                            false);
+//            return new Artist2Adapter.ViewHolder(view);
+//        } else {
+//            return null;
+//        }
+        View view = LayoutInflater
+                .from(parent.getContext())
+                .inflate(R.layout.artist_item_2,
+                        parent,
+                        false);
+        return new Artist2Adapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if(position < mArtists.size()) {
+        if (position < mArtists.size()) {
             Artist artist = mArtists.get(position);
 
             holder.artistName.setText(artist.getName());
@@ -86,6 +89,8 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
                     Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
                     intentArtist.putExtra("artistName", artist.getName());
                     intentArtist.putExtra("artistImageURL", artist.getImageURL());
+                    intentArtist.putExtra("playType", playType);
+                    intentArtist.putExtra("userId", userId);
                     context.startActivity(intentArtist);
                 }
             });
@@ -95,17 +100,17 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
     @Override
     public int getItemCount() {
 
-        return mArtists.size() + 1;
+        return mArtists.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position < mArtists.size()) {
-            return ARTIST_INFO;
-        } else {
-            return LOAD_MORE;
-        }
-    }
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (position < mArtists.size()) {
+//            return ARTIST_INFO;
+//        } else {
+//            return LOAD_MORE;
+//        }
+//    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;

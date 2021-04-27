@@ -20,7 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.hcmus.tinmuser.Activity.ShowProfileActitivy;
+import com.hcmus.tinmuser.Activity.ShowProfileActivity;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
@@ -63,7 +63,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<com.hcmus.tinmuse
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, ShowProfileActitivy.class);
+                Intent i = new Intent(context, ShowProfileActivity.class);
                 i.putExtra("id", user.getId());
                 context.startActivity(i);
             }

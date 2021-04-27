@@ -4,15 +4,17 @@ public class Artist {
     String id;
     String name;
     String imageURL;
+    Integer number;
 
     public Artist() {
 
     }
 
-    public Artist(String id, String name, String imageURL) {
+    public Artist(String id, String name, String imageURL, Integer number) {
         this.id = id;
         this.name = name;
         this.imageURL = imageURL;
+        this.number = number;
     }
 
     public String getId() {

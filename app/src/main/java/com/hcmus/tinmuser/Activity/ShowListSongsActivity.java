@@ -43,13 +43,14 @@ public class ShowListSongsActivity extends Activity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ShowListSongsActivity.this));
 
+
+        Intent i = getIntent();
+        userId = i.getStringExtra("userId");
+
         mMusics = new ArrayList<>();
         mUserListFavorites = new ArrayList<>();
         musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, mUserListFavorites);
         recyclerView.setAdapter(musicAdapter);
-
-        Intent i = getIntent();
-        userId = i.getStringExtra("userId");
 
 
         getFavoriteSongs();

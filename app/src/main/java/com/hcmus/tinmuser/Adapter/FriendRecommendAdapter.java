@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.hcmus.tinmuser.Activity.ShowProfileActitivy;
+import com.hcmus.tinmuser.Activity.ShowProfileActivity;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
@@ -54,7 +54,7 @@ public class FriendRecommendAdapter extends RecyclerView.Adapter<com.hcmus.tinmu
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, ShowProfileActitivy.class);
+                Intent i = new Intent(context, ShowProfileActivity.class);
                 i.putExtra("userId", user.getId());
                 context.startActivity(i);
             }

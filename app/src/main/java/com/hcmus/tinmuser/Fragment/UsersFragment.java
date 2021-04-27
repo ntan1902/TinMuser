@@ -28,7 +28,7 @@ public class UsersFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
-    private List<Object> mUsers;
+    private List<User> mUsers;
 
     private FirebaseUser mUser;
     private DatabaseReference mRef;

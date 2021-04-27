@@ -79,7 +79,6 @@ public class MessageActivity extends Activity implements ServiceConnection {
     private List<Object> mItems;
     private List<String> imgURLs;
     private String userId;
-    private String groupId;
     private String file_link;
 
     private SongService songService;
@@ -142,7 +141,6 @@ public class MessageActivity extends Activity implements ServiceConnection {
         // Receiver
         Intent i = getIntent();
         userId = i.getStringExtra("userId");
-        groupId = i.getStringExtra("groupId");
 
         // Sender
         mUser = FirebaseAuth
@@ -344,6 +342,20 @@ public class MessageActivity extends Activity implements ServiceConnection {
 //                        isPlay = false;
 //                        btnPlay.setImageResource(R.drawable.ic_play);
 //                    }
+
+                    // Set on click on PlaySong
+                    layoutPlay.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(MessageActivity.this, PlaySongActivity.class);
+
+                            intent.putExtra("playType", songService.getPlayType());
+                            intent.putExtra("userId", songService.getUserId());
+                            intent.putExtra("songId", songService.getSongId());
+                            startActivity(intent);
+                        }
+                    });
+
                 } else {
 //                    Log.e("MAIN>>", "SongService doesn't exist");
                     layoutPlay.setVisibility(View.GONE);
@@ -573,7 +585,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
         songServiceIntent.putExtra("playType", "Double");
         songServiceIntent.putExtra("userId", userId);
         songServiceIntent.putExtra("songId", playDouble.getSongId());
-        bindService(songServiceIntent, this, Context.BIND_AUTO_CREATE);
+        bindService(songServiceIntent, this, BIND_AUTO_CREATE);
         startService(songServiceIntent);
     }
     @Override
@@ -607,11 +619,11 @@ public class MessageActivity extends Activity implements ServiceConnection {
     @Override
     protected void onPause() {
         super.onPause();
-        songService = SongService.getInstance();
-        if (songService != null) {
-            unbindService(this);
-
-        }
+//        songService = SongService.getInstance();
+//        if (songService != null) {
+//            unbindService(this);
+//
+//        }
     }
 
     private void setValuePlayDouble(Boolean value) {
