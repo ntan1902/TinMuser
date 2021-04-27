@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -199,10 +201,51 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                 initializeMusic(position);
 
-                txtSongName.setText(songName);
-                txtArtistName.setText(artistName);
-                loadBitmapIntoSongImage(imageURL);
-                createService();
+                // Nghe nhạc với nhau trong khi nhắn tin
+                if (playType.equals("Double")) {
+                    final DatabaseReference playDoubleIdRef = FirebaseDatabase
+                            .getInstance()
+                            .getReference("PlayDouble")
+                            .child(playDoubleId);
+                    playDoubleIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Map<String, Object> map = new HashMap<>();
+
+                            map.put("uri", uri);
+                            map.put("artistName", artistName);
+                            map.put("artistImageURL", artistImageURL);
+                            map.put("songName", songName);
+                            map.put("songId", songId);
+                            map.put("imageURL", imageURL);
+                            map.put("position", position);
+
+
+                            playDoubleIdRef.updateChildren(map);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                } else {
+                    txtSongName.setText(songName);
+                    txtArtistName.setText(artistName);
+                    loadBitmapIntoSongImage(imageURL);
+
+                    createService();
+                }
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                position = (position + 1) % mMusics.size();
+                isPlay = true;
+                btnPlay.setImageResource(R.drawable.ic_pause);
+                initializeMusic(position);
 
                 // Nghe nhạc với nhau trong khi nhắn tin
                 if (playType.equals("Double")) {
@@ -217,8 +260,11 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                             map.put("uri", uri);
                             map.put("artistName", artistName);
+                            map.put("artistImageURL", artistImageURL);
                             map.put("songName", songName);
                             map.put("songId", songId);
+                            map.put("imageURL", imageURL);
+                            map.put("position", position);
 
                             playDoubleIdRef.updateChildren(map);
                         }
@@ -228,49 +274,13 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                         }
                     });
-                }
-            }
-        });
+                } else {
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                position = (position + 1) % mMusics.size();
-                isPlay = true;
-                btnPlay.setImageResource(R.drawable.ic_pause);
+                    txtSongName.setText(songName);
+                    txtArtistName.setText(artistName);
+                    loadBitmapIntoSongImage(imageURL);
 
-                initializeMusic(position);
-
-                txtSongName.setText(songName);
-                txtArtistName.setText(artistName);
-                loadBitmapIntoSongImage(imageURL);
-
-                createService();
-
-                // Nghe nhạc với nhau trong khi nhắn tin
-                if (playType.equals("Double")) {
-                    final DatabaseReference playDoubleIdRef = FirebaseDatabase
-                            .getInstance()
-                            .getReference("PlayDouble")
-                            .child(playDoubleId);
-                    playDoubleIdRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Map<String, Object> map = new HashMap<>();
-
-                            map.put("uri",uri);
-                            map.put("artistName", artistName);
-                            map.put("songName", songName);
-                            map.put("songId", songId);
-
-                            playDoubleIdRef.updateChildren(map);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+                    createService();
                 }
             }
         });
@@ -300,27 +310,80 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                         playDouble.setUri(uri);
                         playDouble.setArtistName(artistName);
+                        playDouble.setArtistImageURL(artistImageURL);
                         playDouble.setSongName(songName);
+                        playDouble.setImageURL(imageURL);
                         playDouble.setIsPlay(true);
                         playDouble.setIsRepeat(false);
                         playDouble.setSongId(songId);
+                        playDouble.setPosition(position);
 
                         playDoubleId = dataSnapshot.getKey();
                         playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                     }
                 }
                 if (!isExist) {
-                    PlayDouble playDouble = new PlayDouble(userId, mUser.getUid(), uri, songId, songName, artistName, imageURL, 0, true, false);
+                    PlayDouble playDouble = new PlayDouble(userId, mUser.getUid(), uri, songId, songName, artistName, artistImageURL, imageURL, 0, position, true, false);
                     playDoubleId = userId + mUser.getUid();
                     playDoubleIdRef.child(playDoubleId).setValue(playDouble);
                 }
 
-                //Listen song
-                ValueEventListener isPlayListener = new ValueEventListener() {
+                // Create SongService
+                final DatabaseReference playDoubleIdRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("position");
+                playDoubleIdRef.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists() && songService != null) {
-                            Boolean _isPlay = snapshot.getValue(Boolean.class);
+                    public void onDataChange(@NonNull DataSnapshot snapshot2) {
+                        if (snapshot2.exists()) {
+//                            PlayDouble playDouble = snapshot2.getValue(PlayDouble.class);
+//                            if(playDouble.getIsPlay()) {
+//                                uri = playDouble.getUri();
+//                                songName = playDouble.getSongName();
+//                                imageURL = playDouble.getImageURL();
+//                                artistName = playDouble.getArtistName();
+//                                artistImageURL = playDouble.getArtistImageURL();
+//                                songId = playDouble.getSongId();
+//                                position = playDouble.getPosition();
+//
+//                                // Create text, image, button skip
+//                                txtSongName.setText(songName);
+//                                txtArtistName.setText(artistName);
+//                                loadBitmapIntoSongImage(imageURL);
+//
+//                                createService();
+//                            }
+                            position = snapshot2.getValue(Integer.class);
+                            initializeMusic(position);
+
+                            // Create text, image, button skip
+                            txtSongName.setText(songName);
+                            txtArtistName.setText(artistName);
+                            loadBitmapIntoSongImage(imageURL);
+
+                            createService();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+                // Listen song
+                final DatabaseReference isPlayRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("isPlay");
+                isPlayRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot2) {
+                        if (snapshot2.exists() && songService != null) {
+                            Boolean _isPlay = snapshot2.getValue(Boolean.class);
                             if (_isPlay) {
                                 isPlay = true;
                                 btnPlay.setImageResource(R.drawable.ic_pause);
@@ -338,14 +401,19 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
-                };
+                });
 
                 // Set progress change
-                ValueEventListener progressChangedListener = new ValueEventListener() {
+                final DatabaseReference progressChangedRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("progressChanged");
+                progressChangedRef.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists() && songService != null) {
-                            Integer progress = snapshot.getValue(Integer.class);
+                    public void onDataChange(@NonNull DataSnapshot snapshot2) {
+                        if (snapshot2.exists() && songService != null) {
+                            Integer progress = snapshot2.getValue(Integer.class);
                             songService.seekTo(progress * 1000);
                         }
                     }
@@ -354,14 +422,19 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
-                };
+                });
 
                 // Set repeat
-                ValueEventListener isRepeatListener = new ValueEventListener() {
+                final DatabaseReference isRepeatRef = FirebaseDatabase
+                        .getInstance()
+                        .getReference("PlayDouble")
+                        .child(playDoubleId)
+                        .child("isRepeat");
+                isRepeatRef.addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists() && songService != null) {
-                            Boolean _isRepeat = snapshot.getValue(Boolean.class);
+                    public void onDataChange(@NonNull DataSnapshot snapshot2) {
+                        if (snapshot2.exists() && songService != null) {
+                            Boolean _isRepeat = snapshot2.getValue(Boolean.class);
                             System.out.println("Repeat: " + isRepeat);
                             if (_isRepeat) {
                                 isRepeat = true;
@@ -380,31 +453,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     public void onCancelled(@NonNull DatabaseError error) {
 
                     }
-                };
-
-                // Listen song
-                final DatabaseReference isPlayRef = FirebaseDatabase
-                        .getInstance()
-                        .getReference("PlayDouble")
-                        .child(playDoubleId)
-                        .child("isPlay");
-                isPlayRef.addValueEventListener(isPlayListener);
-
-                // Set progress change
-                final DatabaseReference progressChangedRef = FirebaseDatabase
-                        .getInstance()
-                        .getReference("PlayDouble")
-                        .child(playDoubleId)
-                        .child("progressChanged");
-                progressChangedRef.addValueEventListener(progressChangedListener);
-
-                // Set repeat
-                final DatabaseReference isRepeatRef = FirebaseDatabase
-                        .getInstance()
-                        .getReference("PlayDouble")
-                        .child(playDoubleId)
-                        .child("isRepeat");
-                isRepeatRef.addValueEventListener(isRepeatListener);
+                });
             }
 
             @Override
@@ -471,7 +520,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                                     Music music = new Music(song, artist);
                                     mMusics.add(music);
 
-                                    if(song.getId().equals(songId)) {
+                                    if (song.getId().equals(songId)) {
                                         position = mMusics.size() - 1;
                                         initializeMusic(position);
                                     }
@@ -484,12 +533,12 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                         txtArtistName.setText(artistName);
                         loadBitmapIntoSongImage(imageURL);
 
-                        // Start SongService
-                        createService();
-
                         // Nghe nhạc với nhau trong khi nhắn tin
                         if (playType.equals("Double")) {
                             initializePlayDouble();
+                        } else {
+                            // Start SongService
+                            createService();
                         }
                     }
 
@@ -624,12 +673,14 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         seekBar.setMax(duration);
 
 
+
         if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
             isPlay = false;
             btnPlay.setImageResource(R.drawable.ic_play);
 
-            if(!isRepeat) {
-                btnNext.performClick();
+            // TODO: BUG
+            if (!isRepeat) {
+//                btnNext.performClick();
             } else {
                 songService.reset();
 //                songService.pause();
