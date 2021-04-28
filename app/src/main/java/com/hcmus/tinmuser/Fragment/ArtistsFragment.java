@@ -30,13 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArtistsFragment extends Fragment {
-    private static final int TOTAL_ITEM_EACH_LOAD = 5;
+    private static final int TOTAL_ITEM_EACH_LOAD = 6;
     private RecyclerView recyclerArtist;
     private Artist2Adapter artist2Adapter;
-    private ProgressBar mProgressBar;
 
     private List<Artist> mArtists;
-    private int currentPage = 1;
+    private int currentPage = 0;
 
 
     public ArtistsFragment() {
@@ -49,20 +48,12 @@ public class ArtistsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_artists, container, false);
 
-        mProgressBar = view.findViewById(R.id.progressbar);
-
         recyclerArtist = view.findViewById(R.id.recyclerArtist);
-//        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
-//                LinearLayoutManager.VERTICAL,
-//                false);
+        recyclerArtist.setHasFixedSize(true);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
                 3);
-        recyclerArtist.setHasFixedSize(true);
-//        recyclerArtist.setLayoutManager(layoutManager);
         recyclerArtist.setLayoutManager(gridLayoutManager);
-
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
-        recyclerArtist.setNestedScrollingEnabled(false);
 
         mArtists = new ArrayList<>();
         artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "");
@@ -91,10 +82,12 @@ public class ArtistsFragment extends Fragment {
         // at first load : currentPage = 0 -> we startAt(0 * 10 = 0)
         // at second load (first loadmore) : currentPage = 1 -> we startAt(1 * 10 = 10)
         FirebaseDatabase.getInstance()
-                .getReference("Artists")
+                .getReference()
+                .child("Artists")
                 .orderByChild("number")
                 .limitToFirst(TOTAL_ITEM_EACH_LOAD)
                 .startAt(currentPage * TOTAL_ITEM_EACH_LOAD)
+
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -109,12 +102,10 @@ public class ArtistsFragment extends Fragment {
                         } else {
                             currentPage--;
                         }
-
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 });
     }

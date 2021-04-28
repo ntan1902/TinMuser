@@ -673,7 +673,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         seekBar.setMax(duration);
 
 
-
         if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
             isPlay = false;
             btnPlay.setImageResource(R.drawable.ic_play);

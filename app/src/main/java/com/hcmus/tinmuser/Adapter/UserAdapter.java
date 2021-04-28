@@ -67,7 +67,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     .into(holder.imageView);
         }
 
-        if(user.getStatus().equals("online")){
+        if (user.getStatus().equals("online")) {
             holder.imgOn.setVisibility(View.VISIBLE);
         } else {
             holder.imgOn.setVisibility(View.GONE);
@@ -99,9 +99,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                     if ((chat.getSender().equals(firebaseUser.getUid()) && chat.getReceiver().equals(id)) ||
                             (chat.getSender().equals(id) && chat.getReceiver().equals(firebaseUser.getUid()))) {
-                        if(chat.getType().equals("text")) {
+                        if (chat.getType().equals("text")) {
                             lastMessage = chat.getMessage();
-                        } else if(chat.getType().equals("image")){
+                        } else if (chat.getType().equals("image")) {
                             lastMessage = "Image was sent";
                         }
                         time = chat.getTime();
@@ -123,7 +123,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             }
         });
     }
-
 
 
     @Override
@@ -181,12 +180,20 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     strMin = "0" + strMin;
 
                 result = strHour + ":" + strMin;
-            } else if (gapHour < 168 && lastTimeDayOfWeek < currentDayOfWeek) { //1 tuan co 168 tieng
-                result = "Th" + lastTimeDayOfWeek;
             } else {
-                result = lastTimeDayOfMonth + " th " + lastTimeMonth;
-                if (lastTimeYear < currentYear) {
-                    result += ", " + lastTimeYear;
+                if (gapHour < 168 && lastTimeDayOfWeek < currentDayOfWeek) { //1 tuan co 168 tieng
+                    String dayOfWeek = String.valueOf(lastTimeDayOfWeek);
+                    if (dayOfWeek.equals("1")) {
+                        result = "CN";
+                    }
+                    else {
+                        result = "Th " + dayOfWeek;
+                    }
+                } else {
+                    result = String.valueOf(lastTimeDayOfMonth) + " thg " + String.valueOf(lastTimeMonth);
+                    if (lastTimeYear < currentYear) {
+                        result += ", " + String.valueOf(lastTimeYear);
+                    }
                 }
             }
 
