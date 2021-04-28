@@ -212,24 +212,5 @@ public class SearchFragment extends Fragment {
 
     }
 
-    private void getFavoriteSongs(){
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavorites.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavorites.add(fav_song);
-                }
 
-                getMusics();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 }
