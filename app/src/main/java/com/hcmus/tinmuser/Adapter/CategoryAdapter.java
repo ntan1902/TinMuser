@@ -13,23 +13,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
 import com.hcmus.tinmuser.Activity.MenuOfSongActivity;
 import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.Category;
+import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.R;
 
 import java.util.List;
 
-public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
+public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> {
     private Context context;
-    private List<Artist> mArtists;
-    String playType;
-    String userId;
-    public ArtistAdapter(Context context, List<Artist> mArtists, String playType, String userId) {
+    private List<Category> mCategories;
+
+    public CategoryAdapter(Context context, List<Category> mCategories) {
         this.context = context;
-        this.mArtists = mArtists;
-        this.playType = playType;
-        this.userId = userId;
+        this.mCategories = mCategories;
     }
 
     @NonNull
@@ -37,54 +38,50 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.artist_item,
+                .inflate(R.layout.category_item,
                         parent,
                         false);
-        return new ArtistAdapter.ViewHolder(view);
+        return new CategoryAdapter.ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Artist artist = mArtists.get(position);
+        Category category = mCategories.get(position);
 
-        holder.artistName.setText(artist.getName());
-        holder.artistName.setTextColor(Color.parseColor("#FFFFFF"));
+        holder.categoryName.setText(category.getName());
+        holder.categoryName.setTextColor(Color.parseColor("#FFFFFF"));
 
-        if (artist.getImageURL().equals("default")) {
+        if (category.getImageURL().equals("default")) {
             holder.imageView.setImageResource(R.drawable.profile_image);
         } else {
             Glide.with(context)
-                    .load(artist.getImageURL())
+                    .load(category.getImageURL())
                     .into(holder.imageView);
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
-                intentArtist.putExtra("artistName", artist.getName());
-                intentArtist.putExtra("artistImageURL", artist.getImageURL());
-                intentArtist.putExtra("playType", playType);
-                intentArtist.putExtra("userId", userId);
-                context.startActivity(intentArtist);
+
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
-        return mArtists.size();
+        return mCategories.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        TextView artistName;
+        TextView categoryName;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
-            artistName = itemView.findViewById(R.id.artistName);
+            categoryName = itemView.findViewById(R.id.categoryName);
         }
     }
 }

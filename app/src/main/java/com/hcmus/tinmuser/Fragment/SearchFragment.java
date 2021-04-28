@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,20 +22,27 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.hcmus.tinmuser.Adapter.CategoryAdapter;
 import com.hcmus.tinmuser.Adapter.MusicAdapter;
 import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.Category;
 import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
     MusicAdapter musicAdapter;
+    CategoryAdapter categoryAdapter;
     EditText searchText;
-    public static List<Music> mMusics;
+
+    List<Music> mMusics;
+    List<Music> searchMusic;
+    List<Category> mCategories;
 
     FirebaseUser mUser;
     ArrayList<String> mUserListFavorites;
@@ -50,14 +58,23 @@ public class SearchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        recyclerView = view.findViewById(R.id.recyclerViewSearch);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         searchText = view.findViewById(R.id.searchText);
 
+        recyclerView = view.findViewById(R.id.recyclerViewSearch);
+        recyclerView.setHasFixedSize(true);
+
+        mCategories = new ArrayList<>();
+        categoryAdapter = new CategoryAdapter(getContext(), mCategories);
+        setCategoryView();
+        getCategories();
+
         mMusics = new ArrayList<>();
+        getMusics();
+        
+        searchMusic = new ArrayList<>();
         mUserListFavorites = new ArrayList<>();
-        setListView(mMusics);
+        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "", mUserListFavorites);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         getFavoriteSongs();
@@ -74,23 +91,30 @@ public class SearchFragment extends Fragment {
                                       int before, int count) {
                 if (searchText.hasFocus()) {
                     if (s.toString().isEmpty()) {
-                        setListView(mMusics);
-                        getMusics();
+                        setCategoryView();
+                        getCategories();
                     } else {
-                        List<Music> searchMusic = new ArrayList<>();
+                        setMusicView2();
+                        searchMusic.clear();
                         for (Music x : mMusics) {
                             if (x.getArtist().getName().toLowerCase().contains(s.toString().toLowerCase()) ||
                                     x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())) {
                                 searchMusic.add(x);
+                                musicAdapter.notifyDataSetChanged();
                             }
                         }
-                        setListView(searchMusic);
+                        //Generate all favorite song of user.
+                        getFavoriteSongs();
+
                     }
                 }
             }
         });
 
-        //Generate all favorite song of user.
+        return view;
+    }
+
+    private void getFavoriteSongs() {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
@@ -100,6 +124,7 @@ public class SearchFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
                     mUserListFavorites.add(fav_song);
+                    musicAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -108,12 +133,45 @@ public class SearchFragment extends Fragment {
 
             }
         });
-        return view;
     }
 
-    void setListView(List<Music> list) {
+    private void setMusicView(List<Music> list) {
         musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(musicAdapter);
+    }
+
+    private void setMusicView2() {
+//        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(musicAdapter);
+    }
+
+    private void setCategoryView() {
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.setAdapter(categoryAdapter);
+    }
+
+
+    private void getCategories() {
+        FirebaseDatabase.getInstance().getReference("Categories")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        mCategories.clear();
+                        for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                            Category category = categorySnapshot.getValue(Category.class);
+
+                            mCategories.add(category);
+                            categoryAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void getMusics() {
@@ -137,7 +195,6 @@ public class SearchFragment extends Fragment {
                             Artist artist = snapshot2.getValue(Artist.class);
                             Music music = new Music(song, artist);
                             mMusics.add(music);
-                            musicAdapter.notifyDataSetChanged();
                         }
 
                         @Override
