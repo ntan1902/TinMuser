@@ -29,7 +29,7 @@ import com.hcmus.tinmuser.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArtistsFragment extends Fragment {
+public class FavoriteArtistFragment extends Fragment {
     private static final int TOTAL_ITEM_EACH_LOAD = 6;
     private RecyclerView recyclerArtist;
     private Artist2Adapter artist2Adapter;
@@ -38,7 +38,7 @@ public class ArtistsFragment extends Fragment {
     private int currentPage = 0;
 
 
-    public ArtistsFragment() {
+    public FavoriteArtistFragment() {
         // Required empty public constructor
     }
 

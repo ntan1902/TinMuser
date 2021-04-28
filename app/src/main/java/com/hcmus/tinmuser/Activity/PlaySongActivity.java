@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -18,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +33,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.hcmus.tinmuser.Fragment.SearchFragment;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.PlayDouble;
@@ -760,9 +757,9 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                 }
             });
+            if (mUserListFavorites.contains(idSong)) return true;
         }
 
-        if (mUserListFavorites.contains(idSong)) return true;
 
         return false;
     }
