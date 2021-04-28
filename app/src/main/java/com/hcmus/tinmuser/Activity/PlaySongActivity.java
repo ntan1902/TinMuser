@@ -78,6 +78,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private DatabaseReference mRef;
     private boolean isExist = false;
     private String playDoubleId;
+    ArrayList<String> mUserListFavorites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,15 +166,27 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             }
         });
 
+        //Favorite
+        if (getIsFavorite(songId)) {
+            btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+        } else {
+            btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+        }
+
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isFavorite = getIsFavorite(songId);
                 if (isFavorite) {
-                    isFavorite = false;
                     btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                    DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId);
+                    favoriteRef.removeValue();
+                    isFavorite = false;
                 } else {
-                    isFavorite = true;
                     btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                    DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId).child("id");
+                    favoriteRef.setValue(songId);
+                    isFavorite = true;
                 }
             }
         });
@@ -230,6 +243,12 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                         }
                     });
                 } else {
+                    if (getIsFavorite(songId)) {
+                        btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                    } else {
+                        btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                    }
+
                     txtSongName.setText(songName);
                     txtArtistName.setText(artistName);
                     loadBitmapIntoSongImage(imageURL);
@@ -275,6 +294,11 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                         }
                     });
                 } else {
+                    if (getIsFavorite(songId)) {
+                        btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                    } else {
+                        btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                    }
 
                     txtSongName.setText(songName);
                     txtArtistName.setText(artistName);
@@ -482,6 +506,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         songId = intent.getStringExtra("songId");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
+        mUserListFavorites = new ArrayList<>();
+        mUserListFavorites = intent.getStringArrayListExtra("listFavoriteSong");
 
         mMusics = new ArrayList<>();
         getMusics(songId);
@@ -711,6 +737,34 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         String minutes = String.valueOf(currentPosition / 60);
 
         return seconds.length() == 1 ? minutes + ":0" + seconds : minutes + ":" + seconds;
+    }
+
+    //here
+    public Boolean getIsFavorite(String idSong) {
+        if(mUserListFavorites != null) {
+            DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+
+            favRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    mUserListFavorites.clear();
+                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                        mUserListFavorites.add(dataSnapshot.getKey());
+                        System.out.println("yyyy");
+                        System.out.println(dataSnapshot.getKey());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+
+        if (mUserListFavorites.contains(idSong)) return true;
+
+        return false;
     }
 
 

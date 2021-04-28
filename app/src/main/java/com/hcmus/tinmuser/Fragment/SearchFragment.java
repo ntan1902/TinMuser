@@ -44,7 +44,6 @@ public class SearchFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -60,9 +59,8 @@ public class SearchFragment extends Fragment {
         mUserListFavorites = new ArrayList<>();
         setListView(mMusics);
 
-
-        getMusics();
-
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        getFavoriteSongs();
 
         searchText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -155,5 +153,26 @@ public class SearchFragment extends Fragment {
             }
         });
 
+    }
+
+    private void getFavoriteSongs(){
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUserListFavorites.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String fav_song = dataSnapshot.getKey();
+                    mUserListFavorites.add(fav_song);
+                }
+
+                getMusics();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

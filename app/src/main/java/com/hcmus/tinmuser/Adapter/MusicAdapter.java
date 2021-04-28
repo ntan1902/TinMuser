@@ -73,6 +73,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                 intent.putExtra("playType", playType);
                 intent.putExtra("userId", userId);
                 intent.putExtra("songId", song.getId());
+                intent.putExtra("listFavoriteSong", mUserListFavorites);
                 context.startActivity(intent);
             }
         });
@@ -107,8 +108,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     }
 
     public Boolean getIsFavorite(String idSong) {
-
-        System.out.println("Here: " + mUserListFavorites);
         if (mUserListFavorites.contains(idSong)) return true;
         return false;
     };
