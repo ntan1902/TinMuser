@@ -32,6 +32,7 @@ import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchFragment extends Fragment {
     RecyclerView recyclerView;
@@ -70,11 +71,12 @@ public class SearchFragment extends Fragment {
         getCategories();
 
         mMusics = new ArrayList<>();
-        searchMusic = new ArrayList<>();
-//        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "", mUserListFavorites);
-
-        mUserListFavorites = new ArrayList<>();
         getMusics();
+        
+        searchMusic = new ArrayList<>();
+        mUserListFavorites = new ArrayList<>();
+        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "", mUserListFavorites);
+
 
 
         searchText.addTextChangedListener(new TextWatcher() {
@@ -92,22 +94,27 @@ public class SearchFragment extends Fragment {
                         setCategoryView();
                         getCategories();
                     } else {
-                        searchMusic = new ArrayList<>();
+                        setMusicView2();
+                        searchMusic.clear();
                         for (Music x : mMusics) {
                             if (x.getArtist().getName().toLowerCase().contains(s.toString().toLowerCase()) ||
                                     x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())) {
                                 searchMusic.add(x);
-//                                musicAdapter.notifyDataSetChanged();
+                                musicAdapter.notifyDataSetChanged();
                             }
                         }
-                        setMusicView(searchMusic);
+                        //Generate all favorite song of user.
+                        getFavoriteSongs();
 
                     }
                 }
             }
         });
 
-        //Generate all favorite song of user.
+        return view;
+    }
+
+    private void getFavoriteSongs() {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
@@ -117,6 +124,7 @@ public class SearchFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
                     mUserListFavorites.add(fav_song);
+                    musicAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -125,11 +133,16 @@ public class SearchFragment extends Fragment {
 
             }
         });
-        return view;
     }
 
     private void setMusicView(List<Music> list) {
         musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(musicAdapter);
+    }
+
+    private void setMusicView2() {
+//        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(musicAdapter);
     }
@@ -161,12 +174,6 @@ public class SearchFragment extends Fragment {
                 });
     }
 
-//    void setListView(List<Category> list) {
-////        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
-//        categoryAdapter = new CategoryAdapter(getContext(), list);
-//        recyclerView.setAdapter(categoryAdapter);
-//    }
-
     private void getMusics() {
         // Lấy list song
         List<Song> songs = new ArrayList<>();
@@ -188,7 +195,6 @@ public class SearchFragment extends Fragment {
                             Artist artist = snapshot2.getValue(Artist.class);
                             Music music = new Music(song, artist);
                             mMusics.add(music);
-//                            musicAdapter.notifyDataSetChanged();
                         }
 
                         @Override
