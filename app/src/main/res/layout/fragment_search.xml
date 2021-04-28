@@ -17,7 +17,8 @@
         android:drawableStart="@drawable/ic_search"
         android:hint="Tìm kiếm"
         android:paddingLeft="10dp"
-        android:textColor="@color/white" />
+        android:textColorHighlight="@color/black"
+        android:textColor="@color/black" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewSearch"
