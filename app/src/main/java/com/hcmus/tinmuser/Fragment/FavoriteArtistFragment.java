@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.hcmus.tinmuser.Adapter.Artist2Adapter;
+import com.hcmus.tinmuser.Adapter.ArtistAdapter;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.R;
 
@@ -30,7 +30,7 @@ public class FavoriteArtistFragment extends Fragment {
     static FavoriteArtistFragment fragment;
 
     private RecyclerView recyclerArtist;
-    private Artist2Adapter artist2Adapter;
+    private ArtistAdapter artistAdapter;
 
     private List<Artist> mArtists;
     ArrayList<String> mUserListFavoriteSong;
@@ -57,8 +57,8 @@ public class FavoriteArtistFragment extends Fragment {
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "");
-        recyclerArtist.setAdapter(artist2Adapter);
+        artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "");
+        recyclerArtist.setAdapter(artistAdapter);
 
         getArtists();
 
@@ -74,7 +74,7 @@ public class FavoriteArtistFragment extends Fragment {
                     Artist artist = artistSnapshot.getValue(Artist.class);
 
                     mArtists.add(artist);
-                    artist2Adapter.notifyDataSetChanged();
+                    artistAdapter.notifyDataSetChanged();
                 }
 
             }
@@ -95,7 +95,7 @@ public class FavoriteArtistFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
                     mUserListFavoriteSong.add(fav_song);
-                    artist2Adapter.notifyDataSetChanged();
+                    artistAdapter.notifyDataSetChanged();
                 }
             }
 

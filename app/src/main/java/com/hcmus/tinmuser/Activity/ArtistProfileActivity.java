@@ -1,13 +1,18 @@
 package com.hcmus.tinmuser.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.firebase.database.DataSnapshot;
@@ -80,6 +86,8 @@ public class ArtistProfileActivity extends Activity {
                                         layoutTop.setBackground(resource);
                                     }
                                 });
+                        loadBitmapIntoSongImage(artist.getImageURL());
+
                         String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
                                 artist.getTotalFollow()) + " total followers";
                         txtTotalFollow.setText(totalFollowString);
@@ -127,7 +135,7 @@ public class ArtistProfileActivity extends Activity {
                                         for (DataSnapshot songSnapshot : snapshot.getChildren()) {
                                             Song song = songSnapshot.getValue(Song.class);
 
-                                            if(song.getArtistId().equals(artist.getId())){
+                                            if (song.getArtistId().equals(artist.getId())) {
                                                 Music music = new Music(song, artist);
                                                 mMusics.add(music);
                                                 artistMusicAdapter.notifyDataSetChanged();
@@ -148,7 +156,6 @@ public class ArtistProfileActivity extends Activity {
                 });
 
 
-
     }
 
     private void getArtists() {
@@ -156,10 +163,10 @@ public class ArtistProfileActivity extends Activity {
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot artistSnapshot : snapshot.getChildren()){
+                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
                     Artist artist = artistSnapshot.getValue(Artist.class);
 
-                    if(!artist.getId().equals(artistId)) {
+                    if (!artist.getId().equals(artistId)) {
                         mArtists.add(artist);
                         artistAdapter.notifyDataSetChanged();
                     }
@@ -199,4 +206,52 @@ public class ArtistProfileActivity extends Activity {
         recycleMusic.setNestedScrollingEnabled(false);
     }
 
+    private void loadBitmapIntoSongImage(String imageURL) {
+        // Metadata
+        try {
+
+            Glide.with(this)
+                    .asBitmap()
+                    .load(imageURL)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(@Nullable Palette palette) {
+                                    Palette.Swatch swatch = palette.getDominantSwatch();
+                                    if (swatch != null) {
+                                        RelativeLayout container = findViewById(R.id.container);
+                                        container.setBackgroundResource(R.color.grey_900);
+
+                                        GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                                                new int[]{swatch.getRgb(), swatch.getRgb()});
+                                        container.setBackground(gradientDrawableBg);
+
+                                        txtArtistName.setTextColor(swatch.getBodyTextColor());
+                                    } else {
+                                        RelativeLayout container = findViewById(R.id.container);
+                                        container.setBackgroundResource(R.color.grey_900);
+
+                                        GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+                                                new int[]{0xff000000, 0xff000000});
+                                        container.setBackground(gradientDrawableBg);
+
+                                        txtArtistName.setTextColor(Color.DKGRAY);
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

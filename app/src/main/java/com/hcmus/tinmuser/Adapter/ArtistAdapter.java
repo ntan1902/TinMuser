@@ -13,18 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
-import com.hcmus.tinmuser.Activity.MenuOfSongActivity;
 import com.hcmus.tinmuser.Model.Artist;
-import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHolder> {
+public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private Context context;
     private List<Artist> mArtists;
 
@@ -33,7 +28,7 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
     String playType;
     String userId;
 
-    public Artist2Adapter(Context context, List<Artist> mArtists, String playType, String userId) {
+    public ArtistAdapter(Context context, List<Artist> mArtists, String playType, String userId) {
         this.context = context;
         this.mArtists = mArtists;
         this.playType = playType;
@@ -65,7 +60,7 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
                 .inflate(R.layout.artist_item_2,
                         parent,
                         false);
-        return new Artist2Adapter.ViewHolder(view);
+        return new ArtistAdapter.ViewHolder(view);
     }
 
     @Override

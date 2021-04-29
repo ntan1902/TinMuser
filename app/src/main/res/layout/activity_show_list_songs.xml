@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Activity.ShowListSongsActivity"
-    android:background="@color/blue_700"
+    android:background="@color/grey_900"
     android:orientation="vertical">
     <ImageView
         android:id="@+id/btnGoBack"
@@ -14,6 +14,19 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/ic_back" />
+
+    <EditText
+        android:id="@+id/searchText"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/border_search"
+        android:drawableStart="@drawable/ic_search"
+        android:hint="Tìm kiếm"
+        android:paddingLeft="10dp"
+        android:textColorHighlight="@color/black"
+        android:textColor="@color/black" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_margin="15sp"
         android:id="@+id/recyclerView"
