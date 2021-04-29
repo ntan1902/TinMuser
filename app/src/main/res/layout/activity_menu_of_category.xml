@@ -26,7 +26,7 @@
                 android:src="@drawable/ic_back" />
 
             <TextView
-                android:id="@+id/artistName"
+                android:id="@+id/categoryName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -38,40 +38,10 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/layoutFollow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_below="@id/layoutTop">
-
-            <TextView
-                android:id="@+id/txtTotalFollow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="142.593 total followers"
-                android:textColor="@color/light_grey"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"/>
-
-            <ImageView
-                android:id="@+id/btnFavorite"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_favorite_off" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
             android:id="@+id/layoutOtherMusics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layoutFollow">
+            android:layout_below="@id/layoutTop">
 
             <TextView
                 android:id="@+id/txtOtherMusics"

@@ -29,21 +29,23 @@ import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.R;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ArtistProfileActivity extends Activity {
     private RelativeLayout layoutTop;
     private ImageView btnGoBack;
+    private ImageView btnFavorite;
     private TextView txtArtistName;
+    private TextView txtTotalFollow;
     private RecyclerView recyclerArtist;
     private RecyclerView recycleMusic;
     private ArtistProfileAdapter artistAdapter;
     private ArtistMusicAdapter artistMusicAdapter;
-    private ArrayList<String> mUserListFavoriteSong;
 
-    private String artistName = "";
-    private String artistImageURL = "";
+    private String artistId = "";
     private List<Artist> mArtists;
     private List<Music> mMusics;
 
@@ -59,22 +61,35 @@ public class ArtistProfileActivity extends Activity {
 
         // Receive data from MenuOfSongActivity, ArtistFragment
         Intent intent = getIntent();
-        artistName = intent.getStringExtra("artistName");
-        artistImageURL = intent.getStringExtra("artistImageURL");
+        artistId = intent.getStringExtra("artistId");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
 
 
-        txtArtistName.setText(artistName);
-        Glide.with(this)
-                .load(artistImageURL)
-                .into(new SimpleTarget<Drawable>() {
+        FirebaseDatabase.getInstance().getReference("Artists").child(artistId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                        layoutTop.setBackground(resource);
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Artist artist = snapshot.getValue(Artist.class);
+                        txtArtistName.setText(artist.getName());
+                        Glide.with(ArtistProfileActivity.this)
+                                .load(artist.getImageURL())
+                                .into(new SimpleTarget<Drawable>() {
+                                    @Override
+                                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                                        layoutTop.setBackground(resource);
+                                    }
+                                });
+                        String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
+                                artist.getTotalFollow()) + " total followers";
+                        txtTotalFollow.setText(totalFollowString);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
                     }
                 });
-
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,59 +100,55 @@ public class ArtistProfileActivity extends Activity {
         });
 
         mArtists = new ArrayList<>();
+        artistAdapter = new ArtistProfileAdapter(ArtistProfileActivity.this, mArtists, playType, userId);
+        recyclerArtist.setAdapter(artistAdapter);
         getArtists();
 
         mMusics = new ArrayList<>();
-        getArtist();
+        artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId);
+        recycleMusic.setAdapter(artistMusicAdapter);
+        getMusics();
 
     }
 
-    private void getArtist() {
-        DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists");
-        artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                    Artist artist = artistSnapshot.getValue(Artist.class);
+    private void getMusics() {
+        // Lấy list song của artist
+        FirebaseDatabase.getInstance().getReference("Artists").child(artistId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Artist artist = snapshot.getValue(Artist.class);
+                        FirebaseDatabase.getInstance().getReference("Songs")
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        mMusics.clear();
 
-                    if (artistName.equals(artist.getName())) {
-                        getMusics(artist);
-                        break;
+                                        for (DataSnapshot songSnapshot : snapshot.getChildren()) {
+                                            Song song = songSnapshot.getValue(Song.class);
+
+                                            if(song.getArtistId().equals(artist.getId())){
+                                                Music music = new Music(song, artist);
+                                                mMusics.add(music);
+                                                artistMusicAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                    }
+                                });
                     }
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        });
-    }
-
-    private void getMusics(Artist artist) {
-        // Lấy list song
-        DatabaseReference songRef = FirebaseDatabase.getInstance().getReference("Songs");
-        songRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mMusics.clear();
-
-                for (DataSnapshot songSnapshot : snapshot.getChildren()) {
-                    Song song = songSnapshot.getValue(Song.class);
-
-                    if(song.getArtistId().equals(artist.getId())){
-                        Music music = new Music(song, artist);
-                        mMusics.add(music);
                     }
-                }
-                artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId);
-                recycleMusic.setAdapter(artistMusicAdapter);
-            }
+                });
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
+
+
     }
 
     private void getArtists() {
@@ -148,13 +159,11 @@ public class ArtistProfileActivity extends Activity {
                 for(DataSnapshot artistSnapshot : snapshot.getChildren()){
                     Artist artist = artistSnapshot.getValue(Artist.class);
 
-                    if(!artist.getName().equals(artistName)) {
+                    if(!artist.getId().equals(artistId)) {
                         mArtists.add(artist);
+                        artistAdapter.notifyDataSetChanged();
                     }
                 }
-
-                artistAdapter = new ArtistProfileAdapter(ArtistProfileActivity.this, mArtists, playType, userId);
-                recyclerArtist.setAdapter(artistAdapter);
             }
 
             @Override
@@ -168,6 +177,8 @@ public class ArtistProfileActivity extends Activity {
         layoutTop = findViewById(R.id.layoutTop);
         btnGoBack = findViewById(R.id.btnGoBack);
         txtArtistName = findViewById(R.id.artistName);
+        txtTotalFollow = findViewById(R.id.txtTotalFollow);
+        btnFavorite = findViewById(R.id.btnFavorite);
 
         recyclerArtist = findViewById(R.id.recyclerArtist);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this,

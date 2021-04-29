@@ -4,17 +4,17 @@ public class Artist {
     String id;
     String name;
     String imageURL;
-    Integer number;
+    Integer totalFollow;
 
     public Artist() {
 
     }
 
-    public Artist(String id, String name, String imageURL, Integer number) {
+    public Artist(String id, String name, String imageURL, Integer totalFollow) {
         this.id = id;
         this.name = name;
         this.imageURL = imageURL;
-        this.number = number;
+        this.totalFollow = totalFollow;
     }
 
     public String getId() {
@@ -39,5 +39,13 @@ public class Artist {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+    public Integer getTotalFollow() {
+        return totalFollow;
+    }
+
+    public void setTotalFollow(Integer totalFollow) {
+        this.totalFollow = totalFollow;
     }
 }

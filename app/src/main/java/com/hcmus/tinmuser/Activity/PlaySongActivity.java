@@ -66,6 +66,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private String artistName;
     private String artistImageURL;
     private String imageURL;
+    private String artistId;
     private String songId;
     private List<Music> mMusics;
     private int position = 0;
@@ -74,7 +75,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private DatabaseReference mRef;
     private boolean isExist = false;
     private String playDoubleId;
-    ArrayList<String> mUserListFavoriteSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,13 +192,9 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             public void onClick(View v) {
                 Intent i = new Intent(PlaySongActivity.this, MenuOfSongActivity.class);
                 i.putExtra("songId", songId);
-                i.putExtra("songName", songName);
-                i.putExtra("imageURL", imageURL);
-                i.putExtra("artistName", artistName);
-                i.putExtra("artistImageURL", artistImageURL);
+                i.putExtra("artistId", artistId);
                 i.putExtra("userId", userId);
                 i.putExtra("playType", playType);
-                i.putExtra("listFavoriteSong", mUserListFavoriteSong);
                 startActivity(i);
             }
         });
@@ -352,23 +348,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot2) {
                         if (snapshot2.exists()) {
-//                            PlayDouble playDouble = snapshot2.getValue(PlayDouble.class);
-//                            if(playDouble.getIsPlay()) {
-//                                uri = playDouble.getUri();
-//                                songName = playDouble.getSongName();
-//                                imageURL = playDouble.getImageURL();
-//                                artistName = playDouble.getArtistName();
-//                                artistImageURL = playDouble.getArtistImageURL();
-//                                songId = playDouble.getSongId();
-//                                position = playDouble.getPosition();
-//
-//                                // Create text, image, button skip
-//                                txtSongName.setText(songName);
-//                                txtArtistName.setText(artistName);
-//                                loadBitmapIntoSongImage(imageURL);
-//
-//                                createService();
-//                            }
                             position = snapshot2.getValue(Integer.class);
                             initializeMusic(position);
 
@@ -449,7 +428,6 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     public void onDataChange(@NonNull DataSnapshot snapshot2) {
                         if (snapshot2.exists() && songService != null) {
                             Boolean _isRepeat = snapshot2.getValue(Boolean.class);
-                            System.out.println("Repeat: " + isRepeat);
                             if (_isRepeat) {
                                 isRepeat = true;
                                 btnRepeat.setImageResource(R.drawable.ic_repeat_on);
@@ -578,6 +556,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         imageURL = song.getImageURL();
         artistName = artist.getName();
         artistImageURL = artist.getImageURL();
+        artistId = artist.getId();
         songId = song.getId();
     }
 

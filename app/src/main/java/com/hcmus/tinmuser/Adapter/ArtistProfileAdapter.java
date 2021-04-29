@@ -61,8 +61,7 @@ public class ArtistProfileAdapter extends RecyclerView.Adapter<ArtistProfileAdap
             @Override
             public void onClick(View v) {
                 Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
-                intentArtist.putExtra("artistName", artist.getName());
-                intentArtist.putExtra("artistImageURL", artist.getImageURL());
+                intentArtist.putExtra("artistId", artist.getId());
                 intentArtist.putExtra("playType", playType);
                 intentArtist.putExtra("userId", userId);
                 context.startActivity(intentArtist);

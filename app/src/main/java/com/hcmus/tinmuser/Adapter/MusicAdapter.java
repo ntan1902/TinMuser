@@ -33,7 +33,6 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     List<Music> mMusics;
     String playType;
     String userId;
-    Boolean isFavorite;
     FirebaseUser mUser;
 
     public MusicAdapter(Context context, List<Music> mMusics, String playType, String userId) {
@@ -83,7 +82,9 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         holder.btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId());
+                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites")
+                        .child(mUser.getUid())
+                        .child(song.getId());
                 favRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {

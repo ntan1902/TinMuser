@@ -7,18 +7,28 @@ public class Song {
     String name;
     String imageURL;
     String uri;
+    Integer like;
     String createdAt;
 
     public Song(){
 
     }
-    public Song(String id, String artistId, String categoryId, String name, String imageURL, String uri) {
+    public Song(String id,
+                String artistId,
+                String categoryId,
+                String name,
+                String imageURL,
+                String uri,
+                Integer like,
+                String createdAt) {
         this.id = id;
         this.artistId = artistId;
         this.categoryId = categoryId;
         this.name = name;
         this.imageURL = imageURL;
         this.uri = uri;
+        this.like = like;
+        this.createdAt = createdAt;
     }
 
     public Song(String name, String imageURL, String uri) {
@@ -81,5 +91,13 @@ public class Song {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Integer getLike() {
+        return like;
+    }
+
+    public void setLike(Integer like) {
+        this.like = like;
     }
 }
