@@ -31,21 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavoriteSongFragment extends Fragment {
+    static FavoriteSongFragment fragment;
     RecyclerView recyclerView;
     MusicAdapter musicAdapter;
     EditText searchText;
+
     List<Music> mMusics;
+    List<Music> searchMusic;
 
     FirebaseUser mUser;
-    ArrayList<String> mUserListFavoriteSong;
-
 
     public FavoriteSongFragment() {
         // Required empty public constructor
-    }
-
-    public void setListSong(List<Song> data) {
-
     }
 
     @Override
@@ -61,11 +58,11 @@ public class FavoriteSongFragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 //        ListSearch= new MusicList();
 
-        mUserListFavoriteSong = new ArrayList<>();
-        getFavoriteSongs();
-
         mMusics = new ArrayList<>();
-//        getMusics();
+        searchMusic = new ArrayList<>();
+        musicAdapter = new MusicAdapter(getContext(), mMusics, "Single", "");
+        recyclerView.setAdapter(musicAdapter);
+        getFavoriteSongs();
 
 
         searchText.addTextChangedListener(new TextWatcher() {
@@ -80,16 +77,20 @@ public class FavoriteSongFragment extends Fragment {
                                       int before, int count) {
                 if (searchText.hasFocus()) {
                     if (s.toString().isEmpty()) {
-                        getMusics();
+                        musicAdapter = new MusicAdapter(getContext(), mMusics, "Single", "");
+                        recyclerView.setAdapter(musicAdapter);
+                        getFavoriteSongs();
                     } else {
-                        List<Music> searchMusic = new ArrayList<>();
+                        searchMusic.clear();
+                        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "");
+                        recyclerView.setAdapter(musicAdapter);
                         for (Music x : mMusics) {
                             if (x.getArtist().getName().toLowerCase().contains(s.toString().toLowerCase()) ||
                                     x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())) {
                                 searchMusic.add(x);
+                                musicAdapter.notifyDataSetChanged();
                             }
                         }
-                        setListView(searchMusic);
                     }
                 }
             }
@@ -98,78 +99,50 @@ public class FavoriteSongFragment extends Fragment {
         return view;
     }
 
-    void setListView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavoriteSong);
-        recyclerView.setAdapter(musicAdapter);
-    }
 
-    private void getMusics() {
-        // Lấy list song
-        List<Song> songs = new ArrayList<>();
-        DatabaseReference songRef = FirebaseDatabase.getInstance().getReference("Songs");
-        songRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mMusics.clear();
-                for (DataSnapshot songSnapshot : snapshot.getChildren()) {
-                    Song song = songSnapshot.getValue(Song.class);
-                    if (mUserListFavoriteSong.contains(song.getId())) {
-                        songs.add(song);
-                    }
-                }
 
-                getArtistName(songs);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-
-    }
-
-    private void getArtistName(List<Song> songs) {
-        // Lấy list ca sĩ
-        DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists");
-        artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                    Artist artist = artistSnapshot.getValue(Artist.class);
-
-                    for (Song song : songs) {
-                        String artistIdSong = song.getArtistId();
-                        String artistId = artist.getId();
-
-                        if (artistId.equals(artistIdSong)) {
-                            Music music = new Music(song, artist);
-                            mMusics.add(music);
-                        }
-                    }
-                }
-                setListView(mMusics);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void getFavoriteSongs(){
+    private void getFavoriteSongs() {
         DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavoriteSong.clear();
+                mMusics.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavoriteSong.add(fav_song);
-                }
+                    String id_fav_song = dataSnapshot.getKey();
 
-                getMusics();
+                    FirebaseDatabase.getInstance().getReference("Songs")
+                            .child(id_fav_song)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    Song song = snapshot.getValue(Song.class);
+
+                                    FirebaseDatabase.getInstance().getReference("Artists")
+                                            .child(song.getArtistId())
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    Artist artist = snapshot.getValue(Artist.class);
+
+                                                    Music music = new Music(song, artist);
+                                                    mMusics.add(music);
+                                                    musicAdapter.notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                }
             }
 
             @Override

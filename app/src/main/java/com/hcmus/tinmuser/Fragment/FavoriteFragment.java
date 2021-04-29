@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class FavoriteFragment extends Fragment {
         ViewPager viewPager = view.findViewById(R.id.viewPagerLibrary);
         TabLayout tabLayout = view.findViewById(R.id.tabLayoutLibrary);
 
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getActivity().getSupportFragmentManager());
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
         viewPagerAdapter.addFragment(new FavoriteArtistFragment(), "Artists");
         viewPagerAdapter.addFragment(new FavoriteSongFragment(), "Songs");
 
@@ -44,10 +45,10 @@ public class FavoriteFragment extends Fragment {
     }
 
     public static class ViewPagerAdapter extends FragmentPagerAdapter {
-        private ArrayList<Fragment> fragments;
-        private ArrayList<String> titles;
+        private final ArrayList<Fragment> fragments;
+        private final ArrayList<String> titles;
         public ViewPagerAdapter(@NonNull FragmentManager fm) {
-            super(fm);
+            super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
             this.fragments = new ArrayList<>();
             this.titles = new ArrayList<>();
         }
@@ -74,6 +75,5 @@ public class FavoriteFragment extends Fragment {
             return titles.get(position);
         }
     }
-
 
 }

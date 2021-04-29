@@ -51,10 +51,10 @@ public class SongService extends Service {
         instance = this;
         Log.e("SongService", "onCreate");
 
-        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        // For example to set the volume of played media to maximum.
-
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_DTMF), 0);
+//        AudioManager audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+//        // For example to set the volume of played media to maximum.
+//
+//        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_DTMF), 0);
     }
 
     @Override

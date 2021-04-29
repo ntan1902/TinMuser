@@ -32,14 +32,12 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
 //    public static final int LOAD_MORE = 1;
     String playType;
     String userId;
-    ArrayList<String> mUserListFavoriteSong;
 
-    public Artist2Adapter(Context context, List<Artist> mArtists, String playType, String userId, ArrayList<String> mUserListFavoriteSong) {
+    public Artist2Adapter(Context context, List<Artist> mArtists, String playType, String userId) {
         this.context = context;
         this.mArtists = mArtists;
         this.playType = playType;
         this.userId = userId;
-        this.mUserListFavoriteSong = mUserListFavoriteSong;
     }
 
     @NonNull
@@ -94,7 +92,6 @@ public class Artist2Adapter extends RecyclerView.Adapter<Artist2Adapter.ViewHold
                     intentArtist.putExtra("artistImageURL", artist.getImageURL());
                     intentArtist.putExtra("playType", playType);
                     intentArtist.putExtra("userId", userId);
-                    intentArtist.putExtra("listFavoriteSong", mUserListFavoriteSong);
                     context.startActivity(intentArtist);
                 }
             });

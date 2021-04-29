@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
     List<Category> mCategories;
 
     FirebaseUser mUser;
-    ArrayList<String> mUserListFavoriteSong;
 
 
     public HomeFragment() {
@@ -72,11 +71,9 @@ public class HomeFragment extends Fragment {
         getMusics();
         
         searchMusic = new ArrayList<>();
-        mUserListFavoriteSong = new ArrayList<>();
-        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "", mUserListFavoriteSong);
+        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "");
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        getFavoriteSongs();
 
         searchText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
@@ -93,7 +90,7 @@ public class HomeFragment extends Fragment {
                         setCategoryView();
                         getCategories();
                     } else {
-                        setMusicView2();
+                        setMusicView();
                         searchMusic.clear();
                         for (Music x : mMusics) {
                             if (x.getArtist().getName().toLowerCase().contains(s.toString().toLowerCase()) ||
@@ -102,8 +99,6 @@ public class HomeFragment extends Fragment {
                                 musicAdapter.notifyDataSetChanged();
                             }
                         }
-                        //Generate all favorite song of user.
-                        getFavoriteSongs();
 
                     }
                 }
@@ -113,35 +108,8 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void getFavoriteSongs() {
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavoriteSong.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavoriteSong.add(fav_song);
-                    musicAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void setMusicView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavoriteSong);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(musicAdapter);
-    }
-
-    private void setMusicView2() {
-//        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavoriteSong);
+    private void setMusicView() {
+//        musicAdapter = new MusicAdapter(getContext(), list, "Single", "");
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(musicAdapter);
     }

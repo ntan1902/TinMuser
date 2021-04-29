@@ -49,7 +49,7 @@ public class ShowListSongsActivity extends Activity {
 
         mMusics = new ArrayList<>();
         mUserListFavorites = new ArrayList<>();
-        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId, mUserListFavorites);
+        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId);
         recyclerView.setAdapter(musicAdapter);
 
 

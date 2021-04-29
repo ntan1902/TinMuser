@@ -57,14 +57,13 @@ public class ArtistProfileActivity extends Activity {
 
         initializeID();
 
-        // Receive data from MenuOfSongActivity
+        // Receive data from MenuOfSongActivity, ArtistFragment
         Intent intent = getIntent();
         artistName = intent.getStringExtra("artistName");
         artistImageURL = intent.getStringExtra("artistImageURL");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
-        mUserListFavoriteSong = new ArrayList<>();
-        mUserListFavoriteSong = intent.getStringArrayListExtra("listFavoriteSong");
+
 
         txtArtistName.setText(artistName);
         Glide.with(this)
@@ -131,7 +130,7 @@ public class ArtistProfileActivity extends Activity {
                         mMusics.add(music);
                     }
                 }
-                artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId, mUserListFavoriteSong);
+                artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId);
                 recycleMusic.setAdapter(artistMusicAdapter);
             }
 

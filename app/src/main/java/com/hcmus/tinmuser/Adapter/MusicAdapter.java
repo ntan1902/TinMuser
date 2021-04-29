@@ -14,8 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.Model.Song;
@@ -32,14 +35,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     String userId;
     Boolean isFavorite;
     FirebaseUser mUser;
-    ArrayList<String> mUserListFavoriteSong;
 
-    public MusicAdapter(Context context, List<Music> mMusics, String playType, String userId, ArrayList<String> mUserListFavoriteSong) {
+    public MusicAdapter(Context context, List<Music> mMusics, String playType, String userId) {
         this.context = context;
         this.mMusics = mMusics;
         this.playType = playType;
         this.userId = userId;
-        this.mUserListFavoriteSong = mUserListFavoriteSong;
     }
 
     @NonNull
@@ -73,44 +74,66 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                 intent.putExtra("playType", playType);
                 intent.putExtra("userId", userId);
                 intent.putExtra("songId", song.getId());
-                intent.putExtra("listFavoriteSong", mUserListFavoriteSong);
                 context.startActivity(intent);
             }
         });
 
-        if(getIsFavorite(song.getId())) {
-            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_on);
-        } else {
-            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
-        }
-
+        //here
+        getIsFavorite(song.getId(), holder);
         holder.btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isFavorite = getIsFavorite(song.getId());
-                if (isFavorite) {
-                    holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
-                    DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId());
-                    favoriteRef.removeValue();
-                } else {
-                    holder.btnFavorite.setImageResource(R.drawable.ic_favorite_on);
-                    DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId()).child("id");
-                    favoriteRef.setValue(song.getId());
-                }
+                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(song.getId());
+                favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) { //isFavorite
+                            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                            favRef.removeValue();
+                        } else {
+                            holder.btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                            favRef.child("id").setValue(song.getId());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
             }
         });
 
+    }
+
+    public void getIsFavorite(String idSong, MusicAdapter.MyViewHolder holder) {
+        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites")
+                .child(mUser.getUid())
+                .child(idSong);
+
+        favRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    holder.btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+
+                } else {
+                    holder.btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return mMusics.size();
     }
-
-    public Boolean getIsFavorite(String idSong) {
-        if (mUserListFavoriteSong.contains(idSong)) return true;
-        return false;
-    };
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView artist_text, name_text;

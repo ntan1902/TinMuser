@@ -115,7 +115,6 @@ public class MainActivity extends FragmentActivity {
                             intent.putExtra("playType", songService.getPlayType());
                             intent.putExtra("userId", songService.getUserId());
                             intent.putExtra("songId", songService.getSongId());
-                            intent.putExtra("listFavoriteSong", mUserListFavorites);
 
                             startActivity(intent);
                         }
@@ -149,7 +148,6 @@ public class MainActivity extends FragmentActivity {
 
         //favorite
         mUserListFavorites = new ArrayList<>();
-        getFavoriteSongs();
 
         mRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
@@ -271,23 +269,6 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    private void getFavoriteSongs(){
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavorites.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavorites.add(fav_song);
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
     private void updateStatus(String status) {
         mRef = FirebaseDatabase.getInstance().getReference("Users").child(mUser.getUid());

@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FavoriteArtistFragment extends Fragment {
+    static FavoriteArtistFragment fragment;
+
     private static final int TOTAL_ITEM_EACH_LOAD = 6;
     private RecyclerView recyclerArtist;
     private Artist2Adapter artist2Adapter;
@@ -62,18 +64,18 @@ public class FavoriteArtistFragment extends Fragment {
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "", mUserListFavoriteSong);
+        artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "");
         recyclerArtist.setAdapter(artist2Adapter);
 
-        recyclerArtist.addOnScrollListener(new EndlessRecyclerOnScrollListener(gridLayoutManager) {
-            @Override
-            public void onLoadMore(int current_page) {
-                loadMoreData();
-            }
-        });
+//        recyclerArtist.addOnScrollListener(new EndlessRecyclerOnScrollListener(gridLayoutManager) {
+//            @Override
+//            public void onLoadMore(int current_page) {
+//                loadMoreData();
+//            }
+//        });
 
-//        getArtists();
-        loadData();
+        getArtists();
+//        loadData();
 
         return view;
     }
@@ -146,6 +148,7 @@ public class FavoriteArtistFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
                     mUserListFavoriteSong.add(fav_song);
+                    artist2Adapter.notifyDataSetChanged();
                 }
             }
 
