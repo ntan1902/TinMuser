@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseUser;
@@ -26,19 +29,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShowListSongsActivity extends Activity {
-    ArrayList<Music> mMusics;
     MusicAdapter musicAdapter;
     RecyclerView recyclerView;
     ImageView btnGoBack;
     String userId;
-    ArrayList<String> mUserListFavorites;
+    EditText searchText;
+    List<Music> mMusics;
+    List<Music> searchMusic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_list_songs);
         // Inflate the layout for this fragment
 
+        searchText = findViewById(R.id.searchText);
         btnGoBack = findViewById(R.id.btnGoBack);
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(ShowListSongsActivity.this));
@@ -48,12 +55,44 @@ public class ShowListSongsActivity extends Activity {
         userId = i.getStringExtra("userId");
 
         mMusics = new ArrayList<>();
-        mUserListFavorites = new ArrayList<>();
-        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId);
-        recyclerView.setAdapter(musicAdapter);
+        getMusics();
 
+        searchMusic = new ArrayList<>();
+        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, searchMusic, "Double", userId);
 
-        getFavoriteSongs();
+        searchText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (searchText.hasFocus()) {
+                    if (s.toString().isEmpty()) {
+                        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId);
+                        recyclerView.setAdapter(musicAdapter);
+//                        getMusics();
+                    } else {
+                        searchMusic.clear();
+                        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, searchMusic, "Double", userId);
+                        recyclerView.setAdapter(musicAdapter);
+                        for (Music x : mMusics) {
+                            if (x.getArtist().getName().toLowerCase().contains(s.toString().toLowerCase()) ||
+                                    x.getSong().getName().toLowerCase().contains(s.toString().toLowerCase())) {
+                                searchMusic.add(x);
+                                musicAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                    }
+                }
+            }
+        });
+//        recyclerView.setAdapter(musicAdapter);
+
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +110,7 @@ public class ShowListSongsActivity extends Activity {
         songRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for(DataSnapshot songSnapshot : snapshot.getChildren()) {
+                for (DataSnapshot songSnapshot : snapshot.getChildren()) {
 
                     Song song = songSnapshot.getValue(Song.class);
                     songs.add(song);
@@ -100,25 +139,5 @@ public class ShowListSongsActivity extends Activity {
             }
         });
     }
-    private void getFavoriteSongs(){
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(userId);
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavorites.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavorites.add(fav_song);
-                    musicAdapter.notifyDataSetChanged();
-                }
 
-                getMusics();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 }

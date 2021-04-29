@@ -2,6 +2,7 @@ package com.hcmus.tinmuser.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,8 +58,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
         Song song = mMusics.get(position).getSong();
         Artist artist = mMusics.get(position).getArtist();
 
+        holder.name_text.setSelected(true);
         holder.name_text.setText(song.getName());
-
         String artistName = artist.getName();
         holder.artist_text.setText(artistName);
         Glide.with(context)

@@ -34,16 +34,14 @@ public class MenuOfSongActivity extends Activity {
     private String songId;
     private String artistId;
 
-    private boolean isFavorite;
-
     private FirebaseUser mUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_of_song);
 
         initializeID();
-
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         // Receive data from PlaySongActivity
         Intent intent = getIntent();
@@ -51,6 +49,8 @@ public class MenuOfSongActivity extends Activity {
         artistId = intent.getStringExtra("artistId");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
+
+        getIsFavorite(songId);
 
         FirebaseDatabase.getInstance().getReference("Songs").child(songId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -83,35 +83,30 @@ public class MenuOfSongActivity extends Activity {
                     }
                 });
 
+        btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId);
+                favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                            favRef.removeValue();
+                        } else {
+                            btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                            favRef.child("id").setValue(songId);
+                        }
+                    }
 
-//        //Favorite
-//        if (getIsFavorite(songId)) {
-//            btnFavorite.setImageResource(R.drawable.ic_favorite_on);
-//            txtFavorite.setText("Your favorite song");
-//        } else {
-//            btnFavorite.setImageResource(R.drawable.ic_favorite_off);
-//            txtFavorite.setText("Add to favorite");
-//        }
-//
-//        btnFavorite.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                isFavorite = getIsFavorite(songId);
-//                if (isFavorite) {
-//                    btnFavorite.setImageResource(R.drawable.ic_favorite_off);
-//                    DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId);
-//                    favoriteRef.removeValue();
-//                    txtFavorite.setText("Add to favorite");
-//                    isFavorite = false;
-//                } else {
-//                    btnFavorite.setImageResource(R.drawable.ic_favorite_on);
-//                    DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId).child("id");
-//                    favoriteRef.setValue(songId);
-//                    txtFavorite.setText("Your favorite song");
-//                    isFavorite = true;
-//                }
-//            }
-//        });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }
+        });
+
 
         layoutArtist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +125,31 @@ public class MenuOfSongActivity extends Activity {
             public void onClick(View v) {
                 MenuOfSongActivity.this.onBackPressed();
                 finish();
+            }
+        });
+    }
+
+    public void getIsFavorite(String idSong) {
+        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites")
+                .child(mUser.getUid())
+                .child(idSong);
+
+        favRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                    txtFavorite.setText("Your favorite song");
+
+                } else {
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                    txtFavorite.setText("Add to favorite");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }

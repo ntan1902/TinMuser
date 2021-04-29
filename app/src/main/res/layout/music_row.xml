@@ -38,10 +38,15 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
+
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:marqueeRepeatLimit="marquee_forever"
+
         app:layout_constraintStart_toEndOf="@+id/song_avatar"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/artist_name"
-        tools:layout_editor_absoluteY="16dp" />
+        app:layout_constraintBottom_toTopOf="@+id/artist_name" />
 
     <TextView
         android:id="@+id/artist_name"
