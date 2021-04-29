@@ -37,7 +37,7 @@ public class FavoriteSongFragment extends Fragment {
     List<Music> mMusics;
 
     FirebaseUser mUser;
-    ArrayList<String> mUserListFavorites;
+    ArrayList<String> mUserListFavoriteSong;
 
 
     public FavoriteSongFragment() {
@@ -61,7 +61,7 @@ public class FavoriteSongFragment extends Fragment {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 //        ListSearch= new MusicList();
 
-        mUserListFavorites = new ArrayList<>();
+        mUserListFavoriteSong = new ArrayList<>();
         getFavoriteSongs();
 
         mMusics = new ArrayList<>();
@@ -99,7 +99,7 @@ public class FavoriteSongFragment extends Fragment {
     }
 
     void setListView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
+        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavoriteSong);
         recyclerView.setAdapter(musicAdapter);
     }
 
@@ -113,7 +113,7 @@ public class FavoriteSongFragment extends Fragment {
                 mMusics.clear();
                 for (DataSnapshot songSnapshot : snapshot.getChildren()) {
                     Song song = songSnapshot.getValue(Song.class);
-                    if (mUserListFavorites.contains(song.getId())) {
+                    if (mUserListFavoriteSong.contains(song.getId())) {
                         songs.add(song);
                     }
                 }
@@ -163,10 +163,10 @@ public class FavoriteSongFragment extends Fragment {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavorites.clear();
+                mUserListFavoriteSong.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
-                    mUserListFavorites.add(fav_song);
+                    mUserListFavoriteSong.add(fav_song);
                 }
 
                 getMusics();

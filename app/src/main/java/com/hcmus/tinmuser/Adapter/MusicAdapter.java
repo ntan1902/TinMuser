@@ -32,14 +32,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     String userId;
     Boolean isFavorite;
     FirebaseUser mUser;
-    ArrayList<String> mUserListFavorites;
+    ArrayList<String> mUserListFavoriteSong;
 
-    public MusicAdapter(Context context, List<Music> mMusics, String playType, String userId, ArrayList<String> mUserListFavorites) {
+    public MusicAdapter(Context context, List<Music> mMusics, String playType, String userId, ArrayList<String> mUserListFavoriteSong) {
         this.context = context;
         this.mMusics = mMusics;
         this.playType = playType;
         this.userId = userId;
-        this.mUserListFavorites = mUserListFavorites;
+        this.mUserListFavoriteSong = mUserListFavoriteSong;
     }
 
     @NonNull
@@ -73,7 +73,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
                 intent.putExtra("playType", playType);
                 intent.putExtra("userId", userId);
                 intent.putExtra("songId", song.getId());
-                intent.putExtra("listFavoriteSong", mUserListFavorites);
+                intent.putExtra("listFavoriteSong", mUserListFavoriteSong);
                 context.startActivity(intent);
             }
         });
@@ -108,7 +108,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MyViewHolder
     }
 
     public Boolean getIsFavorite(String idSong) {
-        if (mUserListFavorites.contains(idSong)) return true;
+        if (mUserListFavoriteSong.contains(idSong)) return true;
         return false;
     };
 

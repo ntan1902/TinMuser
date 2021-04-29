@@ -40,6 +40,7 @@ public class ArtistProfileActivity extends Activity {
     private RecyclerView recycleMusic;
     private ArtistProfileAdapter artistAdapter;
     private ArtistMusicAdapter artistMusicAdapter;
+    private ArrayList<String> mUserListFavoriteSong;
 
     private String artistName = "";
     private String artistImageURL = "";
@@ -62,6 +63,8 @@ public class ArtistProfileActivity extends Activity {
         artistImageURL = intent.getStringExtra("artistImageURL");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
+        mUserListFavoriteSong = new ArrayList<>();
+        mUserListFavoriteSong = intent.getStringArrayListExtra("listFavoriteSong");
 
         txtArtistName.setText(artistName);
         Glide.with(this)
@@ -128,7 +131,7 @@ public class ArtistProfileActivity extends Activity {
                         mMusics.add(music);
                     }
                 }
-                artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId);
+                artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId, mUserListFavoriteSong);
                 recycleMusic.setAdapter(artistMusicAdapter);
             }
 

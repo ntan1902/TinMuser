@@ -54,6 +54,7 @@ public class MainActivity extends FragmentActivity {
     private RelativeLayout layoutPlay;
     private SongService songService;
 
+    private ArrayList<String> mUserListFavorites;
     private final int[] tabIcons = {
             R.drawable.ic_home,
             R.drawable.ic_library,
@@ -114,6 +115,8 @@ public class MainActivity extends FragmentActivity {
                             intent.putExtra("playType", songService.getPlayType());
                             intent.putExtra("userId", songService.getUserId());
                             intent.putExtra("songId", songService.getSongId());
+                            intent.putExtra("listFavoriteSong", mUserListFavorites);
+
                             startActivity(intent);
                         }
                     });
@@ -144,6 +147,9 @@ public class MainActivity extends FragmentActivity {
                 .getCurrentUser();
         updateStatus("online");
 
+        //favorite
+        mUserListFavorites = new ArrayList<>();
+        getFavoriteSongs();
 
         mRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
@@ -263,6 +269,24 @@ public class MainActivity extends FragmentActivity {
         public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }
+    }
+
+    private void getFavoriteSongs(){
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUserListFavorites.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String fav_song = dataSnapshot.getKey();
+                    mUserListFavorites.add(fav_song);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void updateStatus(String status) {

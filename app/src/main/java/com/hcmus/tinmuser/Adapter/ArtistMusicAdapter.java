@@ -29,12 +29,15 @@ public class ArtistMusicAdapter extends RecyclerView.Adapter<ArtistMusicAdapter.
     List<Music> mMusics;
     String playType;
     String userId;
+    ArrayList<String> mUserListFavoriteSong;
 
-    public ArtistMusicAdapter(Context context, List<Music> mMusics, String playType, String userId) {
+
+    public ArtistMusicAdapter(Context context, List<Music> mMusics, String playType, String userId, ArrayList<String> mUserListFavoriteSong) {
         this.context = context;
         this.mMusics = mMusics;
         this.playType = playType;
         this.userId = userId;
+        this.mUserListFavoriteSong = mUserListFavoriteSong;
     }
     @NonNull
     @Override
@@ -70,7 +73,7 @@ public class ArtistMusicAdapter extends RecyclerView.Adapter<ArtistMusicAdapter.
                 intent.putExtra("playType", playType);
                 intent.putExtra("userId", userId);
                 intent.putExtra("songId", song.getId());
-
+                intent.putExtra("listFavoriteSong", mUserListFavoriteSong);
                 context.startActivity(intent);
             }
         });

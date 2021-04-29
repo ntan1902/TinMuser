@@ -57,7 +57,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private boolean isPlay = true;
     private boolean isRepeat = false;
-    private boolean isFavorite = false;
+    private boolean isFavorite;
     private Handler handler = new Handler();
 
     private String playType;
@@ -75,7 +75,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     private DatabaseReference mRef;
     private boolean isExist = false;
     private String playDoubleId;
-    ArrayList<String> mUserListFavorites;
+    ArrayList<String> mUserListFavoriteSong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,12 +192,14 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(PlaySongActivity.this, MenuOfSongActivity.class);
+                i.putExtra("songId", songId);
                 i.putExtra("songName", songName);
                 i.putExtra("imageURL", imageURL);
                 i.putExtra("artistName", artistName);
                 i.putExtra("artistImageURL", artistImageURL);
                 i.putExtra("userId", userId);
                 i.putExtra("playType", playType);
+                i.putExtra("listFavoriteSong", mUserListFavoriteSong);
                 startActivity(i);
             }
         });
@@ -503,8 +505,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         songId = intent.getStringExtra("songId");
         userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
-        mUserListFavorites = new ArrayList<>();
-        mUserListFavorites = intent.getStringArrayListExtra("listFavoriteSong");
+        mUserListFavoriteSong = new ArrayList<>();
+        mUserListFavoriteSong = intent.getStringArrayListExtra("listFavoriteSong");
 
         mMusics = new ArrayList<>();
         getMusics(songId);
@@ -736,17 +738,16 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         return seconds.length() == 1 ? minutes + ":0" + seconds : minutes + ":" + seconds;
     }
 
-    //here
     public Boolean getIsFavorite(String idSong) {
-        if(mUserListFavorites != null) {
+        if (mUserListFavoriteSong != null) {
             DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
 
             favRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    mUserListFavorites.clear();
+                    mUserListFavoriteSong.clear();
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        mUserListFavorites.add(dataSnapshot.getKey());
+                        mUserListFavoriteSong.add(dataSnapshot.getKey());
                         System.out.println("yyyy");
                         System.out.println(dataSnapshot.getKey());
                     }
@@ -757,9 +758,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
                 }
             });
-            if (mUserListFavorites.contains(idSong)) return true;
+            if (mUserListFavoriteSong.contains(idSong)) return true;
         }
-
 
         return false;
     }

@@ -65,14 +65,14 @@
 
             <TextView
                 android:id="@+id/songName"
-                android:layout_width="wrap_content"
+                android:layout_width="169dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_toEndOf="@+id/songAvatar"
                 android:text="Cơn mưa ngang qua"
                 android:textColor="@color/white"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/artistName"

@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,7 +38,8 @@ public class FavoriteArtistFragment extends Fragment {
 
     private List<Artist> mArtists;
     private int currentPage = 0;
-
+    ArrayList<String> mUserListFavoriteSong;
+    private FirebaseUser mUser;
 
     public FavoriteArtistFragment() {
         // Required empty public constructor
@@ -47,6 +50,9 @@ public class FavoriteArtistFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_artists, container, false);
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        mUserListFavoriteSong = new ArrayList<>();
+        getFavoriteSongs();
 
         recyclerArtist = view.findViewById(R.id.recyclerArtist);
         recyclerArtist.setHasFixedSize(true);
@@ -56,7 +62,7 @@ public class FavoriteArtistFragment extends Fragment {
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "");
+        artist2Adapter = new Artist2Adapter(getContext(), mArtists, "Single", "", mUserListFavoriteSong);
         recyclerArtist.setAdapter(artist2Adapter);
 
         recyclerArtist.addOnScrollListener(new EndlessRecyclerOnScrollListener(gridLayoutManager) {
@@ -122,6 +128,25 @@ public class FavoriteArtistFragment extends Fragment {
                     artist2Adapter.notifyDataSetChanged();
                 }
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void getFavoriteSongs(){
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mUserListFavoriteSong.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String fav_song = dataSnapshot.getKey();
+                    mUserListFavoriteSong.add(fav_song);
+                }
             }
 
             @Override

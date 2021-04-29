@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment {
     List<Category> mCategories;
 
     FirebaseUser mUser;
-    ArrayList<String> mUserListFavorites;
+    ArrayList<String> mUserListFavoriteSong;
 
 
     public HomeFragment() {
@@ -72,8 +72,8 @@ public class HomeFragment extends Fragment {
         getMusics();
         
         searchMusic = new ArrayList<>();
-        mUserListFavorites = new ArrayList<>();
-        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "", mUserListFavorites);
+        mUserListFavoriteSong = new ArrayList<>();
+        musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "", mUserListFavoriteSong);
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         getFavoriteSongs();
@@ -119,10 +119,10 @@ public class HomeFragment extends Fragment {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavorites.clear();
+                mUserListFavoriteSong.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String fav_song = dataSnapshot.getKey();
-                    mUserListFavorites.add(fav_song);
+                    mUserListFavoriteSong.add(fav_song);
                     musicAdapter.notifyDataSetChanged();
                 }
             }
@@ -135,13 +135,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void setMusicView(List<Music> list) {
-        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
+        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavoriteSong);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(musicAdapter);
     }
 
     private void setMusicView2() {
-//        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavorites);
+//        musicAdapter = new MusicAdapter(getContext(), list, "Single", "", mUserListFavoriteSong);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(musicAdapter);
     }
