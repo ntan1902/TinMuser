@@ -78,31 +78,43 @@
                 android:layout_alignParentBottom="true" />
         </RelativeLayout>
 
-
-        <TextView
-            android:id="@+id/songName"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutConstraint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layoutImage"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:text="This is song name"
-            android:textColor="@color/white"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+            android:layout_below="@id/layoutImage">
+
+            <TextView
+                android:id="@+id/songName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:scrollHorizontally="true"
+                android:singleLine="true"
+
+                android:text="This is song name"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat_black"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/artistName"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/songName"
-            android:ellipsize="end"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
+            android:layout_below="@id/layoutConstraint"
+            android:layout_centerHorizontal="true"
             android:text="This is song artist"
-            android:textColor="@color/white"
-            android:textSize="26sp" />
+            android:textColor="@color/light_grey"
+            android:textSize="26sp"
+            android:fontFamily="@font/montserrat_black"/>
 
     </RelativeLayout>
 

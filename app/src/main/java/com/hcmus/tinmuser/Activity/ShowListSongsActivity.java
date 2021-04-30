@@ -55,11 +55,11 @@ public class ShowListSongsActivity extends Activity {
         userId = i.getStringExtra("userId");
 
         mMusics = new ArrayList<>();
-        getMusics();
 
         searchMusic = new ArrayList<>();
-        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, searchMusic, "Double", userId);
-
+        musicAdapter = new MusicAdapter(ShowListSongsActivity.this, mMusics, "Double", userId);
+        recyclerView.setAdapter(musicAdapter);
+        getMusics();
         searchText.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
             }
@@ -91,7 +91,7 @@ public class ShowListSongsActivity extends Activity {
                 }
             }
         });
-//        recyclerView.setAdapter(musicAdapter);
+
 
 
         btnGoBack.setOnClickListener(new View.OnClickListener() {

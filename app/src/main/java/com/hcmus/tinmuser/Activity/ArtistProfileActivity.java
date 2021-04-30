@@ -230,6 +230,7 @@ public class ArtistProfileActivity extends Activity {
                                         container.setBackground(gradientDrawableBg);
 
                                         txtArtistName.setTextColor(swatch.getBodyTextColor());
+                                        txtTotalFollow.setTextColor(swatch.getBodyTextColor());
                                     } else {
                                         RelativeLayout container = findViewById(R.id.container);
                                         container.setBackgroundResource(R.color.grey_900);
@@ -239,6 +240,8 @@ public class ArtistProfileActivity extends Activity {
                                         container.setBackground(gradientDrawableBg);
 
                                         txtArtistName.setTextColor(Color.DKGRAY);
+                                        txtTotalFollow.setTextColor(Color.DKGRAY);
+
                                     }
                                 }
                             });

@@ -35,7 +35,8 @@
                 android:text="Tăng Phúc"
                 android:textColor="@color/white"
                 android:textSize="50sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:fontFamily="@font/montserrat_black"/>
         </RelativeLayout>
 
         <RelativeLayout

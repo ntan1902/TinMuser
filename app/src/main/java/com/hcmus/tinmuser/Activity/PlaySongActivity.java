@@ -682,6 +682,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private void initializeId() {
         txtSongName = findViewById(R.id.songName);
+        txtSongName.setSelected(true);
+
         txtArtistName = findViewById(R.id.artistName);
         txtDurationPlayed = findViewById(R.id.durationPlayed);
         txtDurationTotal = findViewById(R.id.durationTotal);

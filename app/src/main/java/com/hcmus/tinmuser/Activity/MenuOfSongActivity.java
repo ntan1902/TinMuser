@@ -66,7 +66,9 @@ public class MenuOfSongActivity extends Activity {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         Artist artist = snapshot.getValue(Artist.class);
-                                        txtArtistName.setText(artist.getName());
+
+                                        String artistNameOfSong = artist.getName() + " - " + song.getName();
+                                        txtArtistName.setText(artistNameOfSong);
 
                                     }
 

@@ -32,7 +32,8 @@
             android:text="This is song name"
             android:textColor="@color/white"
             android:textSize="26sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/montserrat_black"/>
 
         <TextView
             android:id="@+id/artistName"
@@ -44,7 +45,39 @@
             android:singleLine="true"
             android:text="This is song artist"
             android:textColor="@color/light_grey"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:fontFamily="@font/montserrat_black"/>
+
+        <RelativeLayout
+            android:id="@+id/layoutFollow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/artistName"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/icLiked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_favorite_off" />
+
+            <TextView
+                android:id="@+id/txtTotalFollow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="142.593"
+                android:textColor="@color/light_grey"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/icLiked"
+                android:layout_marginStart="5dp"/>
+
+
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

@@ -76,6 +76,7 @@ public class MainActivity extends FragmentActivity {
         layoutPlay = findViewById(R.id.layoutPlay);
 
         txtSongName = findViewById(R.id.songName);
+        txtSongName.setSelected(true);
         txtArtistName = findViewById(R.id.artistName);
         songAvatar = findViewById(R.id.songAvatar);
         seekBar = findViewById(R.id.seekBar);
