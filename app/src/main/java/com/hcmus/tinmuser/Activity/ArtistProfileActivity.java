@@ -57,12 +57,12 @@ public class ArtistProfileActivity extends Activity {
 
     private String userId;
     private String playType;
-
+    private boolean isFavorite;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_profile);
-
+        isFavorite = false;/////
         initializeID();
 
         // Receive data from MenuOfSongActivity, ArtistFragment
@@ -106,6 +106,41 @@ public class ArtistProfileActivity extends Activity {
                 finish();
             }
         });
+
+       btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference artistRef = FirebaseDatabase.getInstance().getReference("Artists").child(artistId);
+                DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorite");
+                artistRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Artist artist = snapshot.getValue(Artist.class);
+                        isFavorite = !isFavorite;
+                        if (snapshot.exists()) {
+                            if (isFavorite) {
+                                artistRef.child("totalFollow").setValue(artist.getTotalFollow() + 1);
+                                btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                                String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
+                                        artist.getTotalFollow() + 1) + " total followers";
+                                txtTotalFollow.setText(totalFollowString);
+                                favoriteRef.child(artistId).child(userId).setValue(userId);
+                            } else {
+                                artistRef.child("totalFollow").setValue(artist.getTotalFollow() - 1);
+                                btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                                String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
+                                        artist.getTotalFollow() - 1) + " total followers";
+                                txtTotalFollow.setText(totalFollowString);
+                                favoriteRef.child(artistId).child(userId).removeValue();
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+            }});
 
         mArtists = new ArrayList<>();
         artistAdapter = new ArtistProfileAdapter(ArtistProfileActivity.this, mArtists, playType, userId);
