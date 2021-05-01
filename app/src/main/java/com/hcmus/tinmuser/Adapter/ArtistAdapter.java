@@ -69,17 +69,24 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         if (position < mArtists.size()) {
             Artist artist = mArtists.get(position);
-
-            holder.artistName.setText(artist.getName());
-            holder.artistName.setTextColor(Color.parseColor("#FFFFFF"));
-
-            if (artist.getImageURL().equals("default")) {
-                holder.imageView.setImageResource(R.drawable.profile_image);
-            } else {
-                Glide.with(context)
-                        .load(artist.getImageURL())
-                        .into(holder.imageView);
+            if(artist.getId().equals("Add")){
+                holder.imageView.setImageResource(R.drawable.ic_add);
+                holder.artistName.setText("Add Artist");
+                holder.artistName.setTextColor(Color.parseColor("#FFFFFF"));
             }
+            else{
+                holder.artistName.setText(artist.getName());
+                holder.artistName.setTextColor(Color.parseColor("#FFFFFF"));
+                if (artist.getImageURL().equals("default")) {
+                    holder.imageView.setImageResource(R.drawable.profile_image);
+                } else {
+                    Glide.with(context)
+                            .load(artist.getImageURL())
+                            .into(holder.imageView);
+                }
+            }
+
+
 
 //            holder.itemView.setOnClickListener(new View.OnClickListener() {
 //                @Override

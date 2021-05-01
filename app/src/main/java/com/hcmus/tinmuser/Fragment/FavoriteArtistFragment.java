@@ -60,8 +60,7 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
 
         recyclerArtist = view.findViewById(R.id.recyclerArtist);
         recyclerArtist.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),
-                3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerArtist.setLayoutManager(gridLayoutManager);
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
@@ -69,22 +68,12 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
         artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "", this);
         recyclerArtist.setAdapter(artistAdapter);
 
-        addFavoriteBtn = (ImageView) view.findViewById(R.id.add_favorite_btn);
-        addFavoriteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), ListArtistActivity.class);
-                startActivityForResult(intent, 1);
-            }
-        });
-
         getFavoriteArtists();
 
         return view;
     }
     private void getFavoriteArtists(){
         try{
-            mArtists.clear();
             ArrayList<String> listArtist = new ArrayList<>();
             Query queryFavorite = FirebaseDatabase.getInstance().getReference("Favorite").orderByChild(mUser.getUid()).equalTo(mUser.getUid());
             queryFavorite.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -102,12 +91,13 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
                                 if(listArtist.contains(artistSnapshot.getKey())){
-                                    System.out.println("okok");
                                     Artist artist = artistSnapshot.getValue(Artist.class);
                                     mArtists.add(artist);
-                                    artistAdapter.notifyDataSetChanged();
                                 }
                             }
+                            Artist addBtn = new Artist("Add", "", "", 0);
+                            mArtists.add(addBtn);
+                            artistAdapter.notifyDataSetChanged();
                         }
 
                         @Override
@@ -127,27 +117,6 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
-    private void getArtists() {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
-        mArtists.clear();
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                    Artist artist = artistSnapshot.getValue(Artist.class);
-
-                    mArtists.add(artist);
-                    artistAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 
     private void getFavoriteSongs(){
@@ -172,11 +141,16 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
 
     @Override
     public void onClick(String path, String playType) {
-        getActivity().recreate();
-        Intent intentArtist = new Intent(getActivity(), ArtistProfileActivity.class);
-        intentArtist.putExtra("artistId", path);
-        intentArtist.putExtra("playType", playType);
-        startActivityForResult(intentArtist, 1);
+        if(path.equals("Add")){
+            startActivityForResult(new Intent(getActivity(), ListArtistActivity.class), 1);
+        }
+        else{
+            Intent intentArtist = new Intent(getActivity(), ArtistProfileActivity.class);
+            intentArtist.putExtra("artistId", path);
+            intentArtist.putExtra("playType", playType);
+            startActivityForResult(intentArtist, 1);
+        }
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
