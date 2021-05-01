@@ -28,6 +28,8 @@ import com.hcmus.tinmuser.Activity.MainActivity;
 import com.hcmus.tinmuser.Activity.PlaySongActivity;
 import com.hcmus.tinmuser.Adapter.ArtistAdapter;
 import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.Music;
+import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
@@ -36,8 +38,6 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 public class FavoriteArtistFragment extends Fragment {
-    static FavoriteArtistFragment fragment;
-
     private RecyclerView recyclerArtist;
     private ArtistAdapter artistAdapter;
     private List<Artist> mArtists;
@@ -70,48 +70,39 @@ public class FavoriteArtistFragment extends Fragment {
     }
 
     private void getFavoriteArtists() {
-        try {
-            ArrayList<String> listArtist = new ArrayList<>();
-            Query queryFavorite = FirebaseDatabase.getInstance().getReference("Favorite").orderByChild(mUser.getUid()).equalTo(mUser.getUid());
-            queryFavorite.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot item : snapshot.getChildren()) {
-                        listArtist.add(item.getKey());
-                        System.out.println("snapshot " + item.getKey());
+        FirebaseDatabase.getInstance().getReference("FavoriteArtists")
+                .child(mUser.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        mArtists.clear();
+                        artistAdapter.notifyDataSetChanged();
+                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                            String id_fav_artist = dataSnapshot.getKey();
+
+                            FirebaseDatabase.getInstance().getReference("Artists")
+                                    .child(id_fav_artist)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            Artist artist = snapshot.getValue(Artist.class);
+                                            mArtists.add(artist);
+                                            artistAdapter.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+                        }
                     }
-                    for (String i : listArtist)
-                        System.out.println("ListFavor " + i);
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                                if (listArtist.contains(artistSnapshot.getKey())) {
-                                    Artist artist = artistSnapshot.getValue(Artist.class);
-                                    mArtists.add(artist);
-                                    artistAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                    }
+                });
     }
 
 //    @Override

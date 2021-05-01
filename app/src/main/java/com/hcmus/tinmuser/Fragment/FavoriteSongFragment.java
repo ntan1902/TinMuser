@@ -107,6 +107,7 @@ public class FavoriteSongFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mMusics.clear();
+                musicAdapter.notifyDataSetChanged();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     String id_fav_song = dataSnapshot.getKey();
 
