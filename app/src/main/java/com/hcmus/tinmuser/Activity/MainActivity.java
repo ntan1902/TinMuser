@@ -2,6 +2,7 @@ package com.hcmus.tinmuser.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -51,7 +52,7 @@ public class MainActivity extends FragmentActivity {
     private SeekBar seekBar;
     private boolean isPlay = true;
 
-    private RelativeLayout layoutPlay;
+    private ConstraintLayout layoutPlay;
     private SongService songService;
 
     private ArrayList<String> mUserListFavorites;
@@ -91,11 +92,14 @@ public class MainActivity extends FragmentActivity {
                     layoutPlay.setVisibility(View.VISIBLE);
 
 
+
                     Glide.with(getApplicationContext())
                             .load(songService.getImageURL())
                             .into(songAvatar);
-                    txtSongName.setText(songService.getSongName());
-                    txtArtistName.setText(songService.getArtistName());
+                    if(!txtSongName.getText().toString().equals(songService.getSongName()))
+                        txtSongName.setText(songService.getSongName());
+                    if(!txtArtistName.getText().toString().equals(songService.getArtistName()))
+                        txtArtistName.setText(songService.getArtistName());
 
                     updateProgressBar();
 
