@@ -58,7 +58,6 @@ public class ArtistProfileActivity extends Activity {
     private List<Artist> mArtists;
     private List<Music> mMusics;
 
-//    private String userId;
     private String playType;
     private boolean isFavorite;
     private FirebaseUser mUser;
@@ -71,7 +70,6 @@ public class ArtistProfileActivity extends Activity {
         // Receive data from MenuOfSongActivity, ArtistFragment
         Intent intent = getIntent();
         artistId = intent.getStringExtra("artistId");
-//        userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
 
 
@@ -148,9 +146,8 @@ public class ArtistProfileActivity extends Activity {
         mArtists = new ArrayList<>();
         artistAdapter = new ArtistProfileAdapter(ArtistProfileActivity.this, mArtists, playType, mUser.getUid());
         recyclerArtist.setAdapter(artistAdapter);
-        getFavoriteArtists();
         checkFavorite();
-//        getArtists();
+        getArtists();
 
         mMusics = new ArrayList<>();
         artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, mUser.getUid());
@@ -219,53 +216,6 @@ public class ArtistProfileActivity extends Activity {
 
     }
 
-
-    private void getFavoriteArtists(){
-        try{
-            ArrayList<String> listArtist = new ArrayList<>();
-            Query queryFavorite = FirebaseDatabase.getInstance().getReference("Favorite").orderByChild(mUser.getUid()).equalTo(mUser.getUid());
-            queryFavorite.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot item : snapshot.getChildren()){
-                        listArtist.add(item.getKey());
-                        System.out.println("snapshot " + item.getKey());
-                    }
-                    for(String i : listArtist)
-                        System.out.println("ListFavor " + i);
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                                if(listArtist.contains(artistSnapshot.getKey())){
-                                    System.out.println("okok");
-                                    Artist artist = artistSnapshot.getValue(Artist.class);
-                                    mArtists.add(artist);
-                                    artistAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-    }
 
     private void getArtists() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
