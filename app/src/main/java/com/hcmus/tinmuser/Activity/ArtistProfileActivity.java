@@ -58,7 +58,6 @@ public class ArtistProfileActivity extends Activity {
     private List<Artist> mArtists;
     private List<Music> mMusics;
 
-//    private String userId;
     private String playType;
     private boolean isFavorite;
     private FirebaseUser mUser;
@@ -72,7 +71,6 @@ public class ArtistProfileActivity extends Activity {
         // Receive data from MenuOfSongActivity, ArtistFragment
         Intent intent = getIntent();
         artistId = intent.getStringExtra("artistId");
-//        userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
 
 
