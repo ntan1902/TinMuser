@@ -229,12 +229,12 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+
     private void setTabIcons() {
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             tabLayout.getTabAt(i).setIcon(tabIcons[i]);
         }
     }
-
 
     // ViewPageAdapter
     static class ViewPageAdapter extends FragmentPagerAdapter {

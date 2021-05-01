@@ -23,10 +23,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Adapter.ArtistProfileAdapter;
 import com.hcmus.tinmuser.Adapter.ArtistMusicAdapter;
@@ -55,20 +58,20 @@ public class ArtistProfileActivity extends Activity {
     private List<Artist> mArtists;
     private List<Music> mMusics;
 
-    private String userId;
+//    private String userId;
     private String playType;
     private boolean isFavorite;
+    private FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artist_profile);
-        isFavorite = false;/////
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         initializeID();
-
         // Receive data from MenuOfSongActivity, ArtistFragment
         Intent intent = getIntent();
         artistId = intent.getStringExtra("artistId");
-        userId = intent.getStringExtra("userId");
+//        userId = intent.getStringExtra("userId");
         playType = intent.getStringExtra("playType");
 
 
@@ -102,7 +105,7 @@ public class ArtistProfileActivity extends Activity {
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArtistProfileActivity.this.onBackPressed();
+//                ArtistProfileActivity.this.onBackPressed();
                 finish();
             }
         });
@@ -124,14 +127,14 @@ public class ArtistProfileActivity extends Activity {
                                 String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
                                         artist.getTotalFollow() + 1) + " total followers";
                                 txtTotalFollow.setText(totalFollowString);
-                                favoriteRef.child(artistId).child(userId).setValue(userId);
+                                favoriteRef.child(artistId).child(mUser.getUid()).setValue(mUser.getUid());
                             } else {
                                 artistRef.child("totalFollow").setValue(artist.getTotalFollow() - 1);
                                 btnFavorite.setImageResource(R.drawable.ic_favorite_off);
                                 String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
                                         artist.getTotalFollow() - 1) + " total followers";
                                 txtTotalFollow.setText(totalFollowString);
-                                favoriteRef.child(artistId).child(userId).removeValue();
+                                favoriteRef.child(artistId).child(mUser.getUid()).removeValue();
                             }
                         }
                     }
@@ -143,15 +146,38 @@ public class ArtistProfileActivity extends Activity {
             }});
 
         mArtists = new ArrayList<>();
-        artistAdapter = new ArtistProfileAdapter(ArtistProfileActivity.this, mArtists, playType, userId);
+        artistAdapter = new ArtistProfileAdapter(ArtistProfileActivity.this, mArtists, playType, mUser.getUid());
         recyclerArtist.setAdapter(artistAdapter);
-        getArtists();
+        getFavoriteArtists();
+        checkFavorite();
+//        getArtists();
 
         mMusics = new ArrayList<>();
-        artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, userId);
+        artistMusicAdapter = new ArtistMusicAdapter(ArtistProfileActivity.this, mMusics, playType, mUser.getUid());
         recycleMusic.setAdapter(artistMusicAdapter);
         getMusics();
 
+    }
+
+    private void checkFavorite(){
+        DatabaseReference favoriteRef = FirebaseDatabase.getInstance().getReference("Favorite");
+        favoriteRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.child(artistId).exists() && snapshot.child(artistId).child(mUser.getUid()).exists()) {
+                    isFavorite = true;
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                }
+                else{
+                    isFavorite = false;
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void getMusics() {
@@ -190,6 +216,54 @@ public class ArtistProfileActivity extends Activity {
                     }
                 });
 
+
+    }
+
+
+    private void getFavoriteArtists(){
+        try{
+            ArrayList<String> listArtist = new ArrayList<>();
+            Query queryFavorite = FirebaseDatabase.getInstance().getReference("Favorite").orderByChild(mUser.getUid()).equalTo(mUser.getUid());
+            queryFavorite.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        listArtist.add(item.getKey());
+                        System.out.println("snapshot " + item.getKey());
+                    }
+                    for(String i : listArtist)
+                        System.out.println("ListFavor " + i);
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
+                                if(listArtist.contains(artistSnapshot.getKey())){
+                                    System.out.println("okok");
+                                    Artist artist = artistSnapshot.getValue(Artist.class);
+                                    mArtists.add(artist);
+                                    artistAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

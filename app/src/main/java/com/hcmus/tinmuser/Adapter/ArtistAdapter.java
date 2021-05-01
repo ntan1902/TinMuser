@@ -22,17 +22,18 @@ import java.util.List;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
     private Context context;
     private List<Artist> mArtists;
-
+    private ClickItemListener clickItemListener;
     //    public static final int ARTIST_INFO = 0;
 //    public static final int LOAD_MORE = 1;
     String playType;
     String userId;
 
-    public ArtistAdapter(Context context, List<Artist> mArtists, String playType, String userId) {
+    public ArtistAdapter(Context context, List<Artist> mArtists, String playType, String userId, ClickItemListener clickItemListener) {
         this.context = context;
         this.mArtists = mArtists;
         this.playType = playType;
         this.userId = userId;
+        this.clickItemListener = clickItemListener;
     }
 
     @NonNull
@@ -60,7 +61,8 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                 .inflate(R.layout.artist_item_2,
                         parent,
                         false);
-        return new ArtistAdapter.ViewHolder(view);
+        return new ViewHolder(view);
+//        return new ArtistAdapter.ViewHolder(view);
     }
 
     @Override
@@ -79,16 +81,16 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
                         .into(holder.imageView);
             }
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
-                    intentArtist.putExtra("artistId", artist.getId());
-                    intentArtist.putExtra("playType", playType);
-                    intentArtist.putExtra("userId", userId);
-                    context.startActivity(intentArtist);
-                }
-            });
+//            holder.itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
+//                    intentArtist.putExtra("artistId", artist.getId());
+//                    intentArtist.putExtra("playType", playType);
+//                    intentArtist.putExtra("userId", userId);
+//                    context.startActivity(intentArtist);
+//                }
+//            });
         }
     }
 
@@ -97,7 +99,15 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
         return mArtists.size();
     }
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 //    @Override
 //    public int getItemViewType(int position) {
 //        if (position < mArtists.size()) {
@@ -110,12 +120,20 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView artistName;
-
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             artistName = itemView.findViewById(R.id.artistName);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickItemListener.onClick(mArtists.get(getAdapterPosition()).getId(), playType);
+                }
+            });
         }
+    }
+
+    public interface ClickItemListener{
+        void onClick(String path, String playType);
     }
 }

@@ -1,5 +1,6 @@
 package com.hcmus.tinmuser.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +20,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
+import com.hcmus.tinmuser.Activity.ListArtistActivity;
+import com.hcmus.tinmuser.Activity.MainActivity;
+import com.hcmus.tinmuser.Activity.PlaySongActivity;
 import com.hcmus.tinmuser.Adapter.ArtistAdapter;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.R;
@@ -26,12 +33,14 @@ import com.hcmus.tinmuser.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoriteArtistFragment extends Fragment {
+import static android.app.Activity.RESULT_OK;
+
+public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.ClickItemListener{
     static FavoriteArtistFragment fragment;
 
     private RecyclerView recyclerArtist;
     private ArtistAdapter artistAdapter;
-
+    private ImageView addFavoriteBtn;
     private List<Artist> mArtists;
     ArrayList<String> mUserListFavoriteSong;
     private FirebaseUser mUser;
@@ -57,16 +66,71 @@ public class FavoriteArtistFragment extends Fragment {
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "");
+        artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "", this);
         recyclerArtist.setAdapter(artistAdapter);
 
-        getArtists();
+        addFavoriteBtn = (ImageView) view.findViewById(R.id.add_favorite_btn);
+        addFavoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), ListArtistActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        getFavoriteArtists();
 
         return view;
     }
+    private void getFavoriteArtists(){
+        try{
+            mArtists.clear();
+            ArrayList<String> listArtist = new ArrayList<>();
+            Query queryFavorite = FirebaseDatabase.getInstance().getReference("Favorite").orderByChild(mUser.getUid()).equalTo(mUser.getUid());
+            queryFavorite.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for(DataSnapshot item : snapshot.getChildren()){
+                        listArtist.add(item.getKey());
+                        System.out.println("snapshot " + item.getKey());
+                    }
+                    for(String i : listArtist)
+                        System.out.println("ListFavor " + i);
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
+                                if(listArtist.contains(artistSnapshot.getKey())){
+                                    System.out.println("okok");
+                                    Artist artist = artistSnapshot.getValue(Artist.class);
+                                    mArtists.add(artist);
+                                    artistAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
 
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     private void getArtists() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
+        mArtists.clear();
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -104,5 +168,19 @@ public class FavoriteArtistFragment extends Fragment {
 
             }
         });
+    }
+
+    @Override
+    public void onClick(String path, String playType) {
+        getActivity().recreate();
+        Intent intentArtist = new Intent(getActivity(), ArtistProfileActivity.class);
+        intentArtist.putExtra("artistId", path);
+        intentArtist.putExtra("playType", playType);
+        startActivityForResult(intentArtist, 1);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getActivity().recreate();
     }
 }

@@ -60,6 +60,7 @@ public class ArtistProfileAdapter extends RecyclerView.Adapter<ArtistProfileAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intentArtist = new Intent(context, ArtistProfileActivity.class);
                 intentArtist.putExtra("artistId", artist.getId());
                 intentArtist.putExtra("playType", playType);

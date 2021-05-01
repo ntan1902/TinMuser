@@ -24,6 +24,7 @@
         <activity android:name=".Activity.ProfileActivity" />
         <activity android:name=".Activity.PlaySongActivity" />
         <activity android:name=".Activity.PlaySongDoubleActivity" />
+        <activity android:name=".Activity.ListArtistActivity"/>
         <activity android:name=".Activity.MessageActivity" />
         <activity android:name=".Activity.EditProfileActivity" />
         <activity android:name=".Activity.AddFriendActivity" />
