@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layoutPlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,9 +37,11 @@
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
             android:padding="0dp"
             android:paddingStart="0dp"
             android:paddingEnd="0dp"
@@ -47,37 +49,42 @@
             android:paddingBottom="0dp"
             />
 
-        <RelativeLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutBottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/seekBar"
+            app:layout_constraintTop_toBottomOf="@id/seekBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:background="@drawable/border_play">
 
             <ImageView
                 android:id="@+id/songAvatar"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
-                android:layout_alignParentStart="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+
                 android:scaleType="centerCrop"
-                android:layout_centerVertical="true"
                 android:src="@drawable/group" />
 
             <TextView
                 android:id="@+id/songName"
-                android:layout_width="250dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-
-                android:layout_toEndOf="@+id/songAvatar"
-                android:layout_alignParentTop="true"
-
 
                 android:ellipsize="marquee"
                 android:marqueeRepeatLimit="marquee_forever"
                 android:scrollHorizontally="true"
                 android:singleLine="true"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/songAvatar"
+                app:layout_constraintEnd_toStartOf="@id/btnPlay"
+                app:layout_constraintBottom_toTopOf="@id/artistName"
 
                 android:text="Cơn mưa ngang qua"
                 android:textColor="@color/white"
@@ -87,10 +94,12 @@
                 android:id="@+id/artistName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/songName"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_toEndOf="@+id/songAvatar"
+
+                app:layout_constraintStart_toEndOf="@id/songAvatar"
+                app:layout_constraintTop_toBottomOf="@id/songName"
+
                 android:text="Sơn tùng mtp"
                 android:textColor="@color/light_grey"
                 android:textSize="15sp" />
@@ -100,12 +109,15 @@
                 android:id="@+id/btnPlay"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
+
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+
                 android:src="@drawable/ic_play" />
-        </RelativeLayout>
-    </RelativeLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <com.google.android.material.tabs.TabLayout
