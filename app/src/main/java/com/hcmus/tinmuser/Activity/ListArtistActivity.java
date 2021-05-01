@@ -31,7 +31,7 @@ import com.hcmus.tinmuser.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListArtistActivity extends Activity implements ArtistAdapter.ClickItemListener{
+public class ListArtistActivity extends Activity{
     private RecyclerView recyclerArtist;
     private ArtistAdapter artistAdapter;
 
@@ -64,7 +64,7 @@ public class ListArtistActivity extends Activity implements ArtistAdapter.ClickI
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artistAdapter = new ArtistAdapter(this, mArtists, "Single", "", this);
+        artistAdapter = new ArtistAdapter(this, mArtists, "Single", "");
         recyclerArtist.setAdapter(artistAdapter);
         getArtists();
 
@@ -111,11 +111,4 @@ public class ListArtistActivity extends Activity implements ArtistAdapter.ClickI
         });
     }
 
-    @Override
-    public void onClick(String path, String playType) {
-        Intent intentArtist = new Intent(this, ArtistProfileActivity.class);
-        intentArtist.putExtra("artistId", path);
-        intentArtist.putExtra("playType", playType);
-        startActivity(intentArtist);
-    }
 }

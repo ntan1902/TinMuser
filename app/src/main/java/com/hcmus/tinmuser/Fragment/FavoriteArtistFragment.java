@@ -35,14 +35,12 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.ClickItemListener{
+public class FavoriteArtistFragment extends Fragment {
     static FavoriteArtistFragment fragment;
 
     private RecyclerView recyclerArtist;
     private ArtistAdapter artistAdapter;
-    private ImageView addFavoriteBtn;
     private List<Artist> mArtists;
-    ArrayList<String> mUserListFavoriteSong;
     private FirebaseUser mUser;
 
     public FavoriteArtistFragment() {
@@ -55,8 +53,6 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_artists, container, false);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mUserListFavoriteSong = new ArrayList<>();
-        getFavoriteSongs();
 
         recyclerArtist = view.findViewById(R.id.recyclerArtist);
         recyclerArtist.setHasFixedSize(true);
@@ -65,39 +61,38 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "", this);
+        artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "");
         recyclerArtist.setAdapter(artistAdapter);
 
         getFavoriteArtists();
 
         return view;
     }
-    private void getFavoriteArtists(){
-        try{
+
+    private void getFavoriteArtists() {
+        try {
             ArrayList<String> listArtist = new ArrayList<>();
             Query queryFavorite = FirebaseDatabase.getInstance().getReference("Favorite").orderByChild(mUser.getUid()).equalTo(mUser.getUid());
             queryFavorite.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for(DataSnapshot item : snapshot.getChildren()){
+                    for (DataSnapshot item : snapshot.getChildren()) {
                         listArtist.add(item.getKey());
                         System.out.println("snapshot " + item.getKey());
                     }
-                    for(String i : listArtist)
+                    for (String i : listArtist)
                         System.out.println("ListFavor " + i);
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
                     ref.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
-                                if(listArtist.contains(artistSnapshot.getKey())){
+                                if (listArtist.contains(artistSnapshot.getKey())) {
                                     Artist artist = artistSnapshot.getValue(Artist.class);
                                     mArtists.add(artist);
+                                    artistAdapter.notifyDataSetChanged();
                                 }
                             }
-                            Artist addBtn = new Artist("Add", "", "", 0);
-                            mArtists.add(addBtn);
-                            artistAdapter.notifyDataSetChanged();
                         }
 
                         @Override
@@ -114,47 +109,27 @@ public class FavoriteArtistFragment extends Fragment implements ArtistAdapter.Cl
             });
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getFavoriteSongs(){
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavoriteSong.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavoriteSong.add(fav_song);
-                    artistAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onClick(String path, String playType) {
-        if(path.equals("Add")){
-            startActivityForResult(new Intent(getActivity(), ListArtistActivity.class), 1);
-        }
-        else{
-            Intent intentArtist = new Intent(getActivity(), ArtistProfileActivity.class);
-            intentArtist.putExtra("artistId", path);
-            intentArtist.putExtra("playType", playType);
-            startActivityForResult(intentArtist, 1);
-        }
-
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        getActivity().recreate();
-    }
+//    @Override
+//    public void onClick(String path, String playType) {
+//        if (path.equals("Add")) {
+//            startActivityForResult(new Intent(getActivity(), ListArtistActivity.class), 1);
+//        } else {
+//            Intent intentArtist = new Intent(getActivity(), ArtistProfileActivity.class);
+//            intentArtist.putExtra("artistId", path);
+//            intentArtist.putExtra("playType", playType);
+//            startActivityForResult(intentArtist, 1);
+//        }
+//
+//    }
+//
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        getActivity().recreate();
+//    }
 }
