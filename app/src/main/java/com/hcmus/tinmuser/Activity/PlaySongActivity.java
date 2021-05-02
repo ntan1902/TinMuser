@@ -117,9 +117,20 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
             @Override
             public void run() {
                 if (songService != null &&
-                        songService.getMediaPlayer() != null &&
-                        songService.getMediaPlayer().isPlaying()) {
-                    updateProgressBar();
+                        songService.getMediaPlayer() != null) {
+
+                    if(songService.isPlaying())
+                        updateProgressBar();
+
+                    if(songService.isComplete()) {
+                        if (!isRepeat) {
+                            btnNext.performClick();
+                        } else {
+                            isPlay = false;
+                            btnPlay.setImageResource(R.drawable.ic_play);
+                            songService.reset();
+                        }
+                    }
                 }
                 handler.postDelayed(this, 100);
             }
@@ -671,17 +682,17 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         seekBar.setMax(duration);
 
 
-        if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
-            isPlay = false;
-            btnPlay.setImageResource(R.drawable.ic_play);
-
-            // TODO: BUG
-            if (!isRepeat) {
-                btnNext.performClick();
-            } else {
-                songService.reset();
-            }
-        }
+//        if (currentPosition == seekBar.getMax() && !isRepeat && isPlay) {
+//            isPlay = false;
+//            btnPlay.setImageResource(R.drawable.ic_play);
+//
+////            // TODO: BUG
+////            if (!isRepeat) {
+////                btnNext.performClick();
+////            } else {
+////                songService.reset();
+////            }
+//        }
     }
 
     private void initializeId() {

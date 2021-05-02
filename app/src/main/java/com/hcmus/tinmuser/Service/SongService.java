@@ -11,7 +11,7 @@ import android.util.Log;
 
 import java.io.IOException;
 
-public class SongService extends Service {
+public class SongService extends Service implements MediaPlayer.OnCompletionListener {
     private static SongService instance = null;
 
     public static SongService getInstance() {
@@ -29,6 +29,8 @@ public class SongService extends Service {
     private String imageURL = "";
     private String playType = "";
     private String userId = "";
+
+    private boolean isComplete = false;
 
     private final IBinder mBinder = new LocalBinder();
 
@@ -77,11 +79,16 @@ public class SongService extends Service {
             imageURL = intent.getStringExtra("imageURL");
             playType = intent.getStringExtra("playType");
             userId = intent.getStringExtra("userId");
+            isComplete = false;
         }
 
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        isComplete = true;
+    }
     public int getCurrentPosition() {
         return mediaPlayer.getCurrentPosition();
     }
@@ -100,6 +107,8 @@ public class SongService extends Service {
     }
 
     public void start() {
+        isComplete = false;
+
         mediaPlayer.seekTo(playbackPosition);
         mediaPlayer.start();
     }
@@ -116,6 +125,8 @@ public class SongService extends Service {
     public int getDuration() {
         return mediaPlayer.getDuration();
     }
+
+    public boolean isPlaying() {return mediaPlayer.isPlaying();}
 
     public String getUri() {
         return uri;
@@ -181,6 +192,14 @@ public class SongService extends Service {
         this.songId = songId;
     }
 
+    public boolean isComplete() {
+        return isComplete;
+    }
+
+    public void setComplete(boolean complete) {
+        isComplete = complete;
+    }
+
     public void playAudio(String uri) {
         killMediaPlayer();
 
@@ -188,6 +207,7 @@ public class SongService extends Service {
         try {
             mediaPlayer.setDataSource(uri);
             mediaPlayer.prepareAsync();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -196,6 +216,7 @@ public class SongService extends Service {
             @Override
             public void onPrepared(MediaPlayer mp) {
                 mp.start();
+                mp.setOnCompletionListener(SongService.this);
             }
         });
 

@@ -87,7 +87,6 @@ public class ArtistProfileActivity extends Activity {
                                         layoutTop.setBackground(resource);
                                     }
                                 });
-                        loadBitmapIntoSongImage(artist.getImageURL());
 
                         String totalFollowString = NumberFormat.getNumberInstance(Locale.US).format(
                                 artist.getTotalFollow()) + " total followers";
@@ -270,55 +269,4 @@ public class ArtistProfileActivity extends Activity {
         recycleMusic.setNestedScrollingEnabled(false);
     }
 
-    private void loadBitmapIntoSongImage(String imageURL) {
-        // Metadata
-        try {
-
-            Glide.with(this)
-                    .asBitmap()
-                    .load(imageURL)
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-
-                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
-                                @Override
-                                public void onGenerated(@Nullable Palette palette) {
-                                    Palette.Swatch swatch = palette.getDominantSwatch();
-                                    if (swatch != null) {
-                                        RelativeLayout container = findViewById(R.id.container);
-                                        container.setBackgroundResource(R.color.grey_900);
-
-                                        GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
-                                                new int[]{swatch.getRgb(), swatch.getRgb()});
-                                        container.setBackground(gradientDrawableBg);
-
-                                        txtArtistName.setTextColor(swatch.getBodyTextColor());
-                                        txtTotalFollow.setTextColor(swatch.getBodyTextColor());
-                                    } else {
-                                        RelativeLayout container = findViewById(R.id.container);
-                                        container.setBackgroundResource(R.color.grey_900);
-
-                                        GradientDrawable gradientDrawableBg = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
-                                                new int[]{0xff000000, 0xff000000});
-                                        container.setBackground(gradientDrawableBg);
-
-                                        txtArtistName.setTextColor(Color.DKGRAY);
-                                        txtTotalFollow.setTextColor(Color.DKGRAY);
-
-                                    }
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
-                    });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

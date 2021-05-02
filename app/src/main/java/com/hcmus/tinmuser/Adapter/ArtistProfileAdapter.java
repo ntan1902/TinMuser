@@ -2,17 +2,25 @@ package com.hcmus.tinmuser.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.palette.graphics.Palette;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.R;
@@ -72,13 +80,52 @@ public class ArtistProfileAdapter extends RecyclerView.Adapter<ArtistProfileAdap
 
     @Override
     public int getItemCount() {
+
         return mArtists.size();
     }
+
+    private void loadBitmapIntoSongImage(@NonNull ViewHolder holder, String imageURL) {
+        // Metadata
+        try {
+
+            Glide.with(context)
+                    .asBitmap()
+                    .load(imageURL)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+
+                            Palette.from(resource).generate(new Palette.PaletteAsyncListener() {
+                                @Override
+                                public void onGenerated(@Nullable Palette palette) {
+                                    Palette.Swatch swatch = palette.getDominantSwatch();
+                                    if (swatch != null) {
+
+                                        holder.artistName.setTextColor(swatch.getBodyTextColor());
+                                    } else {
+
+                                        holder.artistName.setTextColor(Color.DKGRAY);
+
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView artistName;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
