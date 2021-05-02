@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -18,7 +19,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.hcmus.tinmuser.Adapter.ArtistAdapter;
+import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
+import com.hcmus.tinmuser.Activity.ListArtistActivity;
+import com.hcmus.tinmuser.Activity.MainActivity;
+import com.hcmus.tinmuser.Activity.PlaySongActivity;
+import com.hcmus.tinmuser.Adapter.ArtistFavoriteAdapter;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.R;
 
@@ -27,7 +32,7 @@ import java.util.List;
 
 public class FavoriteArtistFragment extends Fragment {
     private RecyclerView recyclerArtist;
-    private ArtistAdapter artistAdapter;
+    private ArtistFavoriteAdapter artistFavoriteAdapter;
     private List<Artist> mArtists;
     private FirebaseUser mUser;
 
@@ -44,13 +49,12 @@ public class FavoriteArtistFragment extends Fragment {
 
         recyclerArtist = view.findViewById(R.id.recyclerArtist);
         recyclerArtist.setHasFixedSize(true);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
-        recyclerArtist.setLayoutManager(gridLayoutManager);
+        recyclerArtist.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artistAdapter = new ArtistAdapter(getContext(), mArtists, "Single", "");
-        recyclerArtist.setAdapter(artistAdapter);
+        artistFavoriteAdapter = new ArtistFavoriteAdapter(getContext(), mArtists, "Single");
+        recyclerArtist.setAdapter(artistFavoriteAdapter);
 
         getFavoriteArtists();
 
@@ -64,7 +68,7 @@ public class FavoriteArtistFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         mArtists.clear();
-                        artistAdapter.notifyDataSetChanged();
+                        artistFavoriteAdapter.notifyDataSetChanged();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                             String id_fav_artist = dataSnapshot.getKey();
 
@@ -75,7 +79,7 @@ public class FavoriteArtistFragment extends Fragment {
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             Artist artist = snapshot.getValue(Artist.class);
                                             mArtists.add(artist);
-                                            artistAdapter.notifyDataSetChanged();
+                                            artistFavoriteAdapter.notifyDataSetChanged();
                                         }
 
                                         @Override
@@ -92,5 +96,4 @@ public class FavoriteArtistFragment extends Fragment {
                     }
                 });
     }
-
 }
