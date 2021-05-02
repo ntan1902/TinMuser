@@ -10,7 +10,7 @@
         android:id="@+id/btnFavorite"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:src="@drawable/ic_favorite_on"
+        android:src="@drawable/ic_favorite_off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/song_avatar"
         app:layout_constraintHorizontal_bias="0.0"

@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
+import com.hcmus.tinmuser.Activity.MenuOfCategory;
 import com.hcmus.tinmuser.Activity.MenuOfSongActivity;
 import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Category;
@@ -62,7 +63,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, MenuOfCategory.class);
+                intent.putExtra("categoryId", category.getId());
+                context.startActivity(intent);
             }
         });
 
