@@ -340,6 +340,9 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot2) {
                         if (snapshot2.exists()) {
+                            btnPlay.setImageResource(R.drawable.ic_pause);
+
+
                             position = snapshot2.getValue(Integer.class);
                             initializeMusic(position);
 

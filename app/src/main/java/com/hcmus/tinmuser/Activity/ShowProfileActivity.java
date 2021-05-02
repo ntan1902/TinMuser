@@ -36,6 +36,8 @@ public class ShowProfileActivity extends Activity {
     private ExpandableLinearLayout linearLayout;
     private Button btnArrow;
 
+    private Boolean isFriend;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,11 @@ public class ShowProfileActivity extends Activity {
         ivAvatar = findViewById(R.id.ivAvatar);
         btnAddFriend = findViewById(R.id.btnAddFriend);
         btnGoBack = findViewById(R.id.btnGoBack);
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        Intent intent = getIntent();
+        id = intent.getStringExtra("userId");
+
+        getIsFriend();
 
         linearLayout = (ExpandableLinearLayout) findViewById(R.id.expandedLayout);
         btnArrow = findViewById(R.id.btnArrow);
@@ -65,11 +72,6 @@ public class ShowProfileActivity extends Activity {
             }
         });
 
-        Intent intent = getIntent();
-        id = intent.getStringExtra("userId");
-        System.out.println(id);
-
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
         mRef = FirebaseDatabase.getInstance().getReference("Users").child(id);
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -104,65 +106,70 @@ public class ShowProfileActivity extends Activity {
         btnAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Sweet Alert
                 {
-                    // 5. Confirm success
-                    new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
-                            .setTitleText("Are you sure to add?")
-                            .setConfirmText("Yes")
-                            .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sDialog) {
-                                    sDialog.dismissWithAnimation();
-                                }
-                            })
-                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                @Override
-                                public void onClick(SweetAlertDialog sDialog) {
-                                    //Add friend here
-//                                    DatabaseReference user_friendRef = FirebaseDatabase.getInstance().getReference("Friends").child(mUser.getUid()).child(id);
-//
-//                                    user_friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                        @Override
-//                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                            if(!snapshot.exists()) {
-//                                                user_friendRef.child("id").setValue(id);
-//                                            }
-//                                        }
-//
-//                                        @Override
-//                                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                        }
-//                                    });
+                    if (!isFriend) {
+                        //add friend start
+                        new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Are you sure to add friend?")
+                                .setConfirmText("Yes")
+                                .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+                                    }
+                                })
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        DatabaseReference opponent_friendRef = FirebaseDatabase.getInstance().getReference("FriendRequests").child(id).child(mUser.getUid()).child("id");
+                                        opponent_friendRef.setValue(mUser.getUid());
 
-                                    //Add request here
-                                    DatabaseReference opponent_friendRef = FirebaseDatabase.getInstance().getReference("FriendRequests").child(id).child(mUser.getUid());
+                                        sDialog
+                                                .setTitleText("Request sent!")
+                                                .setContentText("Send request successfully !")
+                                                .setConfirmText("OK")
+                                                .setConfirmClickListener(null)
+                                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
 
-                                    opponent_friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if(!snapshot.exists()) {
-                                                opponent_friendRef.child("id").setValue(mUser.getUid());
-                                            }
-                                        }
+                                    }
+                                })
+                                .show();
 
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
+                        //add friend end
+                    } else {
+                        //unfriend start
+                        new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setTitleText("Are you sure to unfriend?")
+                                .setConfirmText("Yes")
+                                .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+                                    }
+                                })
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        DatabaseReference unFriendRef1 = FirebaseDatabase.getInstance().getReference("Friends").child(mUser.getUid()).child(id);
+                                        DatabaseReference unFriendRef2 = FirebaseDatabase.getInstance().getReference("Friends").child(id).child(mUser.getUid());
 
-                                        }
-                                    });
-                                    //End add friend
+                                        unFriendRef1.removeValue();
+                                        unFriendRef2.removeValue();
+                                        sDialog
+                                                .setTitleText("Unfriend!")
+                                                .setContentText("Unfriend successfully !")
+                                                .setConfirmText("OK")
+                                                .setConfirmClickListener(null)
+                                                .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                        finish();
+                                        startActivity(getIntent());
+                                    }
 
-                                    sDialog
-                                            .setTitleText("Added!")
-                                            .setContentText("Add Friend successfully !")
-                                            .setConfirmText("OK")
-                                            .setConfirmClickListener(null)
-                                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                }
-                            })
-                            .show();
+                                })
+                                .show();
+                        //unfriend end
+                    }
+
                 }
 
             }
@@ -181,4 +188,30 @@ public class ShowProfileActivity extends Activity {
         });
 
     }
+
+    private void getIsFriend() {
+        DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("Friends").child(mUser.getUid()).child(id);
+        friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    isFriend = true;
+                    btnAddFriend.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfriend, 0,0,0);
+                    btnAddFriend.setText("unfriend");
+                } else {
+                    isFriend = false;
+                    btnAddFriend.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_friend, 0,0,0);
+                    btnAddFriend.setText("add friend");
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    ;
 }

@@ -27,12 +27,13 @@ import java.util.ArrayList;
 public class MenuOfSongActivity extends Activity {
     private RelativeLayout layoutFavorite, layoutArtist, layoutClose;
     private ImageView coverArt, btnFavorite;
-    private TextView txtSongName, txtArtistName, txtFavorite;
+    private TextView txtSongName, txtArtistName, txtFavorite, txtTotalFollow;
 
     private String userId;
     private String playType;
     private String songId;
     private String artistId;
+    private Boolean isFavorite;
 
     private FirebaseUser mUser;
 
@@ -58,6 +59,7 @@ public class MenuOfSongActivity extends Activity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Song song = snapshot.getValue(Song.class);
                         txtSongName.setText(song.getName());
+                        txtTotalFollow.setText("" + song.getLike());
                         Glide.with(MenuOfSongActivity.this)
                                 .load(song.getImageURL())
                                 .into(coverArt);
@@ -69,7 +71,6 @@ public class MenuOfSongActivity extends Activity {
 
                                         String artistNameOfSong = artist.getName() + " - " + song.getName();
                                         txtArtistName.setText(artistNameOfSong);
-
                                     }
 
                                     @Override
@@ -88,16 +89,27 @@ public class MenuOfSongActivity extends Activity {
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseReference songRef = FirebaseDatabase.getInstance().getReference("Songs").child(songId);
                 DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId);
-                favRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                songRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Song song = snapshot.getValue(Song.class);
+                        isFavorite = !isFavorite;
                         if (snapshot.exists()) {
-                            btnFavorite.setImageResource(R.drawable.ic_favorite_off);
-                            favRef.removeValue();
-                        } else {
-                            btnFavorite.setImageResource(R.drawable.ic_favorite_on);
-                            favRef.child("id").setValue(songId);
+                            if (isFavorite) {
+                                btnFavorite.setImageResource(R.drawable.ic_favorite_on);
+                                favRef.child("id").setValue(songId);
+                                songRef.child("like").setValue(song.getLike() + 1);
+                                txtTotalFollow.setText(Integer.toString(song.getLike() + 1));
+                                txtFavorite.setText("Liked");
+                            } else {
+                                btnFavorite.setImageResource(R.drawable.ic_favorite_off);
+                                favRef.removeValue();
+                                songRef.child("like").setValue(song.getLike() - 1);
+                                txtTotalFollow.setText(Integer.toString(song.getLike() - 1));
+                                txtFavorite.setText("Add to favorite");
+                            }
                         }
                     }
 
@@ -136,14 +148,16 @@ public class MenuOfSongActivity extends Activity {
                 .child(mUser.getUid())
                 .child(idSong);
 
-        favRef.addValueEventListener(new ValueEventListener() {
+        favRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    isFavorite = true;
                     btnFavorite.setImageResource(R.drawable.ic_favorite_on);
-                    txtFavorite.setText("Your favorite song");
+                    txtFavorite.setText("Liked");
 
                 } else {
+                    isFavorite = false;
                     btnFavorite.setImageResource(R.drawable.ic_favorite_off);
                     txtFavorite.setText("Add to favorite");
                 }
@@ -165,6 +179,7 @@ public class MenuOfSongActivity extends Activity {
         txtArtistName = findViewById(R.id.artistName);
         btnFavorite = findViewById(R.id.btnFavorite);
         txtFavorite = findViewById(R.id.txtFavorite);
+        txtTotalFollow = findViewById(R.id.txtTotalFollow);
     }
 
 }

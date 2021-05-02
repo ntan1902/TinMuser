@@ -358,6 +358,14 @@ public class MessageActivity extends Activity implements ServiceConnection {
             }
         });
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MessageActivity.this, ShowProfileActivity.class);
+                i.putExtra("userId", userId);
+                startActivity(i);
+            }
+        });
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override

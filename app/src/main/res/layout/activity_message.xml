@@ -27,8 +27,8 @@
             android:id="@+id/imageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_toRightOf="@+id/btnGoBack"
             android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/btnGoBack"
             android:src="@drawable/profile_image" />
 
         <de.hdodenhof.circleimageview.CircleImageView
