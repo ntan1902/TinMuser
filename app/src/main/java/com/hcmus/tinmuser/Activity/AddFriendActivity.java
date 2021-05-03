@@ -32,9 +32,8 @@ public class AddFriendActivity extends Activity {
     private FriendRecommendAdapter friendRecommendAdapter;
 
     private List<User> friendRecommends, friendRequests;
+    private List<String> friendsOfUserId, friendRequestsOfUserId;
 
-    private ArrayList<String> friendsOfUserId, friendRequestsOfUserId;
-    private DatabaseReference mRef;
     private FirebaseUser mUser;
 
     @Override
@@ -43,22 +42,22 @@ public class AddFriendActivity extends Activity {
         setContentView(R.layout.activity_add_friend);
 
         btnGoBack = findViewById(R.id.btnGoBack);
-        recyclerViewFriendRequest = findViewById(R.id.recyclerViewFriendRequest);
-        recyclerViewFriendRequest.setHasFixedSize(true);
-        recyclerViewFriendRequest.setLayoutManager(new LinearLayoutManager(com.hcmus.tinmuser.Activity.AddFriendActivity.this));
-
-        recyclerViewFriendRecommend = findViewById(R.id.recyclerViewFriendRecommend);
-        recyclerViewFriendRecommend.setHasFixedSize(true);
-        recyclerViewFriendRecommend.setLayoutManager(new LinearLayoutManager(com.hcmus.tinmuser.Activity.AddFriendActivity.this));
-
         btnGoBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 com.hcmus.tinmuser.Activity.AddFriendActivity.this.onBackPressed();
             }
         });
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
 
+        recyclerViewFriendRequest = findViewById(R.id.recyclerViewFriendRequest);
+        recyclerViewFriendRequest.setHasFixedSize(true);
+        recyclerViewFriendRequest.setLayoutManager(new LinearLayoutManager(AddFriendActivity.this));
+
+        recyclerViewFriendRecommend = findViewById(R.id.recyclerViewFriendRecommend);
+        recyclerViewFriendRecommend.setHasFixedSize(true);
+        recyclerViewFriendRecommend.setLayoutManager(new LinearLayoutManager(AddFriendActivity.this));
+
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         //Get all friends of user
         DatabaseReference mFriendRef = FirebaseDatabase.getInstance().getReference("Friends").child(mUser.getUid());
 
@@ -124,7 +123,7 @@ public class AddFriendActivity extends Activity {
                         friendRecommends.add(user);
                     }
                 }
-                friendRecommendAdapter = new FriendRecommendAdapter(com.hcmus.tinmuser.Activity.AddFriendActivity.this, friendRecommends);
+                friendRecommendAdapter = new FriendRecommendAdapter(AddFriendActivity.this, friendRecommends);
                 recyclerViewFriendRecommend.setAdapter(friendRecommendAdapter);
             }
             @Override
@@ -148,7 +147,7 @@ public class AddFriendActivity extends Activity {
                         friendRequests.add(user);
                     }
                 }
-                friendRequestAdapter = new FriendRequestAdapter(com.hcmus.tinmuser.Activity.AddFriendActivity.this, friendRequests);
+                friendRequestAdapter = new FriendRequestAdapter(AddFriendActivity.this, friendRequests);
                 recyclerViewFriendRequest.setAdapter(friendRequestAdapter);
             }
 

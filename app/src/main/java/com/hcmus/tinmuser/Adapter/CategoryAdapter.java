@@ -13,14 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.hcmus.tinmuser.Activity.ArtistProfileActivity;
 import com.hcmus.tinmuser.Activity.MenuOfCategory;
-import com.hcmus.tinmuser.Activity.MenuOfSongActivity;
-import com.hcmus.tinmuser.Model.Artist;
 import com.hcmus.tinmuser.Model.Category;
-import com.hcmus.tinmuser.Model.Chat;
 import com.hcmus.tinmuser.R;
 
 import java.util.List;
@@ -80,11 +74,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         ImageView imageView;
         TextView categoryName;
 
-
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.imageView);
             categoryName = itemView.findViewById(R.id.categoryName);
+            categoryName.setSelected(true);
         }
     }
 }
