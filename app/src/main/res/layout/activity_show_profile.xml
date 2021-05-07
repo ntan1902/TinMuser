@@ -218,12 +218,27 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="10dp"
-                android:background="@drawable/button_sign_in"
+                android:background="@drawable/button_sign_up"
                 android:layout_marginHorizontal="50dp"
                 android:drawableLeft="@drawable/ic_add_friend"
                 android:fontFamily="@font/montserrat_black"
                 android:paddingHorizontal="20dp"
                 android:text="Add friend"
+                android:textColor="@color/black" />
+
+            <Button
+                android:id="@+id/btnDecline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_sign_in"
+                android:layout_marginHorizontal="50dp"
+                android:drawableLeft="@drawable/ic_decline"
+                android:fontFamily="@font/montserrat_black"
+                android:paddingHorizontal="20dp"
+                android:text="Decline"
                 android:textColor="@color/black" />
         </LinearLayout>
 

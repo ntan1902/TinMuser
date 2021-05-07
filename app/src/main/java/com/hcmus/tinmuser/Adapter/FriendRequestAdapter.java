@@ -64,7 +64,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<com.hcmus.tinmuse
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, ShowProfileActivity.class);
-                i.putExtra("id", user.getId());
+                i.putExtra("userId", user.getId());
                 context.startActivity(i);
             }
         });
