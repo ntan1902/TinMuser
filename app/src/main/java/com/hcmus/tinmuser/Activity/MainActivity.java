@@ -55,7 +55,6 @@ public class MainActivity extends FragmentActivity {
     private ConstraintLayout layoutPlay;
     private SongService songService;
 
-    private ArrayList<String> mUserListFavorites;
     private final int[] tabIcons = {
             R.drawable.ic_home,
             R.drawable.ic_library,
@@ -150,9 +149,6 @@ public class MainActivity extends FragmentActivity {
         mUser = FirebaseAuth.getInstance()
                 .getCurrentUser();
         updateStatus("online");
-
-        //favorite
-        mUserListFavorites = new ArrayList<>();
 
         mRef = FirebaseDatabase.getInstance()
                 .getReference("Users")

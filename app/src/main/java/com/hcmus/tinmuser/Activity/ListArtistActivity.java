@@ -87,7 +87,7 @@ public class ListArtistActivity extends Activity{
     }
 
     private void getFavoriteSongs(){
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid());
+        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("FavoriteSongs").child(mUser.getUid());
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

@@ -181,7 +181,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId);
+                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("FavoriteSongs").child(mUser.getUid()).child(songId);
                 favRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -722,7 +722,7 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
     }
 
     public void getIsFavorite(String idSong) {
-        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites")
+        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("FavoriteSongs")
                 .child(mUser.getUid())
                 .child(idSong);
 
