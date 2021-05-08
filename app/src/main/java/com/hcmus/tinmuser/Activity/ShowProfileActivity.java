@@ -37,7 +37,7 @@ public class ShowProfileActivity extends Activity {
     private ExpandableLinearLayout linearLayout;
     private Button btnArrow;
 
-    private Boolean isFriend, isRequested;
+    private Boolean isFriend, isRequested, isRequesting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,7 @@ public class ShowProfileActivity extends Activity {
         Intent intent = getIntent();
         id = intent.getStringExtra("userId");
         isRequested = false;
+        isRequesting = false;
         btnDecline.setVisibility(View.GONE);
         getIsFriend();
         getIsRequested();
@@ -217,35 +218,67 @@ public class ShowProfileActivity extends Activity {
         btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //decline start
-                new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Are you sure to decline?")
-                        .setConfirmText("Yes")
-                        .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference("FriendRequests").child(mUser.getUid()).child(id);
-                                requestRef.removeValue();
+                if(!isRequesting) {
+                    //decline start
+                    new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Are you sure to decline?")
+                            .setConfirmText("Yes")
+                            .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                }
+                            })
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference("FriendRequests").child(mUser.getUid()).child(id);
+                                    requestRef.removeValue();
 
-                                sDialog
-                                        .setTitleText("Decline!")
-                                        .setContentText("Decline successfully !")
-                                        .setConfirmText("OK")
-                                        .setConfirmClickListener(null)
-                                        .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-                                finish();
-                                startActivity(getIntent());
-                            }
+                                    sDialog
+                                            .setTitleText("Decline!")
+                                            .setContentText("Decline successfully !")
+                                            .setConfirmText("OK")
+                                            .setConfirmClickListener(null)
+                                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                    finish();
+                                    startActivity(getIntent());
+                                }
 
-                        })
-                        .show();
-                //decline end
+                            })
+                            .show();
+                    //decline end
+                } else {
+                    //cancel request start
+                    new SweetAlertDialog(ShowProfileActivity.this, SweetAlertDialog.WARNING_TYPE)
+                            .setTitleText("Are you sure to cancel request?")
+                            .setConfirmText("Yes")
+                            .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    sDialog.dismissWithAnimation();
+                                }
+                            })
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sDialog) {
+                                    DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference("FriendRequests").child(id).child(mUser.getUid());
+                                    requestRef.removeValue();
+
+                                    sDialog
+                                            .setTitleText("Request Canceled!")
+                                            .setContentText("Cancel request successfully !")
+                                            .setConfirmText("OK")
+                                            .setConfirmClickListener(null)
+                                            .changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
+                                    finish();
+                                    startActivity(getIntent());
+                                }
+
+                            })
+                            .show();
+                    //cancel request end
+                }
 
             }
         });
@@ -314,9 +347,13 @@ public class ShowProfileActivity extends Activity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    isRequesting = true;
                     btnAddFriend.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                     btnAddFriend.setText("Waiting for response");
                     btnAddFriend.setClickable(false);
+                    btnDecline.setText("Cancel request");
+                    btnDecline.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_unfriend, 0, 0, 0);
+                    btnDecline.setVisibility(View.VISIBLE);
                 }
             }
 
