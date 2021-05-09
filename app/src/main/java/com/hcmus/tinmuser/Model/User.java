@@ -24,9 +24,10 @@ public class User {
         this.isBanned = isBanned;
     }
 
-    public User(String id, String email, String imageURL) {
+    public User(String id, String email, String userName, String imageURL) {
         this.id = id;
         this.email = email;
+        this.userName = userName;
         this.imageURL = imageURL;
     }
 

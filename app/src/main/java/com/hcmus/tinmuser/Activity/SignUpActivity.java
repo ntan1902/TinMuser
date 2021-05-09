@@ -35,7 +35,7 @@ import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
 public class SignUpActivity extends Activity {
-    private TextInputLayout mEdtEmail, mEdtPassword, mEdtConfirmPassword;
+    private TextInputLayout mEdtEmail, mEdtUserName, mEdtPassword, mEdtConfirmPassword;
     private Button mBtnGoBack, mBtnSignup, mBtnSignupGoogle;
 
     private FirebaseAuth mAuth;
@@ -91,6 +91,7 @@ public class SignUpActivity extends Activity {
 
     private void initializeID() {
         mEdtEmail = findViewById(R.id.edtEmail);
+        mEdtUserName = findViewById(R.id.edtUserName);
         mEdtPassword = findViewById(R.id.edtPassword);
         mEdtConfirmPassword = findViewById(R.id.edtConfirmPassword);
 
@@ -108,28 +109,25 @@ public class SignUpActivity extends Activity {
             @Override
             public void onClick(View v) {
                 final String email = mEdtEmail.getEditText().getText().toString();
+                final String userName = mEdtUserName.getEditText().getText().toString();
                 final String password = mEdtPassword.getEditText().getText().toString();
                 final String confirmPassword = mEdtConfirmPassword.getEditText().getText().toString();
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(SignUpActivity.this, "Please fill in email!", Toast.LENGTH_SHORT).show();
-                    //mEdtEmail.setError("Please fill in email!");
                 } else if (!isEmailValid(email)) {
                     Toast.makeText(SignUpActivity.this, "Invalid email", Toast.LENGTH_SHORT).show();
-                    //mEdtEmail.setError("Invalid email!");
+                } else if (TextUtils.isEmpty(userName)) {
+                    Toast.makeText(SignUpActivity.this, "Please fill in your name!", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.isEmpty(password)) {
                     Toast.makeText(SignUpActivity.this, "Please fill in password!", Toast.LENGTH_SHORT).show();
-                    //mEdtPassword.setError("Please fill in password!");
                 } else if (password.length() < 6) {
                     Toast.makeText(SignUpActivity.this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show();
-                    //mEdtPassword.setError("Password should be at least 6 characters");
                 } else if (!TextUtils.equals(password, confirmPassword)) {
                     // If sign up fails, display a message to the user.
                     Toast.makeText(SignUpActivity.this, "Password don't be matched. Please check again!", Toast.LENGTH_SHORT).show();
-                    //mEdtConfirmPassword.setError("Password don't be matched. Please check again!");
                 } else {
-                    //mProgressBar.setVisibility(View.VISIBLE);
-                    signUpAccount(email, password);
+                    signUpAccount(email, userName, password);
                 }
             }
         });
@@ -145,7 +143,7 @@ public class SignUpActivity extends Activity {
         });
     }
 
-    private void signUpAccount(String email, String password) {
+    private void signUpAccount(String email, String userName, String password) {
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -161,7 +159,7 @@ public class SignUpActivity extends Activity {
                                     .child(firebaseUser.getUid());
 
                             // Create HashMap to put into Database
-                            User user = new User(firebaseUser.getUid(), email, "default");
+                            User user = new User(firebaseUser.getUid(), email, userName, "default");
 
                             // Put into Database
                             mRef.setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
