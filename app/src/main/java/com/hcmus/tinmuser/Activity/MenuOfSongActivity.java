@@ -90,7 +90,7 @@ public class MenuOfSongActivity extends Activity {
             @Override
             public void onClick(View v) {
                 DatabaseReference songRef = FirebaseDatabase.getInstance().getReference("Songs").child(songId);
-                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites").child(mUser.getUid()).child(songId);
+                DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("FavoriteSongs").child(mUser.getUid()).child(songId);
                 songRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -144,7 +144,7 @@ public class MenuOfSongActivity extends Activity {
     }
 
     public void getIsFavorite(String idSong) {
-        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("Favorites")
+        DatabaseReference favRef = FirebaseDatabase.getInstance().getReference("FavoriteSongs")
                 .child(mUser.getUid())
                 .child(idSong);
 
