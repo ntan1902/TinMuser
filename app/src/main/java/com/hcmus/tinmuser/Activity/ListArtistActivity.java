@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Adapter.ArtistAdapter;
 import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.Music;
 import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
@@ -31,7 +35,9 @@ public class ListArtistActivity extends Activity{
     private ArtistAdapter artistAdapter;
 
     private List<Artist> mArtists;
-    ArrayList<String> mUserListFavoriteSong;
+    private List<Artist> mSearchArtists;
+    private List<String> mUserListFavoriteSong;
+
     private FirebaseUser mUser;
     private ImageView backBtn;
     @Override
@@ -59,10 +65,46 @@ public class ListArtistActivity extends Activity{
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
 
         mArtists = new ArrayList<>();
-        artistAdapter = new ArtistAdapter(this, mArtists, "Single", "");
-        recyclerArtist.setAdapter(artistAdapter);
+        setAdapter(mArtists);
         getArtists();
 
+        mSearchArtists = new ArrayList<>();
+
+        final EditText searchText = findViewById(R.id.searchText);
+        searchText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if (searchText.hasFocus()) {
+                    if (s.toString().isEmpty()) {
+                        setAdapter(mArtists);
+                        getArtists();
+                    } else {
+                        setAdapter(mSearchArtists);
+                        mSearchArtists.clear();
+                        for (Artist x : mArtists) {
+                            if (x.getName().toLowerCase().contains(s.toString().toLowerCase())) {
+                                mSearchArtists.add(x);
+                                artistAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void setAdapter(List<Artist> artists) {
+        artistAdapter = new ArtistAdapter(this, artists, "Single", "");
+        recyclerArtist.setAdapter(artistAdapter);
     }
 
     private void getArtists() {
@@ -70,6 +112,7 @@ public class ListArtistActivity extends Activity{
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mArtists.clear();
                 for (DataSnapshot artistSnapshot : snapshot.getChildren()) {
                     Artist artist = artistSnapshot.getValue(Artist.class);
 

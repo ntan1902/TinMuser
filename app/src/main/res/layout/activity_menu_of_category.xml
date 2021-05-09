@@ -26,16 +26,16 @@
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_back" />
 
-            <TextView
-                android:id="@+id/categoryName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="16dp"
-                android:text="Hot Hits VietNam"
-                android:textColor="@color/white"
-                android:textSize="50sp"
-                android:textStyle="bold" />
+<!--            <TextView-->
+<!--                android:id="@+id/categoryName"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_alignParentBottom="true"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                android:text="Hot Hits VietNam"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="50sp"-->
+<!--                android:textStyle="bold" />-->
         </RelativeLayout>
 
         <RelativeLayout

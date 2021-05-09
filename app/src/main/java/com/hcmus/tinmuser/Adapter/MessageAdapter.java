@@ -22,16 +22,16 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
     private Context context;
-    private List<Object> mItems;
-    private List<String> imgURLs;
+    private List<Chat> mItems;
+    private String imgURL;
 
     public static final int MSG_TYPE_LEFT = 0;
     public static final int MSG_TYPE_RIGHT = 1;
 
-    public MessageAdapter(Context context, List<Object> mItems, List<String> imgURLs) {
+    public MessageAdapter(Context context, List<Chat> mItems, String imgURL) {
         this.context = context;
         this.mItems = mItems;
-        this.imgURLs = imgURLs;
+        this.imgURL = imgURL;
     }
 
     @NonNull
@@ -53,7 +53,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Chat chat = (Chat) mItems.get(position);
+        Chat chat = mItems.get(position);
 
         if (chat.getType().equals("text")) {
             holder.showImage.setVisibility(View.GONE);
@@ -79,11 +79,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         }
 
-        if (imgURLs.get(0).equals("default")) {
+        if (imgURL.equals("default")) {
             holder.profile_image.setImageResource(R.drawable.profile_image);
         } else {
             Glide.with(context)
-                    .load(imgURLs.get(0))
+                    .load(imgURL)
                     .into(holder.profile_image);
         }
 

@@ -120,9 +120,9 @@ public class SignUpActivity extends Activity {
                 } else if (TextUtils.isEmpty(password)) {
                     Toast.makeText(SignUpActivity.this, "Please fill in password!", Toast.LENGTH_SHORT).show();
                     //mEdtPassword.setError("Please fill in password!");
-                } else if (password.length() <= 7) {
-                    Toast.makeText(SignUpActivity.this, "Password should be at least 8 characters", Toast.LENGTH_SHORT).show();
-                    //mEdtPassword.setError("Password should be at least 8 characters");
+                } else if (password.length() < 6) {
+                    Toast.makeText(SignUpActivity.this, "Password should be at least 6 characters", Toast.LENGTH_SHORT).show();
+                    //mEdtPassword.setError("Password should be at least 6 characters");
                 } else if (!TextUtils.equals(password, confirmPassword)) {
                     // If sign up fails, display a message to the user.
                     Toast.makeText(SignUpActivity.this, "Password don't be matched. Please check again!", Toast.LENGTH_SHORT).show();

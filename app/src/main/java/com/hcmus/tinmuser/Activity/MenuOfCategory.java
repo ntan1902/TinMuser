@@ -80,7 +80,7 @@ public class MenuOfCategory extends Activity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         Category category = snapshot.getValue(Category.class);
-                        txtCategoryName.setText(category.getName());
+//                        txtCategoryName.setText(category.getName());
                         Glide.with(MenuOfCategory.this)
                                 .load(category.getImageURL())
                                 .into(new SimpleTarget<Drawable>() {
@@ -227,8 +227,7 @@ public class MenuOfCategory extends Activity {
                                                 new int[]{swatch.getRgb(), swatch.getRgb()});
                                         container.setBackground(gradientDrawableBg);
 
-                                        txtCategoryName.setTextColor(swatch.getBodyTextColor());
-
+//                                        txtCategoryName.setTextColor(swatch.getBodyTextColor());
 
                                     } else {
                                         RelativeLayout container = findViewById(R.id.container);
@@ -238,7 +237,7 @@ public class MenuOfCategory extends Activity {
                                                 new int[]{0xff000000, 0xff000000});
                                         container.setBackground(gradientDrawableBg);
 
-                                        txtCategoryName.setTextColor(Color.DKGRAY);
+//                                        txtCategoryName.setTextColor(Color.DKGRAY);
 
                                     }
                                 }

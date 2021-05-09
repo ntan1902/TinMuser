@@ -69,8 +69,8 @@ public class MessageActivity extends Activity implements ServiceConnection {
 
     private MessageAdapter messageAdapter;
 
-    private List<Object> mItems;
-    private List<String> imgURLs;
+    private List<Chat> mItems;
+
     private String userId;
     private String file_link;
 
@@ -146,7 +146,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
                 .getReference("Users")
                 .child(userId);
 
-        ValueEventListener valueEventListener = new ValueEventListener() {
+        mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User user = snapshot.getValue(User.class);
@@ -173,8 +173,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        };
-        mRef.addValueEventListener(valueEventListener);
+        });
 
         // Create SongService
         ValueEventListener playDoubleIdListener = new ValueEventListener() {
@@ -531,10 +530,6 @@ public class MessageActivity extends Activity implements ServiceConnection {
 
     private void readMessagesFromUser(String imgURL) {
         mItems = new ArrayList<>();
-
-        imgURLs = new ArrayList<>();
-        imgURLs.add(imgURL);
-
         mRef = FirebaseDatabase.getInstance().getReference("Chats");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -550,7 +545,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     }
 
                 }
-                messageAdapter = new MessageAdapter(MessageActivity.this, mItems, imgURLs);
+                messageAdapter = new MessageAdapter(MessageActivity.this, mItems, imgURL);
                 recyclerView.setAdapter(messageAdapter);
             }
 

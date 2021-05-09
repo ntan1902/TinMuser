@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -42,13 +43,15 @@ import com.hcmus.tinmuser.Model.Song;
 import com.hcmus.tinmuser.R;
 import com.hcmus.tinmuser.Service.SongService;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class PlaySongActivity extends Activity implements ServiceConnection {
-
+    
     private TextView txtSongName, txtArtistName, txtDurationPlayed, txtDurationTotal;
     private ImageView songImage, btnNext, btnPrev, btnGoBack, btnFavorite, btnRepeat, btnMenu;
     private FloatingActionButton btnPlay;
@@ -580,6 +583,8 @@ public class PlaySongActivity extends Activity implements ServiceConnection {
 
     private void loadBitmapIntoSongImage(String imageURL) {
         // Metadata
+
+
         try {
 
             Glide.with(this)
