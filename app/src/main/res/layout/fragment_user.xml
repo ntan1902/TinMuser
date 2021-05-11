@@ -14,6 +14,7 @@
         android:background="@color/grey_900">
 
         <EditText
+            android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:hint="Tìm kiếm"
