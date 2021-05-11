@@ -149,6 +149,7 @@
         android:paddingLeft="70dp"
         android:paddingRight="70dp"
         android:fontFamily="@font/montserrat_black"
+        android:textColor="@color/black"
         android:text="sign up with google" />
 
 </LinearLayout>
