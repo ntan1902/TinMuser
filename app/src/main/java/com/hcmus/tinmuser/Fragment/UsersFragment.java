@@ -65,7 +65,6 @@ public class UsersFragment extends Fragment {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                System.out.println(s.toString());
                 if(s.toString().length()==0){
                     mFriendRef.addValueEventListener(new ValueEventListener() {
                         @Override
