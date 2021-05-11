@@ -79,7 +79,7 @@ public class FavoriteSongFragment extends Fragment {
                     if (s.toString().isEmpty()) {
                         musicAdapter = new MusicAdapter(getContext(), mMusics, "Single", "");
                         recyclerView.setAdapter(musicAdapter);
-                        getFavoriteSongs();
+//                        getFavoriteSongs();
                     } else {
                         searchMusic.clear();
                         musicAdapter = new MusicAdapter(getContext(), searchMusic, "Single", "");
