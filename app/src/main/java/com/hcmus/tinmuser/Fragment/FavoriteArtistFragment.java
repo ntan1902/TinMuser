@@ -9,9 +9,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,6 +28,7 @@ import com.hcmus.tinmuser.Activity.MainActivity;
 import com.hcmus.tinmuser.Activity.PlaySongActivity;
 import com.hcmus.tinmuser.Adapter.ArtistFavoriteAdapter;
 import com.hcmus.tinmuser.Model.Artist;
+import com.hcmus.tinmuser.Model.ChatList;
 import com.hcmus.tinmuser.R;
 
 import java.util.ArrayList;
@@ -35,11 +39,10 @@ public class FavoriteArtistFragment extends Fragment {
     private ArtistFavoriteAdapter artistFavoriteAdapter;
     private List<Artist> mArtists;
     private FirebaseUser mUser;
-
+    EditText searchText;
     public FavoriteArtistFragment() {
         // Required empty public constructor
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,17 +54,45 @@ public class FavoriteArtistFragment extends Fragment {
         recyclerArtist.setHasFixedSize(true);
         recyclerArtist.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerArtist.setItemAnimator(new DefaultItemAnimator());
+        searchText = view.findViewById(R.id.searchText);
+
+
 
         mArtists = new ArrayList<>();
-        artistFavoriteAdapter = new ArtistFavoriteAdapter(getContext(), mArtists, "Single");
-        recyclerArtist.setAdapter(artistFavoriteAdapter);
 
         getFavoriteArtists();
+        searchText.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
 
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.toString().length()==0){
+                    getFavoriteArtists();
+                }
+                else{
+                    getNameSearch(s.toString());
+                }
+            }
+        });
         return view;
     }
-
+    private void getNameSearch(String text){
+        List<Artist> temp = new ArrayList<>();
+        for(Artist artist : mArtists){
+            if(artist.getName().toLowerCase().contains(text.toLowerCase())){
+                temp.add(artist);
+            }
+        }
+        artistFavoriteAdapter = new ArtistFavoriteAdapter(getContext(), temp, "Single");
+        recyclerArtist.setAdapter(artistFavoriteAdapter);
+    }
     private void getFavoriteArtists() {
+        artistFavoriteAdapter = new ArtistFavoriteAdapter(getContext(), mArtists, "Single");
+        recyclerArtist.setAdapter(artistFavoriteAdapter);
         FirebaseDatabase.getInstance().getReference("FavoriteArtists")
                 .child(mUser.getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -81,7 +112,6 @@ public class FavoriteArtistFragment extends Fragment {
                                             mArtists.add(artist);
                                             artistFavoriteAdapter.notifyDataSetChanged();
                                         }
-
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
 
