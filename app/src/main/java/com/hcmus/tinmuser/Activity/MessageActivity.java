@@ -77,6 +77,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
     private SongService songService;
     private Intent songServiceIntent;
     private String playDoubleId = "";
+    private Boolean isPlayDouble = false;
 
     private ImageView btnPlay, songAvatar;
     private TextView txtSongName, txtArtistName;
@@ -299,6 +300,9 @@ public class MessageActivity extends Activity implements ServiceConnection {
                                 .child(playDoubleId)
                                 .child("isRepeat");
                         isRepeatRef.addValueEventListener(isRepeatListener);
+
+                        // Set UI Thread
+                        isPlayDouble = true;
                     }
                 }
             }
@@ -314,7 +318,7 @@ public class MessageActivity extends Activity implements ServiceConnection {
             public void run() {
                 songService = SongService.getInstance();
 
-                if (songService != null && songService.getMediaPlayer() != null) {
+                if (songService != null && songService.getMediaPlayer() != null && isPlayDouble) {
                     layoutPlay.setVisibility(View.VISIBLE);
 
                     // Get current music playing
@@ -326,14 +330,6 @@ public class MessageActivity extends Activity implements ServiceConnection {
                     txtArtistName.setText(songService.getArtistName());
 
                     updateProgressBar();
-
-//                    if (songService.getMediaPlayer().isPlaying()) {
-//                        isPlay = true;
-//                        btnPlay.setImageResource(R.drawable.ic_pause);
-//                    } else {
-//                        isPlay = false;
-//                        btnPlay.setImageResource(R.drawable.ic_play);
-//                    }
 
                     // Set on click on PlaySong
                     layoutPlay.setOnClickListener(new View.OnClickListener() {
