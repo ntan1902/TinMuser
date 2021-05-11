@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.hcmus.tinmuser.Activity.ShowProfileActivity;
+import com.hcmus.tinmuser.Model.PlayDouble;
 import com.hcmus.tinmuser.Model.User;
 import com.hcmus.tinmuser.R;
 
@@ -78,7 +79,6 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<com.hcmus.tinmuse
 
                 //Add friend from 2 side here
                 DatabaseReference user_friendRef = FirebaseDatabase.getInstance().getReference("Friends").child(mUser.getUid()).child(user.getId());
-
                 user_friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -92,6 +92,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<com.hcmus.tinmuse
 
                     }
                 });
+
                 DatabaseReference opponent_friendRef = FirebaseDatabase.getInstance().getReference("Friends").child(user.getId()).child(mUser.getUid());
 
                 user_friendRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -107,7 +108,6 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<com.hcmus.tinmuse
 
                     }
                 });
-                //End add friend from 2 side
 
             }
         });
