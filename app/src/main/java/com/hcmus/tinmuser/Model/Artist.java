@@ -9,14 +9,12 @@ public class Artist {
     public Artist() {
 
     }
-
     public Artist(String id, String name, String imageURL, Integer totalFollow) {
         this.id = id;
         this.name = name;
         this.imageURL = imageURL;
         this.totalFollow = totalFollow;
     }
-
     public String getId() {
         return id;
     }

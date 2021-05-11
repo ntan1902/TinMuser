@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/grey_900">
-
         <EditText
             android:id="@+id/searchText"
             android:layout_width="match_parent"
@@ -22,7 +21,9 @@
             android:background="@drawable/border_search"
             android:drawableStart="@drawable/ic_search"
             android:hint="Tìm kiếm"
+            android:textColor="@color/black"
             android:paddingLeft="10dp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerOnline"
             android:layout_width="match_parent"

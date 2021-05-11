@@ -93,6 +93,7 @@
                     android:layout_marginTop="3dp"
                     android:background="@drawable/rounded_edittext"
                     android:padding="10dp"
+                    android:textColor="@color/black"
                     android:text="On Hao Nguyen" />
             </LinearLayout>
 
@@ -117,6 +118,7 @@
                     android:layout_marginTop="3dp"
                     android:background="@drawable/rounded_edittext"
                     android:editable="false"
+                    android:textColor="@color/black"
                     android:padding="10dp"
                     android:text="ohn@gmail.com" />
             </LinearLayout>
@@ -143,9 +145,9 @@
                     android:background="@drawable/rounded_edittext"
                     android:inputType="number"
                     android:padding="10dp"
-                    android:text="0903123456" />
+                    android:text="0903123456"
+                    android:textColor="@color/black"/>
             </LinearLayout>
-
             <Button
                 android:id="@+id/btnEdit"
                 android:layout_width="match_parent"

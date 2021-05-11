@@ -133,6 +133,7 @@ public class SignUpActivity extends Activity {
         });
 
         mBtnSignupGoogle = (Button) findViewById(R.id.btnSignUpGoogle);
+
         mBtnSignupGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

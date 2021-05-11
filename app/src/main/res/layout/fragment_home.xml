@@ -15,9 +15,9 @@
         android:background="@drawable/border_search"
         android:drawableStart="@drawable/ic_search"
         android:hint="Tìm kiếm"
+        android:textColor="@color/black"
         android:paddingLeft="10dp"
-        android:textColorHighlight="@color/black"
-        android:textColor="@color/black" />
+        android:textColorHighlight="@color/black" />
 
     <TextView
         android:layout_width="wrap_content"

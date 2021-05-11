@@ -20,6 +20,7 @@
             android:layout_marginHorizontal="20dp"
             android:drawableStart="@drawable/ic_search"
             android:paddingLeft="10dp"
+            android:textColor="@color/black"
             android:background="@drawable/border_search"
             android:layout_marginTop="20dp" />
 
