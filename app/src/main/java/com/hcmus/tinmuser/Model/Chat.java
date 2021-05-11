@@ -12,7 +12,6 @@ public class Chat {
     public Chat() {
 
     }
-
     public Chat(String sender, String receiver, String message, String time, String type) {
         this.sender = sender;
         this.receiver = receiver;
