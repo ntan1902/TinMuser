@@ -85,7 +85,6 @@ public class ArtistFavoriteAdapter extends RecyclerView.Adapter<ArtistFavoriteAd
 
     @Override
     public int getItemCount() {
-
         return mArtists.size() + 1;
     }
 
