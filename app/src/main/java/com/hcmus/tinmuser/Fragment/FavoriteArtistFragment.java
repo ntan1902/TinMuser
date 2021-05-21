@@ -41,12 +41,12 @@ public class FavoriteArtistFragment extends Fragment {
     private FirebaseUser mUser;
     EditText searchText;
     public FavoriteArtistFragment() {
-        // Required empty public constructor
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_artists, container, false);
         mUser = FirebaseAuth.getInstance().getCurrentUser();
 
