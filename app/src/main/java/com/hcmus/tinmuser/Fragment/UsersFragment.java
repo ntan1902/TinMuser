@@ -87,24 +87,7 @@ public class UsersFragment extends Fragment {
                 }
             }
         });
-        mFriendRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listFriendsId.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String userId = dataSnapshot.getKey();
-                    listFriendsId.add(userId);
-                }
-                getUsers();
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        return view;
-    }
 
     private void getNameSearch(String textSearch) {
         ArrayList<User> temp = new ArrayList<>();

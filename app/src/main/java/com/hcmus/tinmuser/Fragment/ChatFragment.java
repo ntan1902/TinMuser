@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatFragment extends Fragment {
-    //Variable declaration
     private UserAdapter userAdapter;
     private OnlineUserAdapter onlineUserAdapter;
     private List<User> mItems;
@@ -193,7 +192,6 @@ public class ChatFragment extends Fragment {
             }
         });
     }
-    //Get All user information
     private void getUsers() {
         mUsers = new ArrayList<>();
         DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("Users");
