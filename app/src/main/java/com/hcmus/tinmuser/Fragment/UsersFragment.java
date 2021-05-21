@@ -28,14 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsersFragment extends Fragment {
-
     private RecyclerView recyclerView;
     private UserAdapter userAdapter;
     private List<User> mUsers;
     EditText searchBar;
     private FirebaseUser mUser;
     private DatabaseReference mRef;
-
     private ArrayList<String> listFriendsId;
     public UsersFragment() {
         // Required empty public constructor
