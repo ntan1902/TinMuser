@@ -90,40 +90,5 @@ public class FavoriteArtistFragment extends Fragment {
         artistFavoriteAdapter = new ArtistFavoriteAdapter(getContext(), temp, "Single");
         recyclerArtist.setAdapter(artistFavoriteAdapter);
     }
-    private void getFavoriteArtists() {
-        artistFavoriteAdapter = new ArtistFavoriteAdapter(getContext(), mArtists, "Single");
-        recyclerArtist.setAdapter(artistFavoriteAdapter);
-        FirebaseDatabase.getInstance().getReference("FavoriteArtists")
-                .child(mUser.getUid())
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        mArtists.clear();
-                        artistFavoriteAdapter.notifyDataSetChanged();
-                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                            String id_fav_artist = dataSnapshot.getKey();
 
-                            FirebaseDatabase.getInstance().getReference("Artists")
-                                    .child(id_fav_artist)
-                                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            Artist artist = snapshot.getValue(Artist.class);
-                                            mArtists.add(artist);
-                                            artistFavoriteAdapter.notifyDataSetChanged();
-                                        }
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    });
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-    }
 }
