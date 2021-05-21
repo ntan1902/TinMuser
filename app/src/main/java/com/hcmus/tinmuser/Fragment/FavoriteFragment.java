@@ -68,7 +68,6 @@ public class FavoriteFragment extends Fragment {
             fragments.add(fragment);
             titles.add(title);
         }
-
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {

@@ -2,4 +2,6 @@
     <string name="app_name">TinMuser</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="online">Login Successfully</string>
+    <string name="offline">Logout successfully</string>
 </resources>
