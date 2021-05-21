@@ -81,7 +81,6 @@ public class ListArtistActivity extends Activity{
                 if (searchText.hasFocus()) {
                     if (s.toString().isEmpty()) {
                         setAdapter(mArtists);
-//                        getArtists();
                     } else {
                         setAdapter(mSearchArtists);
                         mSearchArtists.clear();
