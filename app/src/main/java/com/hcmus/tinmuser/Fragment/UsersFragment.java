@@ -35,6 +35,7 @@ public class UsersFragment extends Fragment {
     private FirebaseUser mUser;
     private DatabaseReference mRef;
     private ArrayList<String> listFriendsId;
+
     public UsersFragment() {
         // Required empty public constructor
     }
@@ -63,7 +64,7 @@ public class UsersFragment extends Fragment {
             }
 
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.toString().length()==0){
+                if (s.toString().length() == 0) {
                     mFriendRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -74,18 +75,18 @@ public class UsersFragment extends Fragment {
                             }
                             getUsers();
                         }
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
 
                         }
                     });
-                }
-                else{
+                } else {
 
                     getNameSearch(s.toString());
                 }
             }
-            });
+        });
         mFriendRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -96,6 +97,7 @@ public class UsersFragment extends Fragment {
                 }
                 getUsers();
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -103,16 +105,18 @@ public class UsersFragment extends Fragment {
         });
         return view;
     }
-    private void getNameSearch(String textSearch){
+
+    private void getNameSearch(String textSearch) {
         ArrayList<User> temp = new ArrayList<>();
-        for(User user: mUsers){
-            if(user.getUserName().toLowerCase().contains(textSearch.toLowerCase())){
+        for (User user : mUsers) {
+            if (user.getUserName().toLowerCase().contains(textSearch.toLowerCase())) {
                 temp.add(user);
             }
         }
         userAdapter = new UserAdapter(getContext(), temp, false);
         recyclerView.setAdapter(userAdapter);
     }
+
     private void getUsers() {
         mUsers = new ArrayList<>();
         DatabaseReference friendRef = FirebaseDatabase.getInstance().getReference("Users");
@@ -120,15 +124,16 @@ public class UsersFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mUsers.clear();
-                for(DataSnapshot dataSnapshot: snapshot.getChildren()) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     User user = dataSnapshot.getValue(User.class);
-                    if(listFriendsId.contains(user.getId())){
+                    if (listFriendsId.contains(user.getId())) {
                         mUsers.add(user);
                     }
                 }
                 userAdapter = new UserAdapter(getContext(), mUsers, false);
                 recyclerView.setAdapter(userAdapter);
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 

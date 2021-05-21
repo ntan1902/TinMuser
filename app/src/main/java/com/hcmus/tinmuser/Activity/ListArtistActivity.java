@@ -36,7 +36,6 @@ public class ListArtistActivity extends Activity{
 
     private List<Artist> mArtists;
     private List<Artist> mSearchArtists;
-    private List<String> mUserListFavoriteSong;
 
     private FirebaseUser mUser;
     private ImageView backBtn;
@@ -54,8 +53,6 @@ public class ListArtistActivity extends Activity{
         });
 
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mUserListFavoriteSong = new ArrayList<>();
-        getFavoriteSongs();
 
         recyclerArtist = findViewById(R.id.recyclerArtist);
         recyclerArtist.setHasFixedSize(true);
@@ -84,7 +81,6 @@ public class ListArtistActivity extends Activity{
                 if (searchText.hasFocus()) {
                     if (s.toString().isEmpty()) {
                         setAdapter(mArtists);
-//                        getArtists();
                     } else {
                         setAdapter(mSearchArtists);
                         mSearchArtists.clear();
@@ -109,7 +105,7 @@ public class ListArtistActivity extends Activity{
 
     private void getArtists() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Artists");
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+        ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mArtists.clear();
@@ -129,24 +125,5 @@ public class ListArtistActivity extends Activity{
         });
     }
 
-    private void getFavoriteSongs(){
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference("FavoriteSongs").child(mUser.getUid());
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                mUserListFavoriteSong.clear();
-                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    String fav_song = dataSnapshot.getKey();
-                    mUserListFavoriteSong.add(fav_song);
-                    artistAdapter.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
 
 }
